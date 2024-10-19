@@ -17,6 +17,13 @@ nav:
       - Manage event proposals: event-cfp.md
       - Reviewing proposals: reviewing-proposals.md
       - Creating the event schedule: event-schedule.md
+      - Communicating with the participants: event-attendees.md
+  - Development:
+      - Developing the FOSS United Platform: development.md
+      - Documentation: documentation.md
+      - Project management: project-management.md
+      - Code contributions: code-contributions.md
+      - Architecture: architecture.md
 
 theme:
   name: material
@@ -50,3 +57,10 @@ theme:
 
 plugins:
   - glightbox
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

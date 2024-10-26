@@ -4,9 +4,14 @@
 import re
 
 import frappe
+from frappe.exceptions import PermissionError
 from frappe.website.website_generator import WebsiteGenerator
 
 from fossunited.api.profile import is_valid_username
+
+
+class PrivateProfileError(PermissionError):
+    pass
 
 
 class FOSSUserProfile(WebsiteGenerator):
@@ -114,7 +119,7 @@ class FOSSUserProfile(WebsiteGenerator):
             "Administrator",
             self.user,
         ):
-            frappe.throw("Profile Not Found", frappe.DoesNotExistError)
+            frappe.throw("Profile is Private", PrivateProfileError)
 
         experiences_dict = {}
         for experience in self.experience:

@@ -11,6 +11,8 @@ from fossunited.api.profile import is_valid_username
 
 
 class PrivateProfileError(PermissionError):
+    """Exception raised when trying to access a private profile."""
+
     pass
 
 

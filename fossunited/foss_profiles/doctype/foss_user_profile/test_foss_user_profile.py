@@ -54,7 +54,12 @@ class TestFOSSUserProfile(IntegrationTestCase):
         ).insert()
 
         private_profile = frappe.get_doc(
-            {"doctype": USER_PROFILE, "user": test_user.name, "is_private": 1}
+            {
+                "doctype": USER_PROFILE,
+                "user": test_user.name,
+                "is_private": 1,
+                "username": fake.user_name(),
+            }
         ).insert()
 
         current_user = frappe.session.user

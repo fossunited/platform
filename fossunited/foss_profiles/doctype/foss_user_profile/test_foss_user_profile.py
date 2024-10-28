@@ -53,20 +53,19 @@ class TestFOSSUserProfile(IntegrationTestCase):
             },
         ).insert()
 
-        private_profile = frappe.get_doc(
-            {
-                "doctype": USER_PROFILE,
-                "user": test_user.name,
-                "is_private": 1,
-                "username": fake.user_name(),
-            }
-        ).insert()
+        # Given a private profile
+        private_profile = frappe.get_doc(USER_PROFILE, {"user": test_user.name})
+        frappe.db.set_value(USER_PROFILE, private_profile.name, "is_private", "1")
 
         current_user = frappe.session.user
         frappe.set_user("guest@example.com")
 
         with self.assertRaises(PrivateProfileError) as context:
-            private_profile.get_profile()
+            # When accessing the profile not as admin or user
+            # then an exception is raised
+            private_profile = frappe.get_doc(USER_PROFILE, {"user": test_user.name})
+            # Simulate loading the profile
+            private_profile.get_context({})
 
         self.assertTrue("Profile is Private" in str(context.exception))
 

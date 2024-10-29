@@ -166,6 +166,34 @@ const cfpSubmissions = createResource({
     event: props.event,
   },
   auto: true,
+  transform(data) {
+    let groups = [
+      {
+        group: 'Open for reviews',
+        rows: [],
+      },
+      {
+        group: 'Selected Talks',
+        rows: [],
+      },
+      {
+        group: 'Rejected Talks',
+        collapsed: true,
+        rows: [],
+      },
+    ]
+    data.forEach((item) => {
+      if (item.status === 'Review Pending') {
+        groups[0]['rows'].push(item)
+      } else if (item.status === 'Rejected') {
+        groups[2]['rows'].push(item)
+      } else {
+        groups[1]['rows'].push(item)
+      }
+    })
+
+    return groups
+  },
 })
 
 const filterByStatus = (filter) => {

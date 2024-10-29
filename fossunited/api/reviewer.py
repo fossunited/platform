@@ -26,7 +26,6 @@ def get_event_cfp_submissions(event: str) -> list:
         "linked_cfp",
         "route",
         "is_published",
-        "title",
         "status",
         "event",
         "event_name",
@@ -35,7 +34,6 @@ def get_event_cfp_submissions(event: str) -> list:
         "talk_title",
         "talk_reference",
         "talk_description",
-        "custom_answers",
         "positive_reviews",
         "negative_reviews",
         "unsure_reviews",
@@ -53,11 +51,12 @@ def get_event_cfp_submissions(event: str) -> list:
             "bio",
         ]
 
-    submissions = frappe.db.get_list(
+    submissions = frappe.db.get_all(
         PROPOSAL,
-        filters={"event": event, "status": "Review Pending"},
+        filters={"event": event},
         fields=fields,
         order_by="creation desc",
+        page_length=9999,
     )
 
     return submissions
@@ -89,7 +88,6 @@ def get_cfp_submissions_by_reviewer_status(
         ):
             if "Not Reviewed" in status_filter:
                 submission["review_status"] = "Not Reviewed"
-                submission["status"] = "-"
                 submission["remarks"] = "-"
                 submissions_list.append(submission)
             continue

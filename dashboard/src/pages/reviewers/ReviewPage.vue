@@ -2,26 +2,7 @@
   <Header />
   <div v-if="event.doc" class="w-full flex flex-col items-center">
     <div class="max-w-screen-xl p-4 w-full">
-      <a href="/dashboard/review" class="text-base hover:underline flex items-center gap-1 my-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-tabler w-5 h-5 icons-tabler-outline icon-tabler-arrow-left"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path d="M5 12l14 0" />
-          <path d="M5 12l6 6" />
-          <path d="M5 12l6 -6" />
-        </svg>
-        <span> Go to Dashboard </span>
-      </a>
+      <Button label="Go Back" icon-left="arrow-left" variant="ghost" @click="router.back()" />
       <div class="prose my-5">
         <h1 class="m-0">CFP Review</h1>
         <p class="mt-1">Review the session proposals for this event.</p>
@@ -60,20 +41,14 @@
   </div>
 </template>
 <script setup>
-import {
-  createResource,
-  createDocumentResource,
-  createListResource,
-  usePageMeta,
-  ListView,
-} from 'frappe-ui'
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { createDocumentResource, usePageMeta } from 'frappe-ui'
+import { useRoute, useRouter } from 'vue-router'
 import EventHeader from '@/components/EventHeader.vue'
 import Header from '@/components/Header.vue'
 import ProposalList from '@/components/reviewers/ProposalsList.vue'
 
 const route = useRoute()
+const router = useRouter()
 
 usePageMeta(() => {
   return {

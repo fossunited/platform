@@ -1,6 +1,6 @@
 <template>
   <div
-    class="p-4 border-t border-b border-gray-500 w-full flex flex-col gap-2 hover:cursor-pointer hover:bg-gray-50"
+    class="p-4 border-b first:border-t border-gray-500 w-full flex flex-col gap-2 hover:cursor-pointer hover:bg-gray-50"
     @click="router.push({ name: 'ReviewPage', params: { id: event.event } })"
   >
     <div class="flex flex-col gap-1 mb-2">

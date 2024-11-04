@@ -85,7 +85,13 @@ def update_profile(fields_dict):
 
         user_updates = {}
         if fields_dict.get("full_name") != user_doc.full_name:
-            user_updates["first_name"] = fields_dict.get("full_name").split(" ")[0]
+            name_parts = fields_dict.get("full_name").split()
+            if len(name_parts) > 1:
+                user_updates["first_name"] = name_parts[0]
+                user_updates["last_name"] = "".join(name_parts[1:])
+            else:
+                user_updates["first_name"] = name_parts[0]
+                user_updates["last_name"] = ""
 
         if fields_dict.get("username") != user_doc.username:
             user_updates["username"] = fields_dict.get("username")
@@ -94,6 +100,8 @@ def update_profile(fields_dict):
             user = frappe.get_doc("User", user_doc.user)
             for field, value in user_updates.items():
                 setattr(user, field, value)
+
+            user.save(ignore_permissions=True)
 
         return True
 

@@ -8,7 +8,10 @@
           <h1 class="text-[2rem]">{{ submission.data.talk_title }}</h1>
         </div>
         <div class="flex flex-wrap gap-2 md:gap-4 items-center mt-0 mb-2">
-          <Tooltip text="This is the first talk submitted by the speaker">
+          <Tooltip
+            v-if="submission.data.is_first_talk === 'Yes'"
+            text="This is the first talk submitted by the speaker"
+          >
             <Badge label="First Talk" variant="outline" size="lg" class="p-1">
               <template #prefix>
                 <svg
@@ -31,9 +34,10 @@
               </template>
             </Badge>
           </Tooltip>
-          <span class="text-sm uppercase">{{ submission.data.session_type }}</span>
+          <span class="text-sm uppercase font-medium">{{ submission.data.session_type }}</span>
         </div>
         <a
+          v-if="submission.data.talk_reference"
           class="text-sm uppercase text-green-700 cursor-pointer font-medium hover:underline flex items-center gap-1"
           :href="submission.data.talk_reference"
           target="_blank"
@@ -57,6 +61,9 @@
             <path d="M15 4h5v5" />
           </svg>
         </a>
+        <div v-else class="text-sm text-gray-500">
+          <span>Session reference not provided.</span>
+        </div>
       </div>
       <div class="my-6 flex flex-col gap-4">
         <div class="prose min-w-full">

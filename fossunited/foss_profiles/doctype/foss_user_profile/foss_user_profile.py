@@ -114,7 +114,7 @@ class FOSSUserProfile(WebsiteGenerator):
             frappe.throw("Username is already taken or restricted.")
 
     def set_route(self):
-        self.route = self.username
+        self.route = f"u/{self.username}"
 
     def get_context(self, context):
         if self.is_private and frappe.session.user not in (

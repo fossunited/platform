@@ -62,7 +62,6 @@ def update_profile(fields_dict):
         updated_fields = {
             "full_name": fields_dict.get("full_name"),
             "username": fields_dict.get("username"),
-            "route": fields_dict.get("username"),
             "bio": fields_dict.get("bio"),
             "current_city": fields_dict.get("current_city"),
             "about": fields_dict.get("about"),
@@ -78,17 +77,31 @@ def update_profile(fields_dict):
             "mastodon": fields_dict.get("mastodon"),
         }
 
-        frappe.db.set_value(USER_PROFILE, user_doc.name, updated_fields)
+        profile = frappe.get_doc(USER_PROFILE, user_doc.name)
+        for field, value in updated_fields.items():
+            if hasattr(profile, field):
+                setattr(profile, field, value)
+        profile.save(ignore_permissions=True)
 
         user_updates = {}
         if fields_dict.get("full_name") != user_doc.full_name:
-            user_updates["full_name"] = fields_dict.get("full_name")
+            name_parts = fields_dict.get("full_name").split()
+            if len(name_parts) > 1:
+                user_updates["first_name"] = name_parts[0]
+                user_updates["last_name"] = "".join(name_parts[1:])
+            else:
+                user_updates["first_name"] = name_parts[0]
+                user_updates["last_name"] = ""
 
         if fields_dict.get("username") != user_doc.username:
             user_updates["username"] = fields_dict.get("username")
 
         if user_updates:
-            frappe.db.set_value("User", user_doc.user, user_updates)
+            user = frappe.get_doc("User", user_doc.user)
+            for field, value in user_updates.items():
+                setattr(user, field, value)
+
+            user.save(ignore_permissions=True)
 
         return True
 

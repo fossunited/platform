@@ -11,11 +11,12 @@ from fossunited.foss_profiles.doctype.foss_user_profile.foss_user_profile import
     PrivateProfileError,
 )
 
+fake = Faker()
+
 
 class TestFOSSUserProfile(IntegrationTestCase):
     def test_add_profile(self):
         # Given a user that does not have a FOSSUnitedProfile
-        fake = Faker()
         inserted_username = fake.user_name()
         inserted_name = fake.name()
         profile_exists = frappe.db.exists(USER_PROFILE, {"username": inserted_username})
@@ -41,7 +42,6 @@ class TestFOSSUserProfile(IntegrationTestCase):
         self.assertTrue(profile_exists)
 
     def test_private_profile_access(self):
-        fake = Faker()
         test_name = fake.name()
         test_user = frappe.get_doc(
             {
@@ -72,3 +72,28 @@ class TestFOSSUserProfile(IntegrationTestCase):
         frappe.set_user(current_user)
         frappe.delete_doc(USER_PROFILE, private_profile.name)
         frappe.delete_doc("User", test_user.name)
+
+    def test_profile_route(self):
+        # When a user profile is created
+        # Then the route for that profile should be of format: u/<username>
+        test_email = fake.email()
+        test_user = frappe.get_doc(
+            {
+                "doctype": "User",
+                "email": test_email,
+                "first_name": fake.name().split()[0],
+            },
+        ).insert()
+
+        test_user.reload()
+
+        profile = frappe.get_doc(USER_PROFILE, {"user": test_user.name})
+        profile.username = fake.user_name()
+        profile.save(ignore_permissions=True)
+
+        profile.reload()
+
+        self.assertTrue(profile.route == f"u/{profile.username}")
+
+        profile.delete(force=1)
+        test_user.delete(force=1)

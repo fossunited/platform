@@ -1,0 +1,23 @@
+meta {
+  name: Get-FOSS-profile-fails
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://fossunited.org/api/method/fossunited.fossunited.utils.get_foss_profile?email=rahul@fossunited.org
+  body: none
+  auth: none
+}
+
+params:query {
+  email: rahul@fossunited.org
+}
+
+tests {
+  test("should receive the states", function() {
+    const data = res.getBody();
+    // The email address has no FOSS profile
+    expect(data).to.be.empty;
+  });
+}

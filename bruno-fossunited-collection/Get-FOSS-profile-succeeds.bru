@@ -1,0 +1,30 @@
+meta {
+  name: Get-FOSS-profile-succeeds
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://fossunited.org/api/method/fossunited.fossunited.utils.get_foss_profile?email=rahul.poruri@gmail.com
+  body: none
+  auth: none
+}
+
+params:query {
+  email: rahul.poruri@gmail.com
+}
+
+tests {
+  test("should receive the states", function() {
+    const data = res.getBody();
+    // Message is a mapping with FOSS Profile info
+    expect(data.message.email).to.equal('rahul.poruri@gmail.com');
+    expect(data.message.name).to.equal('rahulporuri');
+    expect(data.message.full_name).to.equal('Poruri Sai Rahul');
+    expect(data.message.profile_photo).to.be.a('string');
+    expect(data.message.username).to.equal('rahulporuri');
+    expect(data.message.route).to.equal('rahulporuri');
+    expect(data.message.github).to.equal('https://github.com/rahulporuri');
+    expect(data.message.gitlab).to.be.null;
+  });
+}

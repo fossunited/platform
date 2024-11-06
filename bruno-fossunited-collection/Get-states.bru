@@ -1,0 +1,20 @@
+meta {
+  name: Get-states
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://fossunited.org/api/method/fossunited.api.dashboard.get_states
+  body: none
+  auth: none
+}
+
+tests {
+  test("should receive the states", function() {
+    const data = res.getBody();
+    // Message is a list of mappings
+    // each mapping has key name whose value is state name
+    expect(data['message'][0]["name"]).to.be.a('string');
+  });
+}

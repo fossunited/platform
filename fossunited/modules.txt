@@ -6,3 +6,4 @@ FOSS Hackathon
 Payments
 Ticketing
 Profile Integrations
+Stack

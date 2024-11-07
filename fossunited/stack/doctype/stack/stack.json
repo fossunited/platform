@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "hash",
  "creation": "2024-11-07 12:26:04.097329",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -33,10 +34,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-07 12:34:33.690324",
+ "modified": "2024-11-08 00:42:45.470694",
  "modified_by": "Administrator",
  "module": "Stack",
  "name": "Stack",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
@@ -50,9 +52,14 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "read": 1,
+   "role": "All"
   }
  ],
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "name1"
 }

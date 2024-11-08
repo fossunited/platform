@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./fossunited/www/**/*.html', './fossunited/templates/**/*.html'],
+  content: [
+    './fossunited/www/**/*.html',
+    './fossunited/templates/**/*.html',
+    './fossunited/stack/web_template/**/*.html',
+  ],
   theme: {
     extend: {
       colors: {

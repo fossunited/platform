@@ -16,7 +16,7 @@ class Stack(Document):
 
         category: DF.Data
         icon: DF.AttachImage
-        name1: DF.Data
+        title: DF.Data
     # end: auto-generated types
 
     pass

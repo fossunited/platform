@@ -42,3 +42,12 @@ erDiagram
   Profile }|--o{ Proposal : submit
   Proposal ||--o| Talk : accepted
 ```
+
+## Relationship between User and Profile
+
+```mermaid
+classDiagram
+  User <|-- Profile
+  User: +string email
+  Profile: +string email
+```

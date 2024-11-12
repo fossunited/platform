@@ -80,10 +80,10 @@ def checkin_attendee(
         user (str): The user who is checking in the attendee
     """
     if not has_valid_permission(event_id, user):
-        frappe.throw("You do not have permission to access this resource", frappe.PermissionError)
+        raise frappe.PermissionError("You do not have permission to access this resource")
 
     if check_if_already_checked_in(attendee["name"]):
-        frappe.throw("Attendee is already checked in", frappe.ValidationError)
+        raise frappe.ValidationError("Attendee already checked in!")
 
     ticket = frappe.get_doc(EVENT_TICKET, attendee["name"])
     ticket.append("check_ins", {"check_in_time": frappe.utils.now()})

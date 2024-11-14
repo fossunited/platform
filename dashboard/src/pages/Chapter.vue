@@ -7,14 +7,9 @@
       message: dialogMessage,
     }"
   />
-  <div v-if="chapter.data" class="flex">
-    <SideNavbar
-      title="Manage Chapter"
-      :menu-items="sidebarMenuItems"
-      :class="showNav ? 'z-50 block mt-[55px]' : 'hidden md:block'"
-    />
+  <div v-if="chapter.data" class="flex flex-col md:flex-row">
+    <SideNavbar title="Manage Chapter" :menu-items="sidebarMenuItems" />
     <div class="w-full md:ml-[220px]">
-      <HeaderWithNav @toggle-sidebar="($event) => (showNav = $event)" />
       <RouterView />
     </div>
   </div>
@@ -25,11 +20,9 @@ import { ref, onMounted, inject } from 'vue'
 import { usePageMeta, createResource, Dialog } from 'frappe-ui'
 import { useRoute, useRouter, RouterView } from 'vue-router'
 import SideNavbar from '@/components/NewAppSidebar.vue'
-import HeaderWithNav from '@/components/HeaderWithNav.vue'
 
 const route = useRoute()
 const router = useRouter()
-const showNav = ref(false)
 const session = inject('$session')
 const dialogMessage = ref('')
 const showDialog = ref(false)

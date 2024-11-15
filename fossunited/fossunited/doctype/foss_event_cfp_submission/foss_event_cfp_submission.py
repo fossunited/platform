@@ -3,10 +3,9 @@
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
 
+from fossunited.api.emailing import add_to_email_group, create_email_group
 from fossunited.doctype_ids import EVENT, EVENT_CFP, USER_PROFILE
-from fossunited.fossunited.utils import (
-    get_doc_likes,
-)
+from fossunited.fossunited.utils import get_doc_likes
 
 
 class FOSSEventCFPSubmission(WebsiteGenerator):
@@ -63,6 +62,10 @@ class FOSSEventCFPSubmission(WebsiteGenerator):
         self.set_name()
         self.set_route()
         self.set_scores()
+        self.handle_status_change()
+
+    def after_insert(self):
+        self.handle_email_group("CFP Proposers")
 
     def set_name(self):
         self.first_name = self.full_name.split(" ")[0]
@@ -217,3 +220,22 @@ class FOSSEventCFPSubmission(WebsiteGenerator):
                 return True
 
         return False
+
+    def handle_status_change(self):
+        if not self.has_value_changed("status"):
+            return
+
+        if self.status == "Approved":
+            self.handle_email_group("Accepted Proposers")
+
+        if self.status == "Rejected":
+            self.handle_email_group("Rejected Proposers")
+
+    def handle_email_group(self, type):
+        if not frappe.db.exists("Email Group", {"event": self.event, "group_type": type}):
+            create_email_group(self.event, type)
+
+        email_group = frappe.db.get_value(
+            "Email Group", {"event": self.event, "group_type": type}, ["name"]
+        )
+        add_to_email_group(email_group, self.email)

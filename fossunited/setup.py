@@ -75,5 +75,35 @@ def get_custom_fields():
                 "options": "FOSS Chapter Event",
                 "insert_after": "chapter",
             },
+            {
+                "fieldname": "group_type",
+                "fieldtype": "Select",
+                "label": "Group Type",
+                "options": "Chapter Master\nEvent Participants\nCFP Proposers\nAccepted Proposers\nRejected Proposers\nOther",  # noqa: E501
+                "default": "Other",
+                "insert_after": "event",
+            },
+        ],
+        "Newsletter": [
+            {
+                "fieldname": "linked_chapter_section",
+                "fieldtype": "Section Break",
+                "label": "Linked Chapter Details",
+                "insert_after": "send_from",
+            },
+            {
+                "fieldname": "chapter",
+                "fieldtype": "Link",
+                "label": "Chapter",
+                "options": "FOSS Chapter",
+                "insert_after": "linked_chapter_section",
+            },
+            {
+                "fieldname": "event",
+                "fieldtype": "Link",
+                "label": "Event",
+                "options": "FOSS Chapter Event",
+                "insert_after": "chapter",
+            },
         ],
     }

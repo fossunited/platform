@@ -9,13 +9,19 @@
     "copy-html-entry": "cp ../fossunited/public/dashboard/index.html ../fossunited/www/dashboard.html"
   },
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-markdown": "^6.3.1",
     "@tiptap/extension-underline": "^2.4.0",
+    "codemirror": "^6.0.1",
     "dayjs": "^1.11.11",
     "feather-icons": "^4.28.0",
     "frappe-ui": "^0.1.50",
     "ics": "^3.7.6",
     "quill": "^1.3.7",
     "vue": "^3.4.12",
+    "vue-codemirror": "^6.1.1",
     "vue-router": "^4.2.2",
     "vue-sonner": "^1.1.2"
   },

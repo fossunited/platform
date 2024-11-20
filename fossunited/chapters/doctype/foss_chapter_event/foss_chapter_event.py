@@ -84,7 +84,7 @@ class FOSSChapterEvent(WebsiteGenerator):
         status: DF.Literal["", "Draft", "Live", "Approved", "Concluded", "Cancelled"]  # noqa: F722, F821
         t_shirt_price: DF.Currency
         ticket_form_description: DF.MarkdownEditor | None
-        tickets_status: DF.Literal["Live", "Closed"]  # noqa: F821
+        tickets_status: DF.Literal["Live", "Closed"]  # noqa: F722, F821
         tiers: DF.Table[FOSSTicketTier]
     # end: auto-generated types
 

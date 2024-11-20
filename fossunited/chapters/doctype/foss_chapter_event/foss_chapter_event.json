@@ -347,8 +347,7 @@
       "in_list_view": 1,
       "in_preview": 1,
       "label": "Event Permalink",
-      "mandatory_depends_on": "eval:doc.is_external_event == 0",
-      "unique": 1
+      "mandatory_depends_on": "eval:doc.is_external_event == 0"
     },
     {
       "default": "0",
@@ -485,7 +484,7 @@
       "link_fieldname": "event"
     }
   ],
-  "modified": "2024-09-05 16:11:57.770805",
+  "modified": "2024-11-19 00:18:14.524980",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Chapter Event",

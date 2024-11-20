@@ -133,7 +133,7 @@
                 {{ review.remarks }}
               </div>
               <div class="d-flex align-items-baseline">
-                <span class="text-sm mr-1">Reviewer #{{loop.index}}</span>
+                <span class="text-sm mr-1">Reviewer #{{ loop.index }}</span>
                 <span class="mx-1">•</span>
                 <span class="text-sm mr-1">{{ remark_val[review.to_approve] }}</span>
                 <span class="mx-1">•</span>
@@ -143,7 +143,7 @@
           </div>
         </div>
         {% if not loop.last %}
-        <div class="form-divider"></div>
+          <div class="form-divider"></div>
         {% endif %}
       {% endfor %}
     </div>

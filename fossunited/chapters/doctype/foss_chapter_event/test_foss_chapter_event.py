@@ -107,29 +107,79 @@ class TestFOSSChapterEvent(IntegrationTestCase):
             )
 
     def test_unique_event_slug(self):
-        # Given a chapter and its event
-        chapter = self.chapter
-        event = self.event
-        # When a new event is created with the same slug
-        new_event = frappe.get_doc(
+        """Test that event slugs must be unique within a chapter
+        but can be reused across chapters."""
+
+        original_chapter = self.chapter
+        original_event = self.event
+        existing_permalink = original_event.event_permalink
+
+        # Test 1: Same chapter, same slug (should fail)
+        duplicate_event = frappe.get_doc(
             {
                 "doctype": EVENT,
-                "chapter": chapter.name,
+                "chapter": original_chapter.name,
                 "event_name": fake.text(max_nb_chars=40),
                 "event_type": "FOSS Meetup",
-                "event_permalink": event.event_permalink,
+                "event_permalink": existing_permalink,
                 "status": "Live",
                 "event_start_date": datetime.now() + timedelta(days=4),
                 "event_end_date": datetime.now() + timedelta(days=5),
                 "event_description": fake.text(max_nb_chars=200),
             }
         )
-
-        # Then an error should be raised
         with self.assertRaises(frappe.exceptions.ValidationError):
-            new_event.insert()
+            duplicate_event.insert()
 
-        # however, if the event is created with a different slug
-        new_event.event_permalink = fake.slug()
-        # Then the event should be created successfully
-        new_event.insert()
+        # Test 2: Different chapter, same slug (should succeed)
+        new_chapter = frappe.get_doc(
+            {
+                "doctype": CHAPTER,
+                "chapter_name": fake.text(max_nb_chars=40),
+                "chapter_type": CITY_COMMUNITY,
+                "slug": fake.slug(),
+                "city": "Kochi",
+                "country": "India",
+                "email": fake.email(),
+                "facebook": fake.url(),
+                "instagram": fake.url(),
+                "linkedin": fake.url(),
+                "mastodon": fake.url(),
+                "matrix": fake.url(),
+                "state": "Kerala",
+                "x": fake.url(),
+            }
+        )
+        new_chapter.insert()
+        new_chapter.reload()
+
+        cross_chapter_event = frappe.get_doc(
+            {
+                "doctype": EVENT,
+                "chapter": new_chapter.name,
+                "event_name": fake.text(max_nb_chars=40),
+                "event_type": "FOSS Meetup",
+                "event_permalink": existing_permalink,
+                "status": "Live",
+                "event_start_date": datetime.now() + timedelta(days=4),
+                "event_end_date": datetime.now() + timedelta(days=5),
+                "event_description": fake.text(max_nb_chars=200),
+            }
+        )
+        cross_chapter_event.insert()
+
+        # Test 3: Same chapter, different slug (should succeed)
+        different_slug_event = frappe.get_doc(
+            {
+                "doctype": EVENT,
+                "chapter": original_chapter.name,
+                "event_name": fake.text(max_nb_chars=40),
+                "event_type": "FOSS Meetup",
+                "event_permalink": fake.slug(),
+                "status": "Live",
+                "event_start_date": datetime.now() + timedelta(days=4),
+                "event_end_date": datetime.now() + timedelta(days=5),
+                "event_description": fake.text(max_nb_chars=200),
+            }
+        )
+        different_slug_event.insert()

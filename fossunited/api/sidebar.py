@@ -8,9 +8,10 @@ def get_sidebar_items(user: str = frappe.session.user):
             "parent_label": "Profile",
             "items": [
                 {
-                    "label": "My Profile",
+                    "label": "Details",
                     "route": "/me",
-                }
+                },
+                {"label": "My Proposals", "route": "/my-proposals"},
             ],
         },
         {

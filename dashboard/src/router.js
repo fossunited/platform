@@ -15,6 +15,11 @@ const routes = [
         component: () => import('@/pages/MyProfile.vue'),
       },
       {
+        path: '/my-proposals',
+        name: 'My Proposals',
+        component: () => import('@/pages/profile/MyProposals.vue'),
+      },
+      {
         path: '/my-hackathons',
         name: 'MyHackathons',
         component: () => import('@/pages/hackathon/MyHackathons.vue'),

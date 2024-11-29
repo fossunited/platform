@@ -36,7 +36,7 @@
               >
                 {{ group.parent_label }}
               </div>
-              <div class="flex flex-col my-1 gap-2 text-gray-700">
+              <div class="flex flex-col my-1 gap-1 text-gray-700">
                 <router-link
                   v-for="(item, index) in group.items"
                   :key="item.label"

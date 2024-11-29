@@ -170,6 +170,11 @@ const routes = [
         name: 'EventCheckins',
         component: () => import('@/pages/EventCheckins.vue'),
       },
+      {
+        path: 'mailing',
+        name: 'Event Mailing',
+        component: () => import('@/pages/mailing/EventMailing.vue'),
+      },
     ],
   },
   {

@@ -6,6 +6,7 @@ from datetime import datetime
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
 
+from fossunited.api.emailing import create_email_group
 from fossunited.doctype_ids import (
     CHAPTER,
     EVENT_CFP,
@@ -84,9 +85,13 @@ class FOSSChapterEvent(WebsiteGenerator):
         status: DF.Literal["", "Draft", "Live", "Approved", "Concluded", "Cancelled"]  # noqa: F722, F821
         t_shirt_price: DF.Currency
         ticket_form_description: DF.MarkdownEditor | None
-        tickets_status: DF.Literal["Live", "Closed"]  # noqa: F821
+        tickets_status: DF.Literal["Live", "Closed"]  # noqa: F722, F821
         tiers: DF.Table[FOSSTicketTier]
     # end: auto-generated types
+
+    def after_insert(self):
+        if not self.is_external_event:
+            self.create_email_groups()
 
     def before_insert(self):
         self.copy_team_members()
@@ -98,6 +103,15 @@ class FOSSChapterEvent(WebsiteGenerator):
         if self.has_value_changed("status"):
             self.update_published_status()
         self.set_route()
+
+    def create_email_groups(self):
+        for group in [
+            "Event Participants",
+            "CFP Proposers",
+            "Accepted Proposers",
+            "Rejected Proposers",
+        ]:
+            create_email_group(event_id=self.name, type=group)
 
     def copy_team_members(self):
         if not self.chapter:

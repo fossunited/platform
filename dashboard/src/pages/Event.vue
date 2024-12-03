@@ -1,12 +1,7 @@
 <template>
-  <div class="flex">
-    <SideNavbar
-      title="Manage Event"
-      :menu-items="sidebarMenuItems"
-      :class="showNav ? 'z-50 block mt-[55px]' : 'hidden md:block'"
-    />
+  <div class="flex flex-col md:flex-row">
+    <SideNavbar title="Manage Event" :menu-items="sidebarMenuItems" />
     <div class="w-full md:ml-[220px]">
-      <HeaderWithNav @toggle-sidebar="($event) => (showNav = $event)" />
       <RouterView />
     </div>
   </div>
@@ -17,11 +12,8 @@ import { ref, provide } from 'vue'
 import { createResource, usePageMeta } from 'frappe-ui'
 import { RouterView, useRoute } from 'vue-router'
 import SideNavbar from '@/components/NewAppSidebar.vue'
-import HeaderWithNav from '@/components/HeaderWithNav.vue'
 
 const route = useRoute()
-
-const showNav = ref(false)
 
 const sidebarMenuItems = ref([
   {

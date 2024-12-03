@@ -5,6 +5,9 @@ repos:
     rev: v4.6.0
     hooks:
       - id: check-yaml
+        # Needed because of the unsafe mermaid extension support in the mkdocs
+        # yaml configuration file
+        args: [--unsafe]
       - id: end-of-file-fixer
       - id: trailing-whitespace
 

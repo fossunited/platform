@@ -4,9 +4,16 @@
 import re
 
 import frappe
+from frappe.exceptions import PermissionError
 from frappe.website.website_generator import WebsiteGenerator
 
 from fossunited.api.profile import is_valid_username
+
+
+class PrivateProfileError(PermissionError):
+    """Exception raised when trying to access a private profile."""
+
+    pass
 
 
 class FOSSUserProfile(WebsiteGenerator):
@@ -107,14 +114,14 @@ class FOSSUserProfile(WebsiteGenerator):
             frappe.throw("Username is already taken or restricted.")
 
     def set_route(self):
-        self.route = self.username
+        self.route = f"u/{self.username}"
 
     def get_context(self, context):
         if self.is_private and frappe.session.user not in (
             "Administrator",
             self.user,
         ):
-            frappe.throw("Profile Not Found", frappe.DoesNotExistError)
+            frappe.throw("Profile is Private", PrivateProfileError)
 
         experiences_dict = {}
         for experience in self.experience:

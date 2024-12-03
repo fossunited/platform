@@ -5,6 +5,7 @@
 tags
 node_modules
 __pycache__
+docs/site/*
 fossunited/public/dist
 /fossunited/public/css/styles.css
 /fossunited/public/dashboard

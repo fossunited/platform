@@ -347,8 +347,7 @@
       "in_list_view": 1,
       "in_preview": 1,
       "label": "Event Permalink",
-      "mandatory_depends_on": "eval:doc.is_external_event == 0",
-      "unique": 1
+      "mandatory_depends_on": "eval:doc.is_external_event == 0"
     },
     {
       "default": "0",

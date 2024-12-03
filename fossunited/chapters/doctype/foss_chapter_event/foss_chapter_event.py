@@ -104,6 +104,9 @@ class FOSSChapterEvent(WebsiteGenerator):
             self.update_published_status()
         self.set_route()
 
+    def on_trash(self):
+        self.delete_email_groups()
+
     def create_email_groups(self):
         for group in [
             "Event Participants",
@@ -112,6 +115,14 @@ class FOSSChapterEvent(WebsiteGenerator):
             "Rejected Proposers",
         ]:
             create_email_group(event_id=self.name, type=group)
+
+    def delete_email_groups(self):
+        groups = frappe.db.get_all("Email Group", {"event": self.name}, pluck="name")
+        for group in groups:
+            frappe.delete_doc(
+                "Email Group",
+                group,
+            )
 
     def copy_team_members(self):
         if not self.chapter:

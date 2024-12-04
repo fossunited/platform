@@ -1,9 +1,7 @@
-# Copyright (c) 2023, Frappe x FOSSUnited and contributors
-# For license information, please see license.txt
-
 import frappe
 from frappe.model.document import Document
 
+from fossunited.api.emailing import add_to_email_group, create_email_group
 from fossunited.doctype_ids import EVENT_RSVP, RSVP_RESPONSE
 
 
@@ -31,6 +29,7 @@ class FOSSEventRSVPSubmission(Document):
         name1: DF.Data
         submitted_by: DF.Link | None
     # end: auto-generated types
+
     pass
 
     def validate(self):
@@ -38,6 +37,7 @@ class FOSSEventRSVPSubmission(Document):
 
     def after_insert(self):
         self.close_rsvp_on_max_count()
+        self.handle_add_to_email_group()
 
     def close_rsvp_on_max_count(self):
         max_count = self.get_max_count()
@@ -65,3 +65,14 @@ class FOSSEventRSVPSubmission(Document):
         is_rsvp_published = frappe.db.get_value(EVENT_RSVP, self.linked_rsvp, "is_published")
         if not is_rsvp_published:
             frappe.throw("RSVP is not published", frappe.PermissionError)
+
+    def handle_add_to_email_group(self):
+        if not frappe.db.exists(
+            "Email Group", {"event": self.event, "group_type": "Event Participants"}
+        ):
+            create_email_group(self.event, "Event Participants")
+
+        email_group = frappe.db.get_value(
+            "Email Group", {"event": self.event, "group_type": "Event Participants"}, ["name"]
+        )
+        add_to_email_group(email_group, self.email)

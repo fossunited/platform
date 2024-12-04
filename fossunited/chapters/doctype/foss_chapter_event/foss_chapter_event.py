@@ -6,6 +6,7 @@ from datetime import datetime
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
 
+from fossunited.api.emailing import create_email_group
 from fossunited.doctype_ids import (
     CHAPTER,
     EVENT_CFP,
@@ -88,6 +89,10 @@ class FOSSChapterEvent(WebsiteGenerator):
         tiers: DF.Table[FOSSTicketTier]
     # end: auto-generated types
 
+    def after_insert(self):
+        if not self.is_external_event:
+            self.create_email_groups()
+
     def before_insert(self):
         self.copy_team_members()
 
@@ -98,6 +103,26 @@ class FOSSChapterEvent(WebsiteGenerator):
         if self.has_value_changed("status"):
             self.update_published_status()
         self.set_route()
+
+    def on_trash(self):
+        self.delete_email_groups()
+
+    def create_email_groups(self):
+        for group in [
+            "Event Participants",
+            "CFP Proposers",
+            "Accepted Proposers",
+            "Rejected Proposers",
+        ]:
+            create_email_group(event_id=self.name, type=group)
+
+    def delete_email_groups(self):
+        groups = frappe.db.get_all("Email Group", {"event": self.name}, pluck="name")
+        for group in groups:
+            frappe.delete_doc(
+                "Email Group",
+                group,
+            )
 
     def copy_team_members(self):
         if not self.chapter:

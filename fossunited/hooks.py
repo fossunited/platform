@@ -84,3 +84,15 @@ website_redirects = [
     {"source": r"c/(.+)/cfp/all", "target": r"/dashboard/cfp/\1"},
     {"source": r"c/(.+)/schedule", "target": r"/dashboard/schedule/\1"},
 ]
+
+# Installation
+# ----------------
+after_install = "fossunited.install.after_install"
+
+# Uninstallation
+# ----------------
+before_uninstall = "fossunited.uninstall.before_uninstall"
+
+override_doctype_class = {
+    "Newsletter": "fossunited.overrides.newsletter_extend.NewsletterExtend",
+}

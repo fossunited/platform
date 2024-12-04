@@ -55,6 +55,10 @@ const event = createResource({
           label: 'Volunteers',
           route: `/event/${route.params.id}/volunteers`,
         },
+        {
+          label: 'Mailing',
+          route: `/event/${route.params.id}/mailing`,
+        },
       ],
     }
 

@@ -52,7 +52,6 @@
 </template>
 <script setup>
 import { FormControl, createResource, Badge, createDocumentResource } from 'frappe-ui'
-import Button from 'frappe-ui/src/components/Button.vue'
 import { ref, defineProps, onMounted, inject } from 'vue'
 import { toast } from 'vue-sonner'
 import { redirectRoute } from '@/helpers/utils'

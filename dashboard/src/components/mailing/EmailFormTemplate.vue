@@ -44,35 +44,13 @@
       </div>
       <div class="space-y-3">
         <h5 class="text-base font-semibold mb-1">Content</h5>
-        <FormControl
-          v-model="data.content_type"
-          :disabled="data.status == 'Sent'"
-          label="Content Type"
-          type="select"
-          :options="['Rich Text', 'Markdown', 'HTML']"
-        />
         <TextEditor
-          v-if="data.content_type == 'Rich Text'"
           :disabled="data.status == 'Sent'"
           class="col-span-2 mt-2"
           label="Message"
           :model-value="data.message"
           @update:model-value="($event) => (data.message = $event)"
         />
-        <div v-else>
-          <label class="text-sm text-gray-600">Message</label>
-          <CodeEditor
-            v-if="data.content_type == 'Markdown'"
-            v-model="data.message_md"
-            :disabled="data.status == 'Sent'"
-            lang="md"
-          />
-          <CodeEditor
-            v-if="data.content_type == 'HTML'"
-            v-model="data.message_html"
-            :disabled="data.status == 'Sent'"
-          />
-        </div>
       </div>
       <div class="space-y-3">
         <h5 class="text-base font-semibold mb-1">Attachments</h5>
@@ -112,7 +90,6 @@
 </template>
 <script setup>
 import TextEditor from '@/components/TextEditor.vue'
-import CodeEditor from '@/components/ui/CodeEditor.vue'
 import { FormControl, FileUploader, FeatherIcon, createResource, Autocomplete } from 'frappe-ui'
 import { reactive, ref, watch } from 'vue'
 import { createAbsoluteUrlFromRoute } from '@/helpers/utils'

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <ListView
     class="mt-2"
@@ -27,7 +26,7 @@
     }"
     row-key="name"
   >
-    <template #cell="{ item, row, column }">
+    <template #cell="{ item, column }">
       <template v-if="column.key == 'status'">
         <Badge :theme="getBadgeTheme(item)">{{ item }}</Badge>
       </template>

@@ -28,9 +28,6 @@ def create_email_group(
     """
     _event = frappe.get_doc(EVENT, event_id)
 
-    # if not check_if_chapter_member(_event.chapter, session_user):
-    #     raise frappe.PermissionError("You are not authorised for this action.")
-
     if frappe.db.exists(
         "Email Group", {"event": event_id, "chapter": _event.chapter, "group_type": type}
     ):

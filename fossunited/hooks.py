@@ -94,5 +94,5 @@ after_install = "fossunited.install.after_install"
 before_uninstall = "fossunited.uninstall.before_uninstall"
 
 override_doctype_class = {
-    "Newsletter": "fossunited.overrides.newsletter_master.NewsletterMaster",
+    "Newsletter": "fossunited.overrides.newsletter_extend.NewsletterExtend",
 }

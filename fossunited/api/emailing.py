@@ -6,7 +6,7 @@ from fossunited.api.chapter import check_if_chapter_member
 from fossunited.doctype_ids import EVENT
 
 EMAIL_GROUP_TYPES = Literal[
-    "Chapter Master",
+    "Chapter Main",
     "Event Participants",
     "CFP Proposers",
     "Accepted Proposers",

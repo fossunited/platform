@@ -1,0 +1,21 @@
+import frappe
+from frappe.email.doctype.newsletter.newsletter import Newsletter
+from frappe.utils import random_string
+
+
+class NewsletterExtend(Newsletter):
+    def autoname(self):
+        unique_code = self.generate_unique_newsletter_code()
+        self.name = unique_code
+
+    def generate_unique_newsletter_code(self):
+        """
+        Generate a unique code for the newsletter.
+
+        Returns:
+            str: A unique 10-character lowercase string
+        """
+        code = random_string(10).lower()
+        while frappe.db.exists("Newsletter", code):
+            code = random_string(10).lower()
+        return code

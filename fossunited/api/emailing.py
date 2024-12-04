@@ -33,7 +33,7 @@ def create_email_group(
     ):
         raise frappe.ValidationError("Email Group already exists for this event")
 
-    group_title = f"{type}-{_event.event_name}-{_event.chapter_name}-{event_id}"
+    group_title = f"{type}-{event_id}"
     _group_title = group_title[:140]
     group = frappe.get_doc(
         {

@@ -96,3 +96,7 @@ before_uninstall = "fossunited.uninstall.before_uninstall"
 override_doctype_class = {
     "Newsletter": "fossunited.overrides.newsletter_extend.NewsletterExtend",
 }
+
+# Migration
+# ----------------
+after_migrate = "fossunited.migrate.after_migrate"

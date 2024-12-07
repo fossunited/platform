@@ -1,0 +1,341 @@
+from datetime import datetime, timedelta
+
+import frappe
+from faker import Faker
+
+from fossunited.doctype_ids import (
+    CHAPTER,
+    CITY_COMMUNITY,
+    EVENT,
+    EVENT_RSVP,
+    RSVP_RESPONSE,
+    USER_PROFILE,
+)
+
+fake = Faker()
+
+
+def generate_test_chapter(**kwargs):
+    """
+    Generate a test chapter with flexible configuration options.
+
+    Args:
+        chapter_name (str, optional): Name of the chapter. Defaults to a random text.
+        chapter_type (str, optional): Type of chapter. Defaults to CITY_COMMUNITY.
+        city (str, optional): City of the chapter. Defaults to "Bangalore".
+        state (str, optional): State of the chapter. Defaults to "Karnataka".
+        lead_email (str, optional): Email of the chapter lead. Defaults to "test1@example.com".
+        members (List[str], optional): List of member emails to add to the chapter.
+        **kwargs : Any additional arguments, such as for social media links
+
+    Returns:
+        chapter doc: Created chapter document
+
+    Raises:
+        ValueError: If lead_email or member emails are invalid
+        Exception: For any unexpected errors during chapter creation
+
+    Example:
+    ```
+        chapter = generate_test_chapter(
+            chapter_name="Python Developers Chapter",
+            city="Mumbai",
+            lead_email="lead@example.com",
+            members=["member1@example.com", "member2@example.com"]
+        )
+    ```
+    """
+    try:
+        # Validate and set default values
+        chapter_data = {
+            "doctype": CHAPTER,
+            "chapter_name": kwargs.get("chapter_name", fake.text(max_nb_chars=40).strip()),
+            "chapter_type": kwargs.get("chapter_type", CITY_COMMUNITY),
+            "slug": kwargs.get("slug", fake.slug().replace("-", "_")),
+            "city": kwargs.get("city", "Bangalore"),
+            "state": kwargs.get("state", "Karnataka"),
+            "country": "India",
+            "email": kwargs.get("email", fake.email()),
+            "facebook": kwargs.get("facebook", fake.url()),
+            "instagram": kwargs.get("instagram", fake.url()),
+            "linkedin": kwargs.get("linkedin", fake.url()),
+            "mastodon": kwargs.get("mastodon", fake.url()),
+            "matrix": kwargs.get("matrix", fake.url()),
+            "x": kwargs.get("x", fake.url()),
+        }
+
+        # Create chapter document
+        chapter = frappe.get_doc(chapter_data)
+        chapter.insert()
+
+        if not frappe.db.exists("Role", "Chapter Team Member"):
+            frappe.get_doc({"doctype": "Role", "role_name": "Chapter Team Member"}).insert(
+                ignore_permissions=True
+            )
+        if not frappe.db.exists("Role", "Chapter Lead"):
+            frappe.get_doc({"doctype": "Role", "role_name": "Chapter Lead"}).insert(
+                ignore_permissions=True
+            )
+
+        # Handle chapter lead
+        lead_email = kwargs.get("lead_email", "test1@example.com")
+        try:
+            lead_profile = frappe.db.get_value(USER_PROFILE, {"user": lead_email}, "name")
+        except frappe.DoesNotExistError:
+            frappe.log_error(f"Lead profile not found for email: {lead_email}")
+            raise ValueError(f"Invalid lead email: {lead_email}")
+
+        # Add lead to chapter members
+        chapter.append(
+            "chapter_members",
+            {
+                "chapter_member": lead_profile,
+                "role": "Lead",
+            },
+        )
+
+        # Add additional members
+        members = kwargs.get("members", [])
+        for member in members:
+            try:
+                profile = frappe.db.get_value(USER_PROFILE, {"user": member}, "name")
+                if not profile:
+                    frappe.log_error(f"Profile not found for member: {member}")
+                    continue  # Skip invalid members
+
+                chapter.append(
+                    "chapter_members",
+                    {
+                        "chapter_member": profile,
+                        "role": "Core Team Member",
+                    },
+                )
+            except Exception as member_error:
+                frappe.log_error(f"Error processing member {member}: {str(member_error)}")
+
+        # Save and reload chapter
+        chapter.save()
+        chapter.reload()
+
+        return chapter
+
+    except Exception:
+        # Re-raise the exception to maintain original error handling
+        raise
+
+
+def generate_test_event(chapter: dict = None, **kwargs):
+    """
+    Generate a test event with flexible configuration options.
+
+    Args:
+        chapter (dict, optional): chapter to associate the event with.
+                If not provided, a new test chapter will be generated.
+        event_name (str, optional): Name of the event. Defaults to random text.
+        event_type (str, optional): Type of event. Defaults to "FOSS Meetup".
+        start_date (datetime, optional): Event start date. Defaults to today.
+        end_date (datetime, optional): Event end date. Defaults to next day.
+        status (str, optional): Event status. Defaults to "Approved".
+
+    Returns:
+        event doc: Created event document
+
+    Raises:
+        ValueError: If chapter is invalid or event creation fails
+        Exception: For any unexpected errors during event generation
+
+    Example:
+    ```
+        event = generate_test_event(
+            event_name="Python Developers Meetup",
+            start_date=datetime(2024, 6, 1),
+            end_date=datetime(2024, 6, 2),
+            event_type="Conference"
+        )
+    ```
+    """
+    try:
+        # Validate and get or generate chapter
+        if not chapter:
+            try:
+                chapter = generate_test_chapter(**kwargs)
+            except ImportError:
+                raise ValueError("Unable to generate test chapter")
+
+        is_paid_event = kwargs.get("is_paid_event", 0)
+        tiers = []
+        if is_paid_event:
+            tiers = kwargs.get(
+                "tiers",
+                [
+                    {
+                        "enabled": 1,
+                        "title": "General",
+                        "price": 100,
+                    }
+                ],
+            )
+
+        # Prepare event data with flexible defaults
+        event_data = {
+            "doctype": EVENT,
+            "chapter": chapter.name,
+            "event_name": kwargs.get("event_name", fake.text(max_nb_chars=20).strip()),
+            "event_permalink": kwargs.get("event_permalink", fake.slug().replace("-", "_")),
+            "status": kwargs.get("status", "Live"),
+            "event_type": kwargs.get("event_type", "FOSS Meetup"),
+            "event_start_date": kwargs.get("start_date", datetime.today() + timedelta(days=1)),
+            "event_end_date": kwargs.get("end_date", datetime.today() + timedelta(days=2)),
+            "event_description": kwargs.get(
+                "description", f"Test event for {chapter.chapter_name}"
+            ),
+            "is_paid_event": is_paid_event,
+            "tickets_status": kwargs.get("tickets_status", "Closed"),
+            "tiers": tiers,
+        }
+
+        # Add any additional fields passed in kwargs
+        for key, value in kwargs.items():
+            if key not in event_data and key not in [
+                "chapter",
+                "event_name",
+                "start_date",
+                "end_date",
+                "description",
+            ]:
+                event_data[key] = value
+
+        # Create and insert event
+        event = frappe.get_doc(event_data)
+        event.insert()
+        event.reload()
+
+        return event
+
+    except Exception:
+        # Re-raise the exception to maintain original error handling
+        raise
+
+
+def generate_rsvp_form(event: str = None, **kwargs):
+    """
+    Generate a test RSVP form with flexible configuration options.
+
+    Args:
+        event (str or dict, optional): Linked event for the RSVP form.
+                If not provided, a new test event will be generated.
+        allow_edit (bool, optional): Whether RSVP can be edited. Defaults to True.
+        max_rsvp_count (int, optional): Maximum number of RSVPs. Defaults to 100.
+        rsvp_description (str, optional): Description for the RSVP form.
+        custom_questions (list, optional): List of custom questions for the RSVP form.
+        **kwargs: Additional arguments to be passed to event generation if needed.
+
+    Returns:
+        rsvp doc: Created RSVP document
+
+    Raises:
+        ValueError: If event is invalid or RSVP creation fails
+        Exception: For any unexpected errors during RSVP generation
+
+    Example:
+    ```
+        rsvp = generate_test_rsvp(
+            max_rsvp_count=50,
+            rsvp_description="Annual Developer Meetup RSVP",
+            custom_questions=[
+                {"question": "What is your preferred programming language?", "type": "Data"}
+            ]
+        )
+    ```
+    """
+    try:
+        # Validate and get or generate event
+        if not event:
+            try:
+                event = generate_test_event(**kwargs)
+            except Exception as e:
+                raise ValueError(f"Unable to generate test event: {str(e)}")
+
+        # If event is a dictionary, use its name, otherwise assume it's already a name
+        event_name = event.name if hasattr(event, "name") else event
+
+        # Prepare RSVP data with flexible defaults
+        rsvp_data = {
+            "doctype": EVENT_RSVP,
+            "allow_edit": kwargs.get("allow_edit", 1),  # Default to allowing edits
+            "event": event_name,
+            "max_rsvp_count": kwargs.get("max_rsvp_count", 100),
+            "rsvp_description": kwargs.get(
+                "rsvp_description", fake.text(max_nb_chars=200).strip()
+            ),
+            "custom_questions": kwargs.get("custom_questions", []),
+        }
+
+        # Add any additional fields passed in kwargs
+        for key, value in kwargs.items():
+            if key not in rsvp_data and key not in ["event", "custom_questions"]:
+                rsvp_data[key] = value
+
+        # Create and insert RSVP
+        rsvp = frappe.get_doc(rsvp_data)
+        rsvp.insert()
+        rsvp.reload()
+
+        return rsvp
+
+    except Exception as e:
+        frappe.log_error(f"Error generating RSVP: {str(e)}")
+        raise
+
+
+def generate_rsvp_submission(linked_rsvp: str, **kwargs):
+    """
+        Generate a test RSVP submission with flexible configuration options.
+
+    Args:
+        linked_rsvp (str): The name of the RSVP form to link this submission to.
+        submitted_by (str, optional): User who submitted the RSVP.
+        name (str, optional): Name of the person submitting RSVP.
+                               Defaults to a fake generated name.
+        im_a (str, optional): Describes the submitter's background.
+                               Defaults to "Professional".
+        email (str, optional): Email of the submitter.
+                               Defaults to a fake generated email.
+        confirm_attendance (int, optional): Attendance confirmation status.
+                                            Defaults to 1 (confirmed).
+        custom_answers (list, optional): Answers to custom RSVP questions.
+        **kwargs: Additional arguments to be passed to the RSVP submission.
+
+    Returns:
+        frappe.Document: Created RSVP submission document
+
+    Raises:
+        ValueError: If the linked RSVP form is invalid
+        Exception: For any unexpected errors during submission generation
+
+    """
+
+    try:
+        submission_data = {
+            "doctype": RSVP_RESPONSE,
+            "linked_rsvp": linked_rsvp,
+            "submitted_by": kwargs.get("submitted_by", ""),
+            "name1": kwargs.get("name", fake.name()),
+            "im_a": kwargs.get("im_a", "Professional"),
+            "email": kwargs.get("email", fake.email()),
+            "confirm_attendance": kwargs.get("confirm_attendance", 1),
+            "custom_answers": kwargs.get("custom_answers", []),
+        }
+
+        for key, value in kwargs.items():
+            if key not in submission_data and key not in ["custom_answers"]:
+                submission_data[key] = value
+
+        submission = frappe.get_doc(submission_data)
+        submission.insert()
+        submission.reload()
+
+        return submission
+
+    except Exception:
+        raise

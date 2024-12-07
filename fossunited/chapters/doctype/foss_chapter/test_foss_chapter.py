@@ -1,54 +1,19 @@
-# Copyright (c) 2023, Frappe x FOSSUnited and Contributors
-# See license.txt
-
 import frappe
 from faker import Faker
 from frappe.tests import IntegrationTestCase
 
-from fossunited.doctype_ids import CHAPTER, CITY_COMMUNITY, USER_PROFILE
+from fossunited.doctype_ids import CHAPTER, USER_PROFILE
+from fossunited.tests.utils import generate_test_chapter
 
 fake = Faker()
 
 
 class TestFOSSChapter(IntegrationTestCase):
     def setUp(self):
-        chapter = frappe.get_doc(
-            {
-                "doctype": CHAPTER,
-                "chapter_name": fake.text(max_nb_chars=40),
-                "chapter_type": CITY_COMMUNITY,
-                "slug": fake.slug(),
-                "city": "Pune",
-                "country": "India",
-                "email": fake.email(),
-                "facebook": fake.url(),
-                "instagram": fake.url(),
-                "linkedin": fake.url(),
-                "mastodon": fake.url(),
-                "matrix": fake.url(),
-                "state": "Maharashtra",
-                "x": fake.url(),
-            }
-        )
-        chapter.insert()
-
-        if not frappe.db.exists("Role", "Chapter Team Member"):
-            frappe.get_doc({"doctype": "Role", "role_name": "Chapter Team Member"}).insert(
-                ignore_permissions=True
-            )
-        if not frappe.db.exists("Role", "Chapter Lead"):
-            frappe.get_doc({"doctype": "Role", "role_name": "Chapter Lead"}).insert(
-                ignore_permissions=True
-            )
-
-        lead_profile = frappe.get_doc(USER_PROFILE, {"user": "test@example.com"})
-        chapter.append("chapter_members", {"chapter_member": lead_profile.name, "role": "Lead"})
-        chapter.save()
-
-        self.chapter = chapter
+        self.chapter = generate_test_chapter()
 
     def tearDown(self):
-        frappe.delete_doc(CHAPTER, self.chapter.name)
+        frappe.delete_doc(CHAPTER, self.chapter.name, force=1)
 
     def test_role_assignment_on_create(self):
         # Given a chapter
@@ -120,24 +85,6 @@ class TestFOSSChapter(IntegrationTestCase):
         chapter = self.chapter
 
         # When a new chapter is created with the same slug
-        new_chapter = frappe.get_doc(
-            {
-                "doctype": CHAPTER,
-                "chapter_name": "Test Chapter",
-                "chapter_type": CITY_COMMUNITY,
-                "slug": chapter.slug,
-                "city": "Mumbai",
-                "country": "India",
-                "email": fake.email(),
-                "facebook": fake.url(),
-                "instagram": fake.url(),
-                "linkedin": fake.url(),
-                "mastodon": fake.url(),
-                "matrix": fake.url(),
-                "state": "Maharashtra",
-                "x": fake.url(),
-            }
-        )
-
+        # Then an exception should be raised
         with self.assertRaises(frappe.UniqueValidationError):
-            new_chapter.insert()
+            generate_test_chapter(slug=chapter.slug)

@@ -19,6 +19,7 @@ class TestFOSSUserProfile(IntegrationTestCase):
         # Given a user that does not have a FOSSUnitedProfile
         inserted_username = fake.user_name()
         inserted_name = fake.name()
+        inserted_email = fake.email()
         profile_exists = frappe.db.exists(USER_PROFILE, {"username": inserted_username})
         self.assertFalse(profile_exists)
 
@@ -29,12 +30,12 @@ class TestFOSSUserProfile(IntegrationTestCase):
             {
                 "doctype": "User",
                 # Create a unique email address as it is used as a database key
-                "email": str(uuid.uuid4()) + "@fossunited.org",
+                "email": inserted_email,
                 "first_name": inserted_name.split(" ")[0],
-                "name": inserted_name,
                 "full_name": inserted_name,
             },
         ).insert()
+        frappe_user.reload()
 
         # Then verify that the Profile has been stored as expected
         profile_exists = frappe.db.exists(USER_PROFILE, {"user": frappe_user.name})

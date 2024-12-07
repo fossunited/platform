@@ -1,41 +1,24 @@
-# Copyright (c) 2024, Frappe x FOSSUnited and Contributors
-# See license.txt
-
-from datetime import datetime, timedelta
-
 import frappe
 from faker import Faker
 from frappe.tests import IntegrationTestCase
 
-from fossunited.doctype_ids import CONFERENCE, EVENT, EVENT_TICKET, TICKET_TRANSFER
+from fossunited.doctype_ids import CHAPTER, EVENT, EVENT_TICKET, TICKET_TRANSFER
+from fossunited.tests.utils import generate_test_chapter, generate_test_event
+
+fake = Faker()
 
 
 class TestFOSSEventTicketTransfer(IntegrationTestCase):
     def setUp(self):
-        fake = Faker()
-
-        event = frappe.get_doc(
-            {
-                "doctype": EVENT,
-                "event_name": fake.text(max_nb_chars=20),
-                "event_permalink": fake.slug(3).replace("-", "_"),
-                "status": "Approved",
-                "event_type": CONFERENCE,
-                "event_start_date": datetime.today(),
-                "event_end_date": datetime.today() + timedelta(1),
-                "event_description": "testing",
-            }
-        )
-        event.insert()
-
-        self.event = event
+        self.chapter = generate_test_chapter()
+        self.event = generate_test_event(chapter=self.chapter)
 
     def tearDown(self):
+        frappe.set_user("Administrator")
+        frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
         frappe.delete_doc(EVENT, self.event.name, force=True)
 
     def test_ticket_transfer(self):
-        fake = Faker()
-
         sender = {
             "full_name": fake.name(),
             "email": fake.email(),
@@ -97,7 +80,6 @@ class TestFOSSEventTicketTransfer(IntegrationTestCase):
         self.assertTrue(new_ticket_exists)
 
     def test_status_pending_on_create(self):
-        fake = Faker()
         # Given an event and a ticket linked to the event
         # With a ticket created for a user, try to transfer this ticket to another user while
         # passing "Completed" as the status
@@ -125,7 +107,6 @@ class TestFOSSEventTicketTransfer(IntegrationTestCase):
             transfer.insert()
 
     def test_transfer_already_transferred_ticket(self):
-        fake = Faker()
         # Given a ticket, transfer it to another user
         sender = {
             "full_name": fake.name(),

@@ -96,5 +96,5 @@ class TestFOSSUserProfile(IntegrationTestCase):
 
         self.assertTrue(profile.route == f"u/{profile.username}")
 
-        profile.delete(force=1)
-        test_user.delete(force=1)
+        profile.delete(force=True)
+        test_user.delete(force=True)

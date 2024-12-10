@@ -23,9 +23,9 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
 
     def tearDown(self):
         frappe.set_user("Administrator")
-        frappe.delete_doc(CHAPTER, self.chapter.name, force=1)
-        frappe.delete_doc(EVENT, self.event.name, force=1)
-        frappe.delete_doc(EVENT_RSVP, self.rsvp.name, force=1)
+        frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
+        frappe.delete_doc(EVENT, self.event.name, force=True)
+        frappe.delete_doc(EVENT_RSVP, self.rsvp.name, force=True)
 
     def test_unpublish_on_max_count(self):
         # Given an RSVP form with max count

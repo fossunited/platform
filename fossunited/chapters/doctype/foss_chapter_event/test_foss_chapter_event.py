@@ -18,8 +18,8 @@ class TestFOSSChapterEvent(IntegrationTestCase):
         )
 
     def tearDown(self):
-        frappe.delete_doc(CHAPTER, self.chapter.name, force=1)
-        frappe.delete_doc(EVENT, self.event.name, force=1)
+        frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
+        frappe.delete_doc(EVENT, self.event.name, force=True)
 
     def test_members_are_added_to_event(self):
         # Given a chapter

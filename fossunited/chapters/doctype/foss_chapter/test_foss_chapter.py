@@ -13,7 +13,7 @@ class TestFOSSChapter(IntegrationTestCase):
         self.chapter = insert_test_chapter()
 
     def tearDown(self):
-        frappe.delete_doc(CHAPTER, self.chapter.name, force=1)
+        frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
 
     def test_role_assignment_on_create(self):
         # Given a chapter

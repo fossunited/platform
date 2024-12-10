@@ -212,7 +212,7 @@ class FOSSChapter(WebsiteGenerator):
                 "event_location",
             ],
             order_by="event_end_date desc",
-            page_length=6,
+            page_length=999,
         )
 
     def get_members(self):

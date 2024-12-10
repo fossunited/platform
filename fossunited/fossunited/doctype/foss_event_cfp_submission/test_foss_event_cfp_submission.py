@@ -8,7 +8,7 @@ from fossunited.doctype_ids import (
     EVENT_CFP,
     PROPOSAL,
 )
-from fossunited.tests.utils import generate_test_chapter, generate_test_event
+from fossunited.tests.utils import insert_test_chapter, insert_test_event
 
 fake = Faker()
 
@@ -17,8 +17,8 @@ LEAD = "test1@example.com"
 
 class TestFOSSEventCFPSubmission(IntegrationTestCase):
     def setUp(self):
-        self.chapter = generate_test_chapter(lead_email=LEAD)
-        self.event = generate_test_event(chapter=self.chapter)
+        self.chapter = insert_test_chapter(lead_email=LEAD)
+        self.event = insert_test_event(chapter=self.chapter)
 
         cfp = frappe.get_doc(
             {

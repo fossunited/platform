@@ -3,15 +3,15 @@ from faker import Faker
 from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import CHAPTER, EVENT, EVENT_TICKET, TICKET_TRANSFER
-from fossunited.tests.utils import generate_test_chapter, generate_test_event
+from fossunited.tests.utils import insert_test_chapter, insert_test_event
 
 fake = Faker()
 
 
 class TestFOSSEventTicketTransfer(IntegrationTestCase):
     def setUp(self):
-        self.chapter = generate_test_chapter()
-        self.event = generate_test_event(chapter=self.chapter)
+        self.chapter = insert_test_chapter()
+        self.event = insert_test_event(chapter=self.chapter)
 
     def tearDown(self):
         frappe.set_user("Administrator")

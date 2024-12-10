@@ -4,14 +4,14 @@ from frappe.tests import IntegrationTestCase
 
 from fossunited.api.checkins import checkin_attendee
 from fossunited.doctype_ids import CHAPTER, EVENT, EVENT_TICKET
-from fossunited.tests.utils import generate_test_chapter, generate_test_event
+from fossunited.tests.utils import insert_test_chapter, insert_test_event
 
 
 class TestFOSSEventTicket(IntegrationTestCase):
     def setUp(self):
         self.lead_email = "test1@example.com"
-        self.chapter = generate_test_chapter(lead_email=self.lead_email)
-        self.event = generate_test_event(
+        self.chapter = insert_test_chapter(lead_email=self.lead_email)
+        self.event = insert_test_event(
             chapter=self.chapter, is_paid_event=True, tickets_status="Live"
         )
 

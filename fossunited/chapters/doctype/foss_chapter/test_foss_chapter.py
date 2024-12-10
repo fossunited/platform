@@ -3,14 +3,14 @@ from faker import Faker
 from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import CHAPTER, USER_PROFILE
-from fossunited.tests.utils import generate_test_chapter
+from fossunited.tests.utils import insert_test_chapter
 
 fake = Faker()
 
 
 class TestFOSSChapter(IntegrationTestCase):
     def setUp(self):
-        self.chapter = generate_test_chapter()
+        self.chapter = insert_test_chapter()
 
     def tearDown(self):
         frappe.delete_doc(CHAPTER, self.chapter.name, force=1)
@@ -87,4 +87,4 @@ class TestFOSSChapter(IntegrationTestCase):
         # When a new chapter is created with the same slug
         # Then an exception should be raised
         with self.assertRaises(frappe.UniqueValidationError):
-            generate_test_chapter(slug=chapter.slug)
+            insert_test_chapter(slug=chapter.slug)

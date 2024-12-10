@@ -15,7 +15,7 @@ from fossunited.doctype_ids import (
 fake = Faker()
 
 
-def generate_test_chapter(**kwargs):
+def insert_test_chapter(**kwargs):
     """
     Generate a test chapter with flexible configuration options.
 
@@ -37,7 +37,7 @@ def generate_test_chapter(**kwargs):
 
     Example:
     ```
-        chapter = generate_test_chapter(
+        chapter = insert_test_chapter(
             chapter_name="Python Developers Chapter",
             city="Mumbai",
             lead_email="lead@example.com",
@@ -124,7 +124,7 @@ def generate_test_chapter(**kwargs):
         raise
 
 
-def generate_test_event(chapter: dict = None, **kwargs):
+def insert_test_event(chapter: dict, **kwargs):
     """
     Generate a test event with flexible configuration options.
 
@@ -146,7 +146,7 @@ def generate_test_event(chapter: dict = None, **kwargs):
 
     Example:
     ```
-        event = generate_test_event(
+        event = insert_test_event(
             event_name="Python Developers Meetup",
             start_date=datetime(2024, 6, 1),
             end_date=datetime(2024, 6, 2),
@@ -155,13 +155,6 @@ def generate_test_event(chapter: dict = None, **kwargs):
     ```
     """
     try:
-        # Validate and get or generate chapter
-        if not chapter:
-            try:
-                chapter = generate_test_chapter(**kwargs)
-            except ImportError:
-                raise ValueError("Unable to generate test chapter")
-
         is_paid_event = kwargs.get("is_paid_event", 0)
         tiers = []
         if is_paid_event:
@@ -217,7 +210,7 @@ def generate_test_event(chapter: dict = None, **kwargs):
         raise
 
 
-def generate_rsvp_form(event: str = None, **kwargs):
+def insert_rsvp_form(event: str, **kwargs):
     """
     Generate a test RSVP form with flexible configuration options.
 
@@ -249,13 +242,6 @@ def generate_rsvp_form(event: str = None, **kwargs):
     ```
     """
     try:
-        # Validate and get or generate event
-        if not event:
-            try:
-                event = generate_test_event(**kwargs)
-            except Exception as e:
-                raise ValueError(f"Unable to generate test event: {str(e)}")
-
         # If event is a dictionary, use its name, otherwise assume it's already a name
         event_name = event.name if hasattr(event, "name") else event
 
@@ -288,7 +274,7 @@ def generate_rsvp_form(event: str = None, **kwargs):
         raise
 
 
-def generate_rsvp_submission(linked_rsvp: str, **kwargs):
+def insert_rsvp_submission(linked_rsvp: str, **kwargs):
     """
         Generate a test RSVP submission with flexible configuration options.
 

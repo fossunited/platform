@@ -17,6 +17,7 @@ fake = Faker()
 
 class TestEmailing(IntegrationTestCase):
     def setUp(self):
+        self.email_account = self.setup_email_account()
         self.lead_email = "test1@example.com"
         self.chapter = insert_test_chapter(lead_email=self.lead_email)
         self.event = insert_test_event(chapter=self.chapter)
@@ -25,8 +26,16 @@ class TestEmailing(IntegrationTestCase):
 
     def tearDown(self):
         frappe.set_user("Administrator")
+        frappe.db.set_value("Email Account", self.email_account.name, "default_outgoing", 0)
         frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
         frappe.delete_doc(EVENT, self.event.name, force=True)
+
+    def setup_email_account(self):
+        email_account = frappe.get_doc("Email Account", "_Test Email Account 1")
+        email_account.default_outgoing = 1
+        email_account.save()
+
+        return email_account
 
     def setup_campaign(self):
         email_group = frappe.get_doc(

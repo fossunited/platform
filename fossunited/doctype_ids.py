@@ -48,6 +48,5 @@ RAZORPAY_WEBHOOK_LOG = "Razorpay Webhook Log"
 
 # Emailing
 CAMPAIGN = "Newsletter"
-NEWSLETTER = "Newsletter"
 EMAIL_GROUP = "Email Group"
 EMAIL_MEMBER = "Email Group Member"

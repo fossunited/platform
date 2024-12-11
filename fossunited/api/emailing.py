@@ -3,7 +3,7 @@ from typing import Literal
 import frappe
 
 from fossunited.api.chapter import check_if_chapter_member
-from fossunited.doctype_ids import EVENT
+from fossunited.doctype_ids import CAMPAIGN, CHAPTER, EMAIL_GROUP, EMAIL_MEMBER, EVENT
 
 EMAIL_GROUP_TYPES = Literal[
     "Chapter Main",
@@ -29,7 +29,7 @@ def create_email_group(
     _event = frappe.get_doc(EVENT, event_id)
 
     if frappe.db.exists(
-        "Email Group", {"event": event_id, "chapter": _event.chapter, "group_type": type}
+        EMAIL_GROUP, {"event": event_id, "chapter": _event.chapter, "group_type": type}
     ):
         raise frappe.ValidationError("Email Group already exists for this event")
 
@@ -37,7 +37,7 @@ def create_email_group(
     _group_title = group_title[:140]
     group = frappe.get_doc(
         {
-            "doctype": "Email Group",
+            "doctype": EMAIL_GROUP,
             "title": _group_title,
             "chapter": _event.chapter,
             "event": event_id,
@@ -63,15 +63,13 @@ def add_to_email_group(email_group: str, email: str):
         email: email to be added to the group
     """
 
-    if not frappe.db.exists("Email Group", email_group):
+    if not frappe.db.exists(EMAIL_GROUP, email_group):
         frappe.throw("This email group does not exist", frappe.DoesNotExistError)
 
-    if frappe.db.exists("Email Group Member", {"email_group": email_group, "email": email}):
+    if frappe.db.exists(EMAIL_MEMBER, {"email_group": email_group, "email": email}):
         frappe.throw("Email already a part of this email group", frappe.ValidationError)
 
-    member = frappe.get_doc(
-        {"doctype": "Email Group Member", "email_group": email_group, "email": email}
-    )
+    member = frappe.get_doc({"doctype": EMAIL_MEMBER, "email_group": email_group, "email": email})
     member.insert(ignore_permissions=True)
 
 
@@ -92,10 +90,10 @@ def create_newsletter_campaign(data: dict, event: str = None, chapter: str = Non
         frappe.throw("Atleast one of event or chapter is required")
 
     if not _chapter:
-        _chapter = frappe.db.get_value("FOSS Chapter Event", _event, ["chapter"])
+        _chapter = frappe.db.get_value(EVENT, _event, ["chapter"])
 
     chapter_dict = frappe.db.get_value(
-        "FOSS Chapter",
+        CHAPTER,
         _chapter,
         ["name", "chapter_type", "chapter_name", "email"],
         as_dict=1,
@@ -146,7 +144,7 @@ def get_newsletter_campaigns(event: str = None, chapter: str = None):
     """
 
     campaigns = frappe.db.get_all(
-        doctype="Newsletter",
+        doctype=CAMPAIGN,
         filters={"event": event, "chapter": chapter},
         fields=[
             "total_recipients",
@@ -189,7 +187,7 @@ def get_campaign_detail(id: str) -> dict:
         dict: with details of the campaign/newsletter
     """
 
-    campaign = frappe.db.get_value("Newsletter", id, ["*"], as_dict=1)
+    campaign = frappe.db.get_value(CAMPAIGN, id, ["*"], as_dict=1)
 
     # transform attachments
     attachments = frappe.db.get_all(
@@ -222,7 +220,7 @@ def get_campaign_detail(id: str) -> dict:
     _email_groups = []
     for item in email_groups:
         group = frappe.db.get_value(
-            "Email Group",
+            EMAIL_GROUP,
             item.email_group,
             ["*"],
             as_dict=1,
@@ -255,7 +253,7 @@ def get_email_groups(event: str = None, chapter: str = None) -> list:
     """
 
     email_groups = frappe.db.get_all(
-        "Email Group",
+        EMAIL_GROUP,
         {"chapter": chapter, "event": event},
         ["total_subscribers", "group_type", "name"],
     )
@@ -273,7 +271,7 @@ def update_campaign(campaign_id: str, data: dict):
         data: updated data
     """
 
-    campaign = frappe.get_doc("Newsletter", campaign_id)
+    campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     for key, val in data.items():
         if key == "status":
@@ -368,14 +366,14 @@ def send_campaign(campaign_id: str):
     args:
         campaign: id of campaign / newsletter doctype
     """
-    campaign = frappe.get_doc("Newsletter", campaign_id)
+    campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     if not campaign.chapter:
-        chapter = frappe.db.get_value("FOSS Chapter Event", campaign.event, ["chapter"])
+        chapter = frappe.db.get_value(EVENT, campaign.event, ["chapter"])
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1
@@ -393,14 +391,14 @@ def send_test_email(campaign_id: str, email: str):
         email: email to send test email to
     """
 
-    campaign = frappe.get_doc("Newsletter", campaign_id)
+    campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     if not campaign.chapter:
-        chapter = frappe.db.get_value("FOSS Chapter Event", campaign.event, ["chapter"])
+        chapter = frappe.db.get_value(EVENT, campaign.event, ["chapter"])
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1
@@ -431,14 +429,14 @@ def get_sending_status(campaign_id: str) -> dict:
         ```
     """
 
-    campaign = frappe.get_doc("Newsletter", campaign_id)
+    campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     if not campaign.chapter:
-        chapter = frappe.db.get_value("FOSS Chapter Event", campaign.event, ["chapter"])
+        chapter = frappe.db.get_value(EVENT, campaign.event, ["chapter"])
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1

@@ -27,6 +27,7 @@ def check_if_chapter_member(chapter: str, user: str = frappe.session.user) -> bo
                 "parent": chapter,
                 "parenttype": CHAPTER,
                 "chapter_member": profile,
+                "parentfield": "chapter_members",
             },
         )
     )

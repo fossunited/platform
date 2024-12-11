@@ -375,7 +375,7 @@ def send_campaign(campaign_id: str):
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1
@@ -400,7 +400,7 @@ def send_test_email(campaign_id: str, email: str):
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1
@@ -438,7 +438,7 @@ def get_sending_status(campaign_id: str) -> dict:
     else:
         chapter = campaign.chapter
 
-    if not check_if_chapter_member(chapter=chapter):
+    if not check_if_chapter_member(chapter, frappe.session.user):
         frappe.throw("You are not authorised for this action", frappe.PermissionError)
 
     campaign.flags.ignore_permissions = 1

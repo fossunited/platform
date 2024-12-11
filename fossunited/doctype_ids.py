@@ -44,3 +44,10 @@ TICKET_TRANSFER = "FOSS Event Ticket Transfer"
 RAZORPAY_PAYMENT = "Razorpay Payment"
 RAZORPAY_SETTINGS = "Razorpay Settings"
 RAZORPAY_WEBHOOK_LOG = "Razorpay Webhook Log"
+
+
+# Emailing
+CAMPAIGN = "Newsletter"
+NEWSLETTER = "Newsletter"
+EMAIL_GROUP = "Email Group"
+EMAIL_MEMBER = "Email Group Member"

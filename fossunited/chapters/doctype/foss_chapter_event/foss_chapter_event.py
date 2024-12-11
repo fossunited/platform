@@ -9,8 +9,10 @@ from frappe.website.website_generator import WebsiteGenerator
 from fossunited.api.emailing import create_email_group
 from fossunited.doctype_ids import (
     CHAPTER,
+    EMAIL_GROUP,
     EVENT_CFP,
     EVENT_RSVP,
+    NEWSLETTER,
     PROPOSAL,
     RSVP_RESPONSE,
     USER_PROFILE,
@@ -105,6 +107,7 @@ class FOSSChapterEvent(WebsiteGenerator):
         self.set_route()
 
     def on_trash(self):
+        self.delete_newsletters()
         self.delete_email_groups()
 
     def create_email_groups(self):
@@ -116,11 +119,19 @@ class FOSSChapterEvent(WebsiteGenerator):
         ]:
             create_email_group(event_id=self.name, type=group)
 
+    def delete_newsletters(self):
+        newsletters = frappe.db.get_all(NEWSLETTER, {"event": self.name}, pluck="name")
+        for newsletter in newsletters:
+            frappe.delete_doc(
+                NEWSLETTER,
+                newsletter,
+            )
+
     def delete_email_groups(self):
-        groups = frappe.db.get_all("Email Group", {"event": self.name}, pluck="name")
+        groups = frappe.db.get_all(EMAIL_GROUP, {"event": self.name}, pluck="name")
         for group in groups:
             frappe.delete_doc(
-                "Email Group",
+                EMAIL_GROUP,
                 group,
             )
 

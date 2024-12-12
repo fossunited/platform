@@ -37,7 +37,7 @@
           {% if doc.livestream_link %}
             <a
               id="livestream_link"
-              class="secondary-button hidden"
+              class="secondary-button"
               href="{{ doc.livestream_link }}"
               target="_blank"
             >
@@ -366,12 +366,6 @@
       let now_time = frappe.datetime.now_datetime()
       let start_time = frappe.datetime.get_datetime_as_string('{{doc.event_start_date}}')
       let end_time = frappe.datetime.get_datetime_as_string('{{doc.event_end_date}}')
-
-      if (frappe.datetime.now_date() < start_time.split(' ')[0]) {
-        return
-      } else {
-        $('#livestream_link').removeClass('hidden')
-      }
 
       if (now_time >= start_time && now_time <= end_time) {
         $('#livestream_link').text('Livestreaming now!')

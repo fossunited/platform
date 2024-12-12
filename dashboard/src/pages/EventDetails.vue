@@ -101,10 +101,6 @@
               value: 'Draft',
             },
             {
-              label: 'Approved',
-              value: 'Approved',
-            },
-            {
               label: 'Live',
               value: 'Live',
             },

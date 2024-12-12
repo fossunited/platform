@@ -367,14 +367,13 @@
       let start_time = frappe.datetime.get_datetime_as_string('{{doc.event_start_date}}')
       let end_time = frappe.datetime.get_datetime_as_string('{{doc.event_end_date}}')
 
-      if (frappe.datetime.now_date() < start_time.split(' ')[0] ){
+      if (frappe.datetime.now_date() < start_time.split(' ')[0]) {
         return
-      }
-      else {
+      } else {
         $('#livestream_link').removeClass('hidden')
       }
 
-      if ( now_time >= start_time && now_time <= end_time) {
+      if (now_time >= start_time && now_time <= end_time) {
         $('#livestream_link').text('Livestreaming now!')
       }
     }

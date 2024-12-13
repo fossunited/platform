@@ -34,6 +34,16 @@
           <h1 class="header--event-title">{{ doc.event_name }}</h1>
         </div>
         <div class="d-flex gap-4" id="header-cta">
+          {% if doc.livestream_link %}
+            <a
+              id="livestream_link"
+              class="secondary-button"
+              href="{{ doc.livestream_link }}"
+              target="_blank"
+            >
+              Watch Livestream
+            </a>
+          {% endif %}
           {% if doc.is_paid_event %}
             <button
               class="primary-button ticket-button"
@@ -325,6 +335,7 @@
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script>
     $(document).ready(function () {
+      handleLivestreamLabel()
       $('.schedule-grid').hide()
       $('.schedule-grid[data-date="{{schedule_dict.days[0]}}"]').show()
 
@@ -349,6 +360,16 @@
       $(event.target).addClass('dark-button active')
       $('.schedule-grid').hide()
       $('.schedule-grid[data-date="' + $(event.target).data('day') + '"]').show()
+    }
+
+    function handleLivestreamLabel() {
+      let now_time = frappe.datetime.now_datetime()
+      let start_time = frappe.datetime.get_datetime_as_string('{{doc.event_start_date}}')
+      let end_time = frappe.datetime.get_datetime_as_string('{{doc.event_end_date}}')
+
+      if (now_time >= start_time && now_time <= end_time) {
+        $('#livestream_link').text('Livestreaming now!')
+      }
     }
   </script>
 {% endblock %}

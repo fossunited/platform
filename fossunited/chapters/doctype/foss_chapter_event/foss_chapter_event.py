@@ -68,6 +68,7 @@ class FOSSChapterEvent(WebsiteGenerator):
         is_external_event: DF.Check
         is_paid_event: DF.Check
         is_published: DF.Check
+        livestream_link: DF.Data | None
         map_link: DF.Data | None
         must_attend: DF.Check
         paid_tshirts_available: DF.Check

@@ -161,6 +161,17 @@
       </div>
     </div>
     <div class="flex flex-col my-6">
+      <div class="font-semibold text-gray-800 border-b-2 pb-2">Livestreaming</div>
+      <div class="p-2 my-1 grid sm:grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+        <FormControl
+          v-model="event.doc.livestream_link"
+          type="url"
+          label="Livestream Link"
+          size="md"
+        />
+      </div>
+    </div>
+    <div class="flex flex-col my-6">
       <div class="font-semibold text-gray-800 border-b-2 pb-2">Location Details</div>
       <div class="p-2 my-1 grid sm:grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
         <FormControl

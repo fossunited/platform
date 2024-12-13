@@ -53,9 +53,15 @@
     {% from "fossunited/templates/macros/event_card.html" import event_card %}
     {%
       set events =
-      frappe.get_all("FOSS Chapter Event", fields=["*"], filters={"status": ["in", ["Approved",
-      "Live"]], "is_published": 1, "event_start_date": ['>=', frappe.utils.now()]}, page_length=8,
-      order_by='event_start_date')
+      frappe.get_all(
+        "FOSS Chapter Event",
+        fields=["*"],
+        filters={
+          "status": "Live",
+          "is_published": 1,
+          "event_start_date": ['>=', frappe.utils.now()],
+        }, page_length=8,
+        order_by='event_start_date'),
     %}
     <div class="events-grid-4">{% for event in events %}{{ event_card(event) }}{% endfor %}</div>
   </div>

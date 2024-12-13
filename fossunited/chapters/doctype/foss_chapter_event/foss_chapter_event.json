@@ -165,10 +165,11 @@
       "mandatory_depends_on": "eval:doc.is_external_event == 0"
     },
     {
+      "default": "Draft",
       "fieldname": "status",
       "fieldtype": "Select",
       "label": "Status",
-      "options": "\nDraft\nLive\nApproved\nConcluded\nCancelled",
+      "options": "Draft\nLive\nConcluded\nCancelled",
       "reqd": 1
     },
     {
@@ -483,22 +484,21 @@
   "is_published_field": "is_published",
   "links": [
     {
+      "group": "Participants",
+      "link_doctype": "FOSS Chapter Event Participant",
+      "link_fieldname": "event_name"
+    },
+    {
       "group": "RSVP",
       "link_doctype": "FOSS Event RSVP Submission",
-      "link_fieldname": "event"
+      "link_fieldname": "chapter"
     },
     {
-      "group": "Tickets",
       "link_doctype": "FOSS Event Ticket",
-      "link_fieldname": "event"
-    },
-    {
-      "group": "Emailing",
-      "link_doctype": "Email Group",
       "link_fieldname": "event"
     }
   ],
-  "modified": "2024-12-12 11:36:27.114146",
+  "modified": "2024-12-12 13:47:54.934609",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Chapter Event",

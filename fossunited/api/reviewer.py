@@ -159,7 +159,7 @@ def get_events_by_open_cfp() -> list:
     events = frappe.db.get_list(
         EVENT,
         filters={
-            "status": ["in", ["Approved", "Live"]],
+            "status": "Live",
             "is_published": 1,
             "event_start_date": [">=", frappe.utils.nowdate()],
         },

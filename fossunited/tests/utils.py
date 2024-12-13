@@ -135,7 +135,7 @@ def insert_test_event(chapter: dict, **kwargs):
         event_type (str, optional): Type of event. Defaults to "FOSS Meetup".
         start_date (datetime, optional): Event start date. Defaults to today.
         end_date (datetime, optional): Event end date. Defaults to next day.
-        status (str, optional): Event status. Defaults to "Approved".
+        status (str, optional): Event status. Defaults to "Live".
 
     Returns:
         event doc: Created event document

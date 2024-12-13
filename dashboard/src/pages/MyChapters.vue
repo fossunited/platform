@@ -59,7 +59,7 @@ const scheduled_events = createListResource({
   fields: ['name', 'event_name', 'event_type', 'chapter_name', 'status', 'event_start_date'],
   filters: {
     event_end_date: ['>', new Date()],
-    status: ['in', ['', 'Draft', 'Live']],
+    status: ['in', ['Draft', 'Live']],
   },
   orderBy: 'event_start_date',
 })

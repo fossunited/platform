@@ -100,3 +100,11 @@ override_doctype_class = {
 # Migration
 # ----------------
 after_migrate = "fossunited.migrate.after_migrate"
+
+# Scheduler Events
+# ----------------
+scheduler_events = {
+    "daily_long": [
+        "fossunited.scheduled_tasks.conclude_events",
+    ],
+}

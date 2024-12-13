@@ -48,6 +48,8 @@
     "event_start_date",
     "column_break_ae9v",
     "event_end_date",
+    "livestreaming_section",
+    "livestream_link",
     "event_information_section",
     "event_bio",
     "event_description",
@@ -464,6 +466,17 @@
       "fieldname": "proposal_page_description",
       "fieldtype": "Text",
       "label": "Proposal page description"
+    },
+    {
+      "fieldname": "livestreaming_section",
+      "fieldtype": "Section Break",
+      "label": "Livestreaming"
+    },
+    {
+      "fieldname": "livestream_link",
+      "fieldtype": "Data",
+      "label": "Livestream Link",
+      "options": "URL"
     }
   ],
   "has_web_view": 1,

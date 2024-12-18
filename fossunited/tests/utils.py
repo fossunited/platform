@@ -8,6 +8,9 @@ from fossunited.doctype_ids import (
     CITY_COMMUNITY,
     EVENT,
     EVENT_RSVP,
+    HACKATHON,
+    HACKATHON_PARTICIPANT,
+    HACKATHON_TEAM,
     RSVP_RESPONSE,
     USER_PROFILE,
 )
@@ -322,6 +325,126 @@ def insert_rsvp_submission(linked_rsvp: str, **kwargs):
         submission.reload()
 
         return submission
+
+    except Exception:
+        raise
+
+
+def insert_test_hackathon(**kwargs):
+    """
+    Generate a test hackathon with flexible configuration options.
+
+    Args:
+        permalink (str, optional): Permalink of the hackathon. Defaults to random slug.
+        hackathon_name (str, optional): Name of the hackathon. Defaults to random text.
+        hackathon_type (str, optional): Type of the hackathon. Defaults to "Hybrid".
+        start_date (datetime, optional): Hackathon start date. Defaults to tomorrow.
+        end_date (datetime, optional): Hackathon end date. Defaults to day after tomorrow.
+        hackathon_description(str, optional):Description of hackathon. Defaults to "Test Hackathon"
+        **kwargs: Additional arguments to be passed to the hackathon document.
+
+    Returns:
+        hackathon doc: Created hackathon document
+
+    Raises:
+        Exception: For any unexpected errors during hackathon generation
+    """
+    try:
+        hackathon_data = {
+            "doctype": HACKATHON,
+            "permalink": kwargs.get("permalink", fake.slug().replace("-", "_")),
+            "hackathon_name": kwargs.get("hackathon_name", fake.text(max_nb_chars=20).strip()),
+            "hackathon_type": kwargs.get("hackathon_type", "Hybrid"),
+            "start_date": kwargs.get("start_date", datetime.today() + timedelta(days=1)),
+            "end_date": kwargs.get("end_date", datetime.today() + timedelta(days=2)),
+            "hackathon_description": kwargs.get("hackathon_description", "Test Hackathon"),
+        }
+
+        for key, value in kwargs.items():
+            if key not in hackathon_data:
+                hackathon_data[key] = value
+
+        hackathon = frappe.get_doc(hackathon_data)
+        hackathon.insert()
+        hackathon.reload()
+
+        return hackathon
+
+    except Exception:
+        raise
+
+
+def insert_test_hackathon_team(hackathon: dict, **kwargs):
+    """
+    Generate a test hackathon team with flexible configuration options.
+
+    Args:
+        hackathon (dict): The hackathon to associate the team with.
+        team_name (str, optional): Name of the team. Defaults to a random name.
+        **kwargs: Additional arguments to be passed to the team document.
+
+    Returns:
+        team doc: Created hackathon team document
+
+    Raises:
+        Exception: For any unexpected errors during team generation
+    """
+    try:
+        team_data = {
+            "doctype": HACKATHON_TEAM,
+            "hackathon": hackathon.get("name"),
+            "team_name": kwargs.get("team_name", fake.name()),
+        }
+
+        for key, value in kwargs.items():
+            if key not in team_data:
+                team_data[key] = value
+
+        team = frappe.get_doc(team_data)
+        team.insert()
+        team.reload()
+
+        return team
+
+    except Exception:
+        raise
+
+
+def insert_test_hackathon_participant(hackathon_id: str, **kwargs):
+    """
+    Generate a test hackathon participant with flexible configuration options.
+
+    Args:
+        hackathon_id (str): The ID of the hackathon to link the participant to.
+        full_name (str, optional): Full name of the participant. Defaults to a fake name.
+        email (str, optional): Email of the participant. Defaults to a fake email.
+        user (str, optional): User linked to the participant.
+        **kwargs: Additional arguments to be passed to the participant document.
+
+    Returns:
+        participant doc: Created hackathon participant document
+
+    Raises:
+        Exception: For any unexpected errors during participant generation
+    """
+    try:
+        participant_data = {
+            "doctype": HACKATHON_PARTICIPANT,
+            "full_name": kwargs.get("full_name", fake.name()),
+            "email": kwargs.get("email", fake.email()),
+            "hackathon": hackathon_id,
+            "user": kwargs.get("user", ""),
+        }
+
+        for key, value in kwargs.items():
+            if key not in participant_data:
+                participant_data[key] = value
+
+        participant = frappe.get_doc(participant_data)
+        participant.insert()
+        participant.reload()
+
+        return participant
 
     except Exception:
         raise

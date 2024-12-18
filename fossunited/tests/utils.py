@@ -349,29 +349,25 @@ def insert_test_hackathon(**kwargs):
     Raises:
         Exception: For any unexpected errors during hackathon generation
     """
-    try:
-        hackathon_data = {
-            "doctype": HACKATHON,
-            "permalink": kwargs.get("permalink", fake.slug().replace("-", "_")),
-            "hackathon_name": kwargs.get("hackathon_name", fake.text(max_nb_chars=20).strip()),
-            "hackathon_type": kwargs.get("hackathon_type", "Hybrid"),
-            "start_date": kwargs.get("start_date", datetime.today() + timedelta(days=1)),
-            "end_date": kwargs.get("end_date", datetime.today() + timedelta(days=2)),
-            "hackathon_description": kwargs.get("hackathon_description", "Test Hackathon"),
-        }
+    hackathon_data = {
+        "doctype": HACKATHON,
+        "permalink": kwargs.get("permalink", fake.slug().replace("-", "_")),
+        "hackathon_name": kwargs.get("hackathon_name", fake.text(max_nb_chars=20).strip()),
+        "hackathon_type": kwargs.get("hackathon_type", "Hybrid"),
+        "start_date": kwargs.get("start_date", datetime.today() + timedelta(days=1)),
+        "end_date": kwargs.get("end_date", datetime.today() + timedelta(days=2)),
+        "hackathon_description": kwargs.get("hackathon_description", "Test Hackathon"),
+    }
 
-        for key, value in kwargs.items():
-            if key not in hackathon_data:
-                hackathon_data[key] = value
+    for key, value in kwargs.items():
+        if key not in hackathon_data:
+            hackathon_data[key] = value
 
-        hackathon = frappe.get_doc(hackathon_data)
-        hackathon.insert()
-        hackathon.reload()
+    hackathon = frappe.get_doc(hackathon_data)
+    hackathon.insert()
+    hackathon.reload()
 
-        return hackathon
-
-    except Exception:
-        raise
+    return hackathon
 
 
 def insert_test_hackathon_team(hackathon: dict, **kwargs):
@@ -380,7 +376,6 @@ def insert_test_hackathon_team(hackathon: dict, **kwargs):
 
     Args:
         hackathon (dict): The hackathon to associate the team with.
-        team_name (str, optional): Name of the team. Defaults to a random name.
         **kwargs: Additional arguments to be passed to the team document.
 
     Returns:
@@ -389,25 +384,21 @@ def insert_test_hackathon_team(hackathon: dict, **kwargs):
     Raises:
         Exception: For any unexpected errors during team generation
     """
-    try:
-        team_data = {
-            "doctype": HACKATHON_TEAM,
-            "hackathon": hackathon.get("name"),
-            "team_name": kwargs.get("team_name", fake.name()),
-        }
+    team_data = {
+        "doctype": HACKATHON_TEAM,
+        "hackathon": hackathon.get("name"),
+        "team_name": kwargs.get("team_name", fake.name()),
+    }
 
-        for key, value in kwargs.items():
-            if key not in team_data:
-                team_data[key] = value
+    for key, value in kwargs.items():
+        if key not in team_data:
+            team_data[key] = value
 
-        team = frappe.get_doc(team_data)
-        team.insert()
-        team.reload()
+    team = frappe.get_doc(team_data)
+    team.insert()
+    team.reload()
 
-        return team
-
-    except Exception:
-        raise
+    return team
 
 
 def insert_test_hackathon_participant(hackathon_id: str, **kwargs):
@@ -427,24 +418,20 @@ def insert_test_hackathon_participant(hackathon_id: str, **kwargs):
     Raises:
         Exception: For any unexpected errors during participant generation
     """
-    try:
-        participant_data = {
-            "doctype": HACKATHON_PARTICIPANT,
-            "full_name": kwargs.get("full_name", fake.name()),
-            "email": kwargs.get("email", fake.email()),
-            "hackathon": hackathon_id,
-            "user": kwargs.get("user", ""),
-        }
+    participant_data = {
+        "doctype": HACKATHON_PARTICIPANT,
+        "full_name": kwargs.get("full_name", fake.name()),
+        "email": kwargs.get("email", fake.email()),
+        "hackathon": hackathon_id,
+        "user": kwargs.get("user", ""),
+    }
 
-        for key, value in kwargs.items():
-            if key not in participant_data:
-                participant_data[key] = value
+    for key, value in kwargs.items():
+        if key not in participant_data:
+            participant_data[key] = value
 
-        participant = frappe.get_doc(participant_data)
-        participant.insert()
-        participant.reload()
+    participant = frappe.get_doc(participant_data)
+    participant.insert()
+    participant.reload()
 
-        return participant
-
-    except Exception:
-        raise
+    return participant

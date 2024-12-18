@@ -15,9 +15,9 @@ class TestFOSSHackathon(IntegrationTestCase):
 
     def test_hackathon_route(self):
         if self.hackathon.permalink:
-            self.assertTrue(self.hackathon.route == f"hack/{self.hackathon.permalink}")
+            self.assertEqual(self.hackathon.route, f"hack/{self.hackathon.permalink}")
         else:
-            self.assertTrue(
-                self.hackathon.route
-                == f"hack/{self.hackathon.hackathon_name.lower().replace(' ', '-')}"
+            self.assertEqual(
+                self.hackathon.route,
+                f"hack/{self.hackathon.hackathon_name.lower().replace(' ', '-')}",
             )

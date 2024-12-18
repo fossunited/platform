@@ -16,7 +16,7 @@ class TestFOSSHackathonTeam(IntegrationTestCase):
         self.team = insert_test_hackathon_team(hackathon=self.hackathon)
 
         self.participants = []
-        for _ in range(4):  # since max_team_size is 2, we need 3 participants to test the code
+        for _ in range(4):  # since max_team_size is 3, we need 4 participants to test the code
             participant = insert_test_hackathon_participant(hackathon_id=self.hackathon.name)
             self.participants.append(participant)
 
@@ -31,9 +31,9 @@ class TestFOSSHackathonTeam(IntegrationTestCase):
         # Given a hackathon with a defined max_team_members size
         # When the max number of participants are added to that team
         participant_ids = []
-        for _ in range(self.hackathon.max_team_members):
-            participant_ids.append(self.participants[_].name)
-            self.team.append("members", {"member": self.participants[_].name})
+        for i in range(self.hackathon.max_team_members):
+            participant_ids.append(self.participants[i].name)
+            self.team.append("members", {"member": self.participants[i].name})
         self.team.save()
 
         # Then it should add those members to the team without any error
@@ -49,7 +49,7 @@ class TestFOSSHackathonTeam(IntegrationTestCase):
     def test_add_member_exceeding_max_size(self):
         # Given a hackathon with a defined max number of team members
         # When more than max no. of members are tried to be added to a team
-        for _ in range(self.hackathon.max_team_members + 1):
-            self.team.append("members", {"member": self.participants[_].name})
+        for i in range(self.hackathon.max_team_members + 1):
+            self.team.append("members", {"member": self.participants[i].name})
         # Then a validation error should be raised.
         self.assertRaises(frappe.exceptions.ValidationError, self.team.save)

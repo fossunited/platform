@@ -1,60 +1,55 @@
-from datetime import datetime, timedelta
-
 import frappe
-from faker import Faker
 from frappe.tests import IntegrationTestCase
 
-from fossunited.doctype_ids import HACKATHON, HACKATHON_PARTICIPANT, HACKATHON_TEAM
+from fossunited.doctype_ids import HACKATHON_TEAM_MEMBER
+from fossunited.tests.utils import (
+    insert_test_hackathon,
+    insert_test_hackathon_participant,
+    insert_test_hackathon_team,
+)
 
 
 class TestFOSSHackathonTeam(IntegrationTestCase):
     def setUp(self):
-        self.faker = Faker()
-        self.hackathon = frappe.get_doc(
-            {
-                "doctype": HACKATHON,
-                "hackathon_name": self.faker.name(),
-                "permalink": self.faker.slug(),
-                "start_date": datetime.now(),
-                "end_date": datetime.now() + timedelta(days=1),
-                "hackathon_description": self.faker.text(),
-                "max_team_size": 2,
-            }
-        ).insert()
+        self.hackathon = insert_test_hackathon(is_team_mandatory=True, max_team_members=3)
 
-        self.team = frappe.get_doc(
-            {
-                "doctype": HACKATHON_TEAM,
-                "team_name": self.faker.name(),
-                "hackathon": self.hackathon.name,
-            }
-        ).insert()
+        self.team = insert_test_hackathon_team(hackathon=self.hackathon)
 
         self.participants = []
-        for _ in range(3):  # since max_team_size is 2, we need 3 participants to test the code
-            participant = frappe.get_doc(
-                {
-                    "doctype": HACKATHON_PARTICIPANT,
-                    "full_name": self.faker.name(),
-                    "email": self.faker.email(),
-                    "hackathon": self.hackathon.name,
-                }
-            ).insert()
+        for _ in range(4):  # since max_team_size is 3, we need 4 participants to test the code
+            participant = insert_test_hackathon_participant(hackathon_id=self.hackathon.name)
             self.participants.append(participant)
 
     def tearDown(self):
-        self.team.delete()
+        frappe.set_user("Administrator")
+        self.team.delete(force=True)
         for participant in self.participants:
-            participant.delete()
-        self.hackathon.delete()
+            participant.delete(force=True)
+        self.hackathon.delete(force=True)
 
     def test_add_member_to_team(self):
-        for _ in range(self.hackathon.max_team_size):
-            self.team.append("members", {"member": self.participants[_].name})
+        # Given a hackathon with a defined max_team_members size
+        # When the max number of participants are added to that team
+        participant_ids = []
+        for i in range(self.hackathon.max_team_members):
+            participant_ids.append(self.participants[i].name)
+            self.team.append("members", {"member": self.participants[i].name})
         self.team.save()
-        self.assertEqual(len(self.team.members), self.hackathon.max_team_size)
+
+        # Then it should add those members to the team without any error
+        self.assertEqual(len(self.team.members), self.hackathon.max_team_members)
+
+        # Get participant ids of team members of self.team, those should match the
+        # IDs of participants that were meant to be added to the team
+        members_emails = frappe.get_all(
+            HACKATHON_TEAM_MEMBER, {"parent": self.team.name}, pluck="member"
+        )
+        self.assertEqual(members_emails.sort(), participant_ids.sort())
 
     def test_add_member_exceeding_max_size(self):
-        for _ in range(self.hackathon.max_team_size + 1):
-            self.team.append("members", {"member": self.participants[_].name})
+        # Given a hackathon with a defined max number of team members
+        # When more than max no. of members are tried to be added to a team
+        for i in range(self.hackathon.max_team_members + 1):
+            self.team.append("members", {"member": self.participants[i].name})
+        # Then a validation error should be raised.
         self.assertRaises(frappe.exceptions.ValidationError, self.team.save)

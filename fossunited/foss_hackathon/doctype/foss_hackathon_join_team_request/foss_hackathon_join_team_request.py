@@ -77,6 +77,12 @@ class FOSSHackathonJoinTeamRequest(Document):
             request_doc.save(ignore_permissions=True)
 
     def validate_sender_as_member(self):
+        """
+        Validate that the user sending the invite (session user) is either a member
+        of the team or a has System User role.
+
+        System users should be able to make changes to this doctype for support reasons.
+        """
         if frappe.permissions.is_system_user(frappe.session.user):
             return
 

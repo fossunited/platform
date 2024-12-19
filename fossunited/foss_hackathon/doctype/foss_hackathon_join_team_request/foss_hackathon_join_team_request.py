@@ -2,11 +2,13 @@
 # For license information, please see license.txt
 
 import frappe
+import frappe.permissions
 from frappe.model.document import Document
 
 from fossunited.doctype_ids import (
     HACKATHON_PARTICIPANT,
     HACKATHON_TEAM,
+    HACKATHON_TEAM_MEMBER,
     JOIN_TEAM_REQUEST,
 )
 
@@ -20,17 +22,19 @@ class FOSSHackathonJoinTeamRequest(Document):
     if TYPE_CHECKING:
         from frappe.types import DF
 
-        hackathon: DF.Link | None
+        hackathon: DF.Link
         hackathon_name: DF.Data | None
         is_outgoing_request: DF.Check
-        reciever_email: DF.Data | None
-        requested_by: DF.Link | None
+        reciever_email: DF.Data
+        requested_by: DF.Link
         sender_name: DF.Data | None
         status: DF.Literal["Pending", "Accepted", "Rejected"]  # noqa: F821
-        team: DF.Link | None
+        team: DF.Link
         team_name: DF.Data | None
     # end: auto-generated types
-    pass
+
+    def before_insert(self):
+        self.validate_sender_as_member()
 
     def before_save(self):
         if self.has_value_changed("status"):
@@ -60,12 +64,37 @@ class FOSSHackathonJoinTeamRequest(Document):
         requests = frappe.get_all(
             JOIN_TEAM_REQUEST,
             filters={
-                "team": self.team,
+                "hackathon": self.hackathon,
                 "status": "Pending",
                 "reciever_email": self.reciever_email,
+                "name": ["!=", self.name],
             },
+            pluck="name",
         )
         for request in requests:
-            request_doc = frappe.get_doc(JOIN_TEAM_REQUEST, request.name)
+            request_doc = frappe.get_doc(JOIN_TEAM_REQUEST, request)
             request_doc.status = "Rejected"
-            request_doc.save()
+            request_doc.save(ignore_permissions=True)
+
+    def validate_sender_as_member(self):
+        """
+        Validate that the user sending the invite (session user) is either a member
+        of the team or a has System User role.
+
+        System users should be able to make changes to this doctype for support reasons.
+        """
+        if frappe.permissions.is_system_user(frappe.session.user):
+            return
+
+        participant_id = frappe.db.get_value(
+            HACKATHON_PARTICIPANT, {"user": self.requested_by}, ["name"]
+        )
+
+        is_team_member = frappe.db.exists(
+            HACKATHON_TEAM_MEMBER, {"parent": self.team, "member": participant_id}
+        )
+
+        if not is_team_member:
+            frappe.throw("Request sender is not a team member", frappe.ValidationError)
+
+        return

@@ -5,6 +5,7 @@
   "doctype": "DocType",
   "engine": "InnoDB",
   "field_order": [
+    "status",
     "is_outgoing_request",
     "section_break_kkvz",
     "team",
@@ -15,22 +16,24 @@
     "hackathon",
     "hackathon_name",
     "section_break_vjrk",
-    "reciever_email",
-    "column_break_vhdr",
-    "status"
+    "reciever_email"
   ],
   "fields": [
     {
       "fieldname": "team",
       "fieldtype": "Link",
+      "in_list_view": 1,
       "label": "Team",
-      "options": "FOSS Hackathon Team"
+      "options": "FOSS Hackathon Team",
+      "reqd": 1
     },
     {
       "fieldname": "requested_by",
       "fieldtype": "Link",
+      "in_list_view": 1,
       "label": "Requested By",
-      "options": "User"
+      "options": "User",
+      "reqd": 1
     },
     {
       "fieldname": "column_break_prrb",
@@ -39,8 +42,10 @@
     {
       "fieldname": "hackathon",
       "fieldtype": "Link",
+      "in_list_view": 1,
       "label": "Hackathon",
-      "options": "FOSS Hackathon"
+      "options": "FOSS Hackathon",
+      "reqd": 1
     },
     {
       "default": "0",
@@ -55,12 +60,10 @@
     {
       "fieldname": "reciever_email",
       "fieldtype": "Data",
+      "in_list_view": 1,
       "label": "Reciever Email",
-      "options": "Email"
-    },
-    {
-      "fieldname": "column_break_vhdr",
-      "fieldtype": "Column Break"
+      "options": "Email",
+      "reqd": 1
     },
     {
       "default": "Pending",
@@ -77,7 +80,6 @@
       "fetch_from": "requested_by.full_name",
       "fieldname": "sender_name",
       "fieldtype": "Data",
-      "hidden": 1,
       "label": "Sender Name",
       "read_only": 1
     },
@@ -99,7 +101,7 @@
     }
   ],
   "links": [],
-  "modified": "2024-06-25 13:11:47.195942",
+  "modified": "2024-12-19 18:33:17.914678",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon Join Team Request",
@@ -145,5 +147,18 @@
   ],
   "sort_field": "modified",
   "sort_order": "DESC",
-  "states": []
+  "states": [
+    {
+      "color": "Orange",
+      "title": "Pending"
+    },
+    {
+      "color": "Green",
+      "title": "Accepted"
+    },
+    {
+      "color": "Red",
+      "title": "Rejected"
+    }
+  ]
 }

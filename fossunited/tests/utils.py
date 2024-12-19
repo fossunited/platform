@@ -11,6 +11,7 @@ from fossunited.doctype_ids import (
     HACKATHON,
     HACKATHON_PARTICIPANT,
     HACKATHON_TEAM,
+    JOIN_TEAM_REQUEST,
     RSVP_RESPONSE,
     USER_PROFILE,
 )
@@ -435,3 +436,35 @@ def insert_test_hackathon_participant(hackathon_id: str, **kwargs):
     participant.reload()
 
     return participant
+
+
+def insert_test_hackathon_join_request(
+    hackathon_id: str, team_id: str, requested_by: str, reciever_email: str, **kwargs
+):
+    """
+    Generate a test hackathon join request with flexible configuration options.
+    Args:
+        hackathon_id (str): The ID of the hackathon to link the join request to.
+        team_id (str): The ID of the team to link the join request to.
+        requested_by(str): The user id of the user sending the request.
+        reciever_email (str): The email of the recipient of the join request.
+        **kwargs: Additional arguments to be passed to the join request document.
+    Returns:
+        request doc: Created hackathon join request document
+    Raises:
+        Exception: For any unexpected errors during join request generation
+    """
+    request_data = {
+        "doctype": JOIN_TEAM_REQUEST,
+        "hackathon": hackathon_id,
+        "team": team_id,
+        "requested_by": requested_by,
+        "reciever_email": reciever_email,
+    }
+    for key, value in kwargs.items():
+        if key not in request_data:
+            request_data[key] = value
+    request = frappe.get_doc(request_data)
+    request.insert()
+    request.reload()
+    return request

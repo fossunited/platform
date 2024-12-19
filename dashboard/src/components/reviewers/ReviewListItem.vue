@@ -15,7 +15,7 @@
         <span class="text-sm text-gray-800">Submissions: {{ event.submission_count }}</span>
         <span class="text-sm md:pl-2 text-green-800">Reviewed: {{ event.reviewed_count }}</span>
         <span class="text-sm md:pl-2 text-orange-800"
-          >Pending Review: {{ event.reviewed_count }}</span
+          >Pending Review: {{ event.not_reviewed_count }}</span
         >
       </div>
     </div>

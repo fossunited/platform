@@ -13,6 +13,7 @@
     "column_break_vitn",
     "is_published",
     "section_break_ioxz",
+    "requires_host_approval",
     "allow_edit",
     "column_break_rwlt",
     "rsvp_count",
@@ -38,7 +39,8 @@
       "fieldtype": "Link",
       "in_list_view": 1,
       "label": "Event",
-      "options": "FOSS Chapter Event"
+      "options": "FOSS Chapter Event",
+      "reqd": 1
     },
     {
       "fieldname": "column_break_yrzh",
@@ -100,7 +102,7 @@
       "default": "0",
       "fieldname": "allow_edit",
       "fieldtype": "Check",
-      "label": "Allow RSVP Edit"
+      "label": "Allow Submission Edit"
     },
     {
       "default": "100",
@@ -120,13 +122,26 @@
       "fieldname": "event_name",
       "fieldtype": "Data",
       "label": "Event Name"
+    },
+    {
+      "default": "0",
+      "description": "Enable for host-enabled participant selection.\n\nIf unchecked, all the participants will be auto accepted.",
+      "fieldname": "requires_host_approval",
+      "fieldtype": "Check",
+      "label": "Requires Host Approval"
     }
   ],
   "has_web_view": 1,
   "index_web_pages_for_search": 1,
   "is_published_field": "is_published",
-  "links": [],
-  "modified": "2024-07-08 15:02:08.772824",
+  "links": [
+    {
+      "group": "Submissions",
+      "link_doctype": "FOSS Event RSVP Submission",
+      "link_fieldname": "linked_rsvp"
+    }
+  ],
+  "modified": "2024-12-20 16:37:53.619977",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Event RSVP",

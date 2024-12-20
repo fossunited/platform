@@ -14,6 +14,7 @@
     "column_break_tpys",
     "submitted_by",
     "chapter",
+    "status",
     "standard_questions_section",
     "name1",
     "im_a",
@@ -123,10 +124,17 @@
       "label": "Email",
       "options": "Email",
       "reqd": 1
+    },
+    {
+      "default": "Pending",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Pending\nAccepted\nRejected"
     }
   ],
   "links": [],
-  "modified": "2024-11-15 15:14:23.920437",
+  "modified": "2024-12-20 15:16:07.795271",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Event RSVP Submission",
@@ -163,6 +171,19 @@
   ],
   "sort_field": "modified",
   "sort_order": "DESC",
-  "states": [],
+  "states": [
+    {
+      "color": "Yellow",
+      "title": "Pending"
+    },
+    {
+      "color": "Green",
+      "title": "Accepted"
+    },
+    {
+      "color": "Red",
+      "title": "Rejected"
+    }
+  ],
   "track_changes": 1
 }

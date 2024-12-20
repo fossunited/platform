@@ -55,3 +55,39 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
                 "Email Group Member", {"email": WEBSITE_USER, "email_group": email_group}
             )
         )
+
+    def test_acceptance_workflow(self):
+        # Given an RSVP form with accept all incoming responses
+        rsvp = self.rsvp
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is done
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # Then the submission status should be accepted
+        self.assertTrue(submission.status, "Accepted")
+
+    def test_pending_workflow(self):
+        # Given an rsvp with requires_host_approval = True
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is created
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # Then the submission status should be pending
+        self.assertTrue(submission.status, "Pending")
+
+    def test_invalid_status_at_creation(self):
+        # Given an rsvp with requires_host_approval = False
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is done with status accepted
+        # Then a frappe.PermissionError should be raised
+        with self.assertRaises(frappe.PermissionError):
+            insert_rsvp_submission(linked_rsvp=rsvp.name, status="Accepted")

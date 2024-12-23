@@ -256,7 +256,7 @@ def insert_rsvp_form(event: str, **kwargs):
             "doctype": EVENT_RSVP,
             "allow_edit": kwargs.get("allow_edit", 1),  # Default to allowing edits
             "event": event_name,
-            "max_rsvp_count": kwargs.get("max_rsvp_count", 100),
+            "max_rsvp_count": kwargs.get("max_rsvp_count", 5),
             "requires_host_approval": kwargs.get("requires_host_approval", False),
             "rsvp_description": kwargs.get(
                 "rsvp_description", fake.text(max_nb_chars=200).strip()

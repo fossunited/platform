@@ -222,6 +222,8 @@ def insert_rsvp_form(event: str, **kwargs):
         event (str or dict, optional): Linked event for the RSVP form.
                 If not provided, a new test event will be generated.
         allow_edit (bool, optional): Whether RSVP can be edited. Defaults to True.
+        requires_host_approval(bool, optional): Whether to accept all incoming RSVPs.
+                Default: False.
         max_rsvp_count (int, optional): Maximum number of RSVPs. Defaults to 100.
         rsvp_description (str, optional): Description for the RSVP form.
         custom_questions (list, optional): List of custom questions for the RSVP form.
@@ -254,7 +256,8 @@ def insert_rsvp_form(event: str, **kwargs):
             "doctype": EVENT_RSVP,
             "allow_edit": kwargs.get("allow_edit", 1),  # Default to allowing edits
             "event": event_name,
-            "max_rsvp_count": kwargs.get("max_rsvp_count", 100),
+            "max_rsvp_count": kwargs.get("max_rsvp_count", 5),
+            "requires_host_approval": kwargs.get("requires_host_approval", False),
             "rsvp_description": kwargs.get(
                 "rsvp_description", fake.text(max_nb_chars=200).strip()
             ),
@@ -313,6 +316,7 @@ def insert_rsvp_submission(linked_rsvp: str, **kwargs):
             "name1": kwargs.get("name", fake.name()),
             "im_a": kwargs.get("im_a", "Professional"),
             "email": kwargs.get("email", fake.email()),
+            "status": kwargs.get("status", "Pending"),
             "confirm_attendance": kwargs.get("confirm_attendance", 1),
             "custom_answers": kwargs.get("custom_answers", []),
         }

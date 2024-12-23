@@ -98,13 +98,21 @@
   <div class="form-container my-5">
     <div class="foss-form-header submitted-container">
       <h3 class="foss-form-heading-3xl">
-        {{ _("You have successfully RSVP'd for this event!") }} <i class="ti ti-rocket"></i>
+        {% if doc.requires_host_approval %}
+          {{ _("RSVP Submitted for Approval") }}
+        {% else %}
+          {{ _("You have successfully RSVP'd for this event!") }} <i class="ti ti-rocket"></i>
+        {% endif %}
       </h3>
       <div class="foss-form-description">
-        {{
-          _("You have successfully RSVP'd for this event. If you need to make any changes, you can
-          edit the rsvp form.")
-        }}
+        {% if doc.requires_host_approval %}
+          {{ _("Your RSVP has been submitted for approval. You will receive an email once your RSVP has been approved.") }}
+        {% else %}
+          {{
+            _("You have successfully RSVP'd for this event. If you need to make any changes, you can
+            edit the rsvp form.")
+          }}
+        {% endif %}
       </div>
       <button onclick="window.location.pathname+='/{{ submission }}/edit'">
         Edit RSVP Response

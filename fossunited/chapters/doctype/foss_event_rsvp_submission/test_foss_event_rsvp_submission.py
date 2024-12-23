@@ -31,9 +31,15 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         # Given an RSVP form with max count
         rsvp = self.rsvp
 
+        # We are using distinct emails here to avoid any unintended duplicate error.
+        # So that we can insert the max count of submissions
+        emails = set()
+        while len(emails) < int(rsvp.max_rsvp_count):
+            emails.add(fake.email())
+
         # When submission count reaches the max count
-        for _ in range(int(rsvp.max_rsvp_count)):
-            insert_rsvp_submission(linked_rsvp=self.rsvp.name)
+        for email in emails:
+            insert_rsvp_submission(linked_rsvp=self.rsvp.name, email=email)
 
         # Then the RSVP must be unpublished
         is_published = frappe.db.get_value(EVENT_RSVP, rsvp.name, "is_published")
@@ -55,3 +61,61 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
                 "Email Group Member", {"email": WEBSITE_USER, "email_group": email_group}
             )
         )
+
+    def test_acceptance_workflow(self):
+        # Given an RSVP form with accept all incoming responses
+        rsvp = self.rsvp
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is done
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # Then the submission status should be accepted
+        self.assertTrue(submission.status, "Accepted")
+
+    def test_pending_workflow(self):
+        # Given an rsvp with requires_host_approval = True
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is created
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # Then the submission status should be pending
+        self.assertTrue(submission.status, "Pending")
+
+    def test_pending_to_acceptance_workflow(self):
+        # Given an rsvp with requires_host_approval = True
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is created
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+        # The status should be pending
+        self.assertTrue(submission.status, "Pending")
+
+        # Now, as the chapter member,
+        frappe.set_user("test1@example.com")
+        # We know `test1@example.com` is a chapter member
+        # because of how insert_test_chapter is implemented
+
+        # When the submission is accepted
+        submission.status = "Accepted"
+        # Then it should save without any errors
+        submission.save()
+
+    def test_invalid_status_at_creation(self):
+        # Given an rsvp with requires_host_approval = False
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is done with status accepted
+        # Then a frappe.PermissionError should be raised
+        with self.assertRaises(frappe.PermissionError):
+            insert_rsvp_submission(linked_rsvp=rsvp.name, status="Accepted")

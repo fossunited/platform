@@ -27,6 +27,7 @@ class FOSSEventRSVPSubmission(Document):
         im_a: DF.Literal["", "Student", "Professional", "FOSS Enthusiast", "Other"]  # noqa: F722, F821
         linked_rsvp: DF.Link
         name1: DF.Data
+        status: DF.Literal["Pending", "Accepted", "Rejected"]  # noqa: F722, F821
         submitted_by: DF.Link | None
     # end: auto-generated types
 
@@ -36,6 +37,7 @@ class FOSSEventRSVPSubmission(Document):
         self.validate_linked_rsvp_exists()
 
     def after_insert(self):
+        self.handle_submission_status()
         self.close_rsvp_on_max_count()
         self.handle_add_to_email_group()
 
@@ -57,6 +59,25 @@ class FOSSEventRSVPSubmission(Document):
     def get_max_count(self):
         max_count = frappe.db.get_value(EVENT_RSVP, self.linked_rsvp, "max_rsvp_count")
         return max_count
+
+    def handle_submission_status(self):
+        # Check if the RSVP is accepting all incoming responses
+        requires_host_approval = bool(
+            frappe.db.get_value(EVENT_RSVP, self.linked_rsvp, "requires_host_approval")
+        )
+
+        # If requires_host_approval == True, but the status is accepted at time of creation,
+        # Throw a frappe.PermissionError
+        if requires_host_approval and self.status == "Accepted":
+            frappe.throw("Invalid action. Status cannot be `Accepted`.", frappe.PermissionError)
+
+        # If the RSVP requires host approval, set the status to Pending
+        if requires_host_approval:
+            self.status = "Pending"
+            return
+
+        # If the RSVP does not require host approval, set the status to Accepted
+        self.status = "Accepted"
 
     def validate_linked_rsvp_exists(self):
         if not frappe.db.exists(EVENT_RSVP, self.linked_rsvp):

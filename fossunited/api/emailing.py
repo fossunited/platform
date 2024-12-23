@@ -67,7 +67,7 @@ def add_to_email_group(email_group: str, email: str):
         frappe.throw("This email group does not exist", frappe.DoesNotExistError)
 
     if frappe.db.exists(EMAIL_MEMBER, {"email_group": email_group, "email": email}):
-        frappe.throw("Email already a part of this email group", frappe.ValidationError)
+        frappe.throw("Email already a part of this email group", frappe.DuplicateEntryError)
 
     member = frappe.get_doc({"doctype": EMAIL_MEMBER, "email_group": email_group, "email": email})
     member.insert(ignore_permissions=True)

@@ -24,15 +24,16 @@ class FOSSEventRSVP(WebsiteGenerator):
         allow_edit: DF.Check
         chapter: DF.Data | None
         custom_questions: DF.Table[FOSSCustomQuestion]
-        event: DF.Link | None
+        event: DF.Link
         event_name: DF.Data | None
         is_published: DF.Check
         max_rsvp_count: DF.Int
+        requires_host_approval: DF.Check
         route: DF.Data | None
         rsvp_count: DF.Int
         rsvp_description: DF.TextEditor | None
-
     # end: auto-generated types
+
     def before_save(self):
         self.set_route()
         self.enable_rsvp_tab()

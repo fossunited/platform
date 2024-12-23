@@ -80,6 +80,28 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         # Then the submission status should be pending
         self.assertTrue(submission.status, "Pending")
 
+    def test_pending_to_acceptance_workflow(self):
+        # Given an rsvp with requires_host_approval = True
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        frappe.set_user(WEBSITE_USER)
+        # When a submission is created
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+        # The status should be pending
+        self.assertTrue(submission.status, "Pending")
+
+        # Now, as the chapter member,
+        frappe.set_user("test1@example.com")
+        # We know `test1@example.com` is a chapter member
+        # because of how insert_test_chapter is implemented
+
+        # When the submission is accepted
+        submission.status = "Accepted"
+        # Then it should save without any errors
+        submission.save()
+
     def test_invalid_status_at_creation(self):
         # Given an rsvp with requires_host_approval = False
         rsvp = self.rsvp

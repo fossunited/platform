@@ -71,12 +71,12 @@ class FOSSEventRSVPSubmission(Document):
         if requires_host_approval and self.status == "Accepted":
             frappe.throw("Invalid action. Status cannot be `Accepted`.", frappe.PermissionError)
 
-        # If the RSVP is accepting all incoming responses, set the status to accepted
+        # If the RSVP requires host approval, set the status to Pending
         if requires_host_approval:
             self.status = "Pending"
             return
 
-        # If the RSVP is not accepting all incoming responses, set the status to pending
+        # If the RSVP does not require host approval, set the status to Accepted
         self.status = "Accepted"
 
     def validate_linked_rsvp_exists(self):

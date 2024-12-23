@@ -31,9 +31,15 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         # Given an RSVP form with max count
         rsvp = self.rsvp
 
+        # We are using distinct emails here to avoid any unintended duplicate error.
+        # So that we can insert the max count of submissions
+        emails = set()
+        while len(emails) < int(rsvp.max_rsvp_count):
+            emails.add(fake.email())
+
         # When submission count reaches the max count
-        for _ in range(int(rsvp.max_rsvp_count)):
-            insert_rsvp_submission(linked_rsvp=self.rsvp.name)
+        for email in emails:
+            insert_rsvp_submission(linked_rsvp=self.rsvp.name, email=email)
 
         # Then the RSVP must be unpublished
         is_published = frappe.db.get_value(EVENT_RSVP, rsvp.name, "is_published")

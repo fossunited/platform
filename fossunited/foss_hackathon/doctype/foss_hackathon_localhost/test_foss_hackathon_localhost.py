@@ -3,7 +3,6 @@ import frappe.permissions
 from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import (
-    HACKATHON_LOCALHOST,
     USER_PROFILE,
 )
 from fossunited.tests.utils import insert_test_hackathon, insert_test_hackathon_localhost
@@ -20,7 +19,7 @@ class TestFOSSHackathonLocalHost(IntegrationTestCase):
 
     def tearDown(self):
         frappe.set_user("Administrator")
-        frappe.delete_doc(HACKATHON_LOCALHOST, self.localhost.name, force=True)
+        self.localhost.delete(force=True)
         self.hackathon.delete(force=True)
 
     def test_role_assignment_on_create(self):

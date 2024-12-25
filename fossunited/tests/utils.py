@@ -9,6 +9,7 @@ from fossunited.doctype_ids import (
     EVENT,
     EVENT_RSVP,
     HACKATHON,
+    HACKATHON_LOCALHOST,
     HACKATHON_PARTICIPANT,
     HACKATHON_TEAM,
     JOIN_TEAM_REQUEST,
@@ -472,3 +473,26 @@ def insert_test_hackathon_join_request(
     request.insert()
     request.reload()
     return request
+
+
+def insert_test_hackathon_localhost(parent_hackathon: str, **kwargs):
+    """
+    Generate a test hackathon localhost with flexible configuration options.
+    Args:
+        parent_hackathon (str): The ID of the hackathon to link the localhost to.
+        **kwargs: Additional arguments to be passed to the localhost document.
+    Returns:
+        localhost doc: Created hackathon localhost document
+    """
+    localhost_data = {
+        "doctype": HACKATHON_LOCALHOST,
+        "parent_hackathon": parent_hackathon,
+        "localhost_name": kwargs.get("localhost_name", fake.name()),
+        "organizers": kwargs.get("organizers", []),
+        "is_accepting_attendees": kwargs.get("is_accepting_attendees", 1),
+    }
+
+    localhost = frappe.get_doc(localhost_data)
+    localhost.insert()
+    localhost.reload()
+    return localhost

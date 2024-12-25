@@ -35,47 +35,62 @@ class FOSSHackathonLocalHost(Document):
     pass
 
     def before_insert(self):
-        self.assign_localhost_organizer_role()
+        members = [member.profile for member in self.organizers]
+        self.assign_localhost_organizer_role(members)
 
-    def on_update(self):
-        self.check_if_member_removed()
+    def on_trash(self):
+        members = [member.profile for member in self.organizers]
+        self.remove_organizer_role(members)
 
     def before_save(self):
-        if self.has_value_changed("organizers") and (
-            len(self.organizers) > len(self.get_doc_before_save().organizers)
-        ):
-            self.assign_localhost_organizer_role()
+        self.handle_roles()
 
-    def assign_localhost_organizer_role(self):
-        for member in self.organizers:
+    def handle_roles(self):
+        if self.is_new():
+            return
+
+        organizers = self.get("organizers")
+        organizers_old = self.get_doc_before_save().get("organizers")
+
+        # get members that are in curr member but not in old members
+        new_members = [
+            member.profile
+            for member in organizers
+            if member.profile not in [m.profile for m in organizers_old]
+        ]
+        removed_members = [
+            member.profile
+            for member in organizers_old
+            if member.profile not in [m.profile for m in organizers]
+        ]
+
+        self.assign_localhost_organizer_role(new_members)
+        self.remove_organizer_role(removed_members)
+
+    def assign_localhost_organizer_role(self, members: list):
+        for member in members:
             user = frappe.get_doc(
                 "User",
-                frappe.db.get_value(USER_PROFILE, member.profile, "user"),
+                frappe.db.get_value(USER_PROFILE, member, "user"),
             )
             user.add_roles("Localhost Organizer")
+            user.save(ignore_permissions=True)
 
-    def check_if_member_removed(self):
-        prev_doc = self.get_doc_before_save()
-        if not (prev_doc and len(prev_doc.organizers) > len(self.organizers)):
-            return
+    def remove_organizer_role(self, members: list):
+        for member in members:
+            if self.is_other_localhost_member(member):
+                continue
+            user = frappe.get_doc(
+                "User",
+                frappe.db.get_value(USER_PROFILE, member, "user"),
+            )
+            user.remove_roles("Localhost Organizer")
+            user.save(ignore_permissions=True)
 
-        current_organizers = {member.name for member in self.organizers}
-
-        for member in prev_doc.organizers:
-            if member.name not in current_organizers:
-                self.remove_organizer_role(member)
-
-    def remove_organizer_role(self, old_member):
-        if self.other_localhost_member(old_member):
-            return
-
-        user = frappe.get_doc(
-            "User",
-            frappe.db.get_value(USER_PROFILE, old_member.profile, "user"),
-        )
-        user.remove_roles("Localhost Organizer")
-
-    def other_localhost_member(self, old_member):
+    def is_other_localhost_member(self, member: str) -> bool:
+        """
+        Check if the member is part of any other localhost
+        """
         is_member = frappe.db.exists(
             HACKATHON_LOCALHOST,
             [
@@ -83,7 +98,7 @@ class FOSSHackathonLocalHost(Document):
                     LOCALHOST_ORGANIZER,
                     "profile",
                     "=",
-                    old_member.profile,
+                    member,
                 ],
                 ["name", "!=", self.name],
             ],

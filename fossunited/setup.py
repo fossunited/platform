@@ -53,6 +53,20 @@ def get_custom_fields():
                 "options": "FOSS Chapter Event",
                 "insert_after": "chapter",
             },
+            {
+                "fieldname": "document_type",
+                "fieldtype": "Link",
+                "label": "Document Type",
+                "options": "DocType",
+                "default": "FOSS Chapter Event",
+            },
+            {
+                "fieldname": "reference_document",
+                "fieldtype": "Dynamic Link",
+                "label": "Reference Document",
+                "options": "document_type",
+                "insert_after": "document_type",
+            },
         ],
         "Email Group": [
             {
@@ -83,6 +97,20 @@ def get_custom_fields():
                 "default": "Other",
                 "insert_after": "event",
             },
+            {
+                "fieldname": "document_type",
+                "fieldtype": "Link",
+                "label": "Document Type",
+                "options": "DocType",
+                "default": "FOSS Chapter Event",
+            },
+            {
+                "fieldname": "reference_document",
+                "fieldtype": "Dynamic Link",
+                "label": "Reference Document",
+                "options": "document_type",
+                "insert_after": "document_type",
+            },
         ],
         "Newsletter": [
             {
@@ -104,6 +132,20 @@ def get_custom_fields():
                 "label": "Event",
                 "options": "FOSS Chapter Event",
                 "insert_after": "chapter",
+            },
+            {
+                "fieldname": "document_type",
+                "fieldtype": "Link",
+                "label": "Document Type",
+                "options": "DocType",
+                "default": "FOSS Chapter Event",
+            },
+            {
+                "fieldname": "reference_document",
+                "fieldtype": "Dynamic Link",
+                "label": "Reference Document",
+                "options": "document_type",
+                "insert_after": "document_type",
             },
         ],
     }

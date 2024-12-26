@@ -41,9 +41,10 @@ class FOSSChapter(WebsiteGenerator):
         route: DF.Data | None
         slug: DF.Data | None
         state: DF.Link | None
+        telegram: DF.Data | None
         x: DF.Data | None
-
     # end: auto-generated types
+
     def before_insert(self):
         self.handle_member_addition()
 
@@ -245,6 +246,8 @@ class FOSSChapter(WebsiteGenerator):
             "youtube",
             "medium",
             "facebook",
+            "matrix",
+            "telegram",
         ]
         for k, v in self.as_dict().items():
             if k in SOCIAL_LINK_FIELDNAMES:

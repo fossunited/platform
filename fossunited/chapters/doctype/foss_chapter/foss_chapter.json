@@ -36,6 +36,7 @@
     "facebook",
     "instagram",
     "mastodon",
+    "telegram",
     "chapter_members_section",
     "chapter_members",
     "chapter_lead"
@@ -226,6 +227,12 @@
       "fieldtype": "Data",
       "label": "Slug",
       "unique": 1
+    },
+    {
+      "fieldname": "telegram",
+      "fieldtype": "Data",
+      "label": "Telegram",
+      "options": "URL"
     }
   ],
   "has_web_view": 1,
@@ -237,7 +244,7 @@
       "link_fieldname": "chapter"
     }
   ],
-  "modified": "2024-09-24 14:07:16.754531",
+  "modified": "2024-12-26 14:14:33.228467",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Chapter",

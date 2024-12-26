@@ -28,6 +28,7 @@ class FOSSChapter(WebsiteGenerator):
         chapter_type: DF.Literal["City Community", "FOSS Club", "Conference"]  # noqa: F722, F821
         city: DF.Link | None
         country: DF.Link | None
+        discord: DF.Data | None
         email: DF.Data
         facebook: DF.Data | None
         google_map_link: DF.Data | None
@@ -41,9 +42,11 @@ class FOSSChapter(WebsiteGenerator):
         route: DF.Data | None
         slug: DF.Data | None
         state: DF.Link | None
+        telegram: DF.Data | None
+        whatsapp: DF.Data | None
         x: DF.Data | None
-
     # end: auto-generated types
+
     def before_insert(self):
         self.handle_member_addition()
 
@@ -245,6 +248,10 @@ class FOSSChapter(WebsiteGenerator):
             "youtube",
             "medium",
             "facebook",
+            "matrix",
+            "telegram",
+            "whatsapp",
+            "discord",
         ]
         for k, v in self.as_dict().items():
             if k in SOCIAL_LINK_FIELDNAMES:

@@ -37,6 +37,8 @@
     "instagram",
     "mastodon",
     "telegram",
+    "whatsapp",
+    "discord",
     "chapter_members_section",
     "chapter_members",
     "chapter_lead"
@@ -233,7 +235,19 @@
       "fieldtype": "Data",
       "label": "Telegram",
       "options": "URL"
-    }
+   },
+   {
+      "fieldname": "whatsapp",
+      "fieldtype": "Data",
+      "label": "WhatsApp",
+      "options": "URL"
+   },
+   {
+      "fieldname": "discord",
+      "fieldtype": "Data",
+      "label": "Discord",
+      "options": "URL"
+   }
   ],
   "has_web_view": 1,
   "index_web_pages_for_search": 1,
@@ -244,7 +258,7 @@
       "link_fieldname": "chapter"
     }
   ],
-  "modified": "2024-12-26 14:14:33.228467",
+  "modified": "2024-12-26 15:16:37.306667",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Chapter",

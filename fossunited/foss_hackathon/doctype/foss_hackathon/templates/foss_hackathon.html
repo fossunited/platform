@@ -9,14 +9,12 @@
       />
       <div class="header--title-cta-parent">
         <div>
-          {% if doc.organizing_chapter %}
+          {% if doc.chapter %}
             {%
               from
               'fossunited/templates/macros/chapter_branding_block.html' import chapter_branding_block
             %}
-            <a href="/{{ chapter.route }}">
-              {{ chapter_branding_block(doc.organizing_chapter) }}
-            </a>
+            <a href="/{{ chapter.route }}"> {{ chapter_branding_block(doc.chapter) }} </a>
           {% endif %}
           <h1 class="header--event-title">{{ doc.hackathon_name }}</h1>
         </div>

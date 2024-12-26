@@ -31,7 +31,7 @@ class FOSSHackathon(WebsiteGenerator):
             FOSSEventSponsor,
         )
 
-        chapter: DF.Link | None
+        chapter: DF.Link
         community_partners: DF.Table[FOSSEventCommunityPartner]
         contribution_coming_soon_description: DF.SmallText | None
         contribution_project_guidelines: DF.MarkdownEditor | None

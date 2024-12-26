@@ -319,7 +319,8 @@
       "fieldname": "chapter",
       "fieldtype": "Link",
       "label": "Organizing Chapter",
-      "options": "FOSS Chapter"
+      "options": "FOSS Chapter",
+      "reqd": 1
     }
   ],
   "has_web_view": 1,
@@ -347,7 +348,7 @@
       "link_fieldname": "parent_hackathon"
     }
   ],
-  "modified": "2024-12-26 12:50:01.955681",
+  "modified": "2024-12-26 13:49:52.499217",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon",

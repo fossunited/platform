@@ -57,7 +57,7 @@ const campaigns = reactive(
     url: 'fossunited.api.emailing.get_newsletter_campaigns',
     makeParams() {
       return {
-        event: event.doc.name,
+        reference_document: event.doc.name,
         chapter: event.doc.chapter,
       }
     },

@@ -3,6 +3,7 @@ from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import HACKATHON_TEAM_MEMBER
 from fossunited.tests.utils import (
+    insert_test_chapter,
     insert_test_hackathon,
     insert_test_hackathon_participant,
     insert_test_hackathon_team,
@@ -11,7 +12,10 @@ from fossunited.tests.utils import (
 
 class TestFOSSHackathonTeam(IntegrationTestCase):
     def setUp(self):
-        self.hackathon = insert_test_hackathon(is_team_mandatory=True, max_team_members=3)
+        self.chapter = insert_test_chapter()
+        self.hackathon = insert_test_hackathon(
+            chapter=self.chapter.name, is_team_mandatory=True, max_team_members=3
+        )
 
         self.team = insert_test_hackathon_team(hackathon=self.hackathon)
 
@@ -22,6 +26,7 @@ class TestFOSSHackathonTeam(IntegrationTestCase):
 
     def tearDown(self):
         frappe.set_user("Administrator")
+        self.chapter.delete(force=True)
         self.team.delete(force=True)
         for participant in self.participants:
             participant.delete(force=True)

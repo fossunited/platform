@@ -39,7 +39,12 @@ class TestEmailing(IntegrationTestCase):
 
     def setup_campaign(self):
         email_group = frappe.get_doc(
-            EMAIL_GROUP, {"event": self.event.name, "group_type": "Event Participants"}
+            EMAIL_GROUP,
+            {
+                "reference_document": self.event.name,
+                "document_type": self.event.doctype,
+                "group_type": "Event Participants",
+            },
         )
 
         recipient_emails = ["test2@example.com", "test3@example.com", "test5@example.com"]
@@ -61,7 +66,10 @@ class TestEmailing(IntegrationTestCase):
             "attachments": [],
         }
         self.newsletter = create_newsletter_campaign(
-            data=newsletter_data, event=self.event.name, chapter=self.chapter.name
+            data=newsletter_data,
+            reference_document=self.event.name,
+            document_type=self.event.doctype,
+            chapter=self.chapter.name,
         )
 
     def test_send_test_email(self):

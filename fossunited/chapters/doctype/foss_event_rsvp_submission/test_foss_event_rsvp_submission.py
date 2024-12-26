@@ -53,7 +53,12 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
 
         # Then the email should be added to an email group linked to event for participants
         email_group = frappe.db.get_value(
-            "Email Group", {"event": self.rsvp.event, "group_type": "Event Participants"}
+            "Email Group",
+            {
+                "reference_document": self.rsvp.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
         )
 
         self.assertTrue(

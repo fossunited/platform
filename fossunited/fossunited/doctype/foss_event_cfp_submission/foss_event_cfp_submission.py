@@ -232,10 +232,27 @@ class FOSSEventCFPSubmission(WebsiteGenerator):
             self.handle_email_group("Rejected Proposers")
 
     def handle_email_group(self, type):
-        if not frappe.db.exists("Email Group", {"event": self.event, "group_type": type}):
-            create_email_group(self.event, type)
+        if not frappe.db.exists(
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": type,
+            },
+        ):
+            create_email_group(
+                type=type,
+                reference_document=self.event,
+                document_type=EVENT,
+            )
 
         email_group = frappe.db.get_value(
-            "Email Group", {"event": self.event, "group_type": type}, ["name"]
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": type,
+            },
+            ["name"],
         )
         add_to_email_group(email_group, self.email)

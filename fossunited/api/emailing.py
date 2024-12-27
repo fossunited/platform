@@ -135,7 +135,7 @@ def create_newsletter_campaign(
             "doctype": "Newsletter",
             "document_type": document_type,
             "reference_document": reference_document,
-            "chapter": chapter,
+            "chapter": _chapter,
             "sender_name": chapter_dict.chapter_name,
             "sender_email": chapter_dict.email,
             "email_group": recipient_groups,

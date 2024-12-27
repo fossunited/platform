@@ -109,7 +109,7 @@ def create_newsletter_campaign(
     _chapter = chapter
 
     if not _reference_document and not _chapter:
-        frappe.throw("Atleast one of reference_document or chapter is required")
+        frappe.throw("Either reference_document or chapter need to be provided")
 
     if not _chapter:
         # Get Chapter ID

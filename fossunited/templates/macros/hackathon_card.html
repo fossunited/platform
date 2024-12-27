@@ -13,10 +13,10 @@
     {% endif %}
   >
     <div class="event-card-contents">
-      {% if hackathon.organizing_chapter %}
+      {% if hackathon.chapter %}
         {%
           set chapter = frappe.get_doc("FOSS Chapter",
-          hackathon.organizing_chapter)
+          hackathon.chapter)
         %}
         <div
           class="chapter-brand-block {% if chapter.chapter_type == 'FOSS Club' %}club-brand{% endif %}"

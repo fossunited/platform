@@ -48,7 +48,7 @@ const newsletter = createResource({
   makeParams() {
     return {
       data: data,
-      event: props.event,
+      reference_document: props.event,
       chapter: props.chapter,
     }
   },

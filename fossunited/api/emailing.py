@@ -16,31 +16,47 @@ EMAIL_GROUP_TYPES = Literal[
 
 
 def create_email_group(
-    event_id: str,
     type: EMAIL_GROUP_TYPES,
+    reference_document: str,
+    document_type: str = EVENT,
 ):
     """
     Create an email group linked to the event
 
     Args:
-        event: event id
-        session_user: session user id
+        type: type of email group
+        reference_document: id of the reference document of type document_type
+        document_type: type of reference document (default: "FOSS Chapter Event")
     """
-    _event = frappe.get_doc(EVENT, event_id)
+    _doc = frappe.get_doc(document_type, reference_document)
+    _chapter = _doc.get("chapter")
 
     if frappe.db.exists(
-        EMAIL_GROUP, {"event": event_id, "chapter": _event.chapter, "group_type": type}
+        EMAIL_GROUP,
+        {
+            "reference_document": reference_document,
+            "document_type": document_type,
+            "chapter": _chapter,
+            "group_type": type,
+        },
     ):
         raise frappe.ValidationError("Email Group already exists for this event")
 
-    group_title = f"{type}-{event_id}"
+    # This is done to prevent cases when event id and hackathon id are equal
+    group_title = ""
+    if document_type == EVENT:
+        group_title = f"{type}-{reference_document}-Event"
+    else:
+        group_title = f"{type}-{reference_document}-Hackathon"
+
     _group_title = group_title[:140]
     group = frappe.get_doc(
         {
             "doctype": EMAIL_GROUP,
             "title": _group_title,
-            "chapter": _event.chapter,
-            "event": event_id,
+            "chapter": _chapter,
+            "reference_document": reference_document,
+            "document_type": document_type,
             "group_type": type,
         }
     )
@@ -74,23 +90,30 @@ def add_to_email_group(email_group: str, email: str):
 
 
 @frappe.whitelist()
-def create_newsletter_campaign(data: dict, event: str = None, chapter: str = None):
+def create_newsletter_campaign(
+    data: dict,
+    reference_document: str = None,
+    document_type: str = EVENT,
+    chapter: str = None,
+):
     """
     Create a newsletter document linked to the particular event / chapter
 
     Args:
-        data: data to be set in the doctype
-        event: event id
-        chapter: chapter id
+        data(dict): data to be set in the doctype
+        reference_document(str): if of the reference document of type `document_type`
+        document_type(str): type of reference document linked. default: 'FOSS Chapter Event'
+        chapter(str): id of chapter it is linked to
     """
-    _event = event
+    _reference_document = reference_document
     _chapter = chapter
 
-    if not _event and not _chapter:
-        frappe.throw("Atleast one of event or chapter is required")
+    if not _reference_document and not _chapter:
+        frappe.throw("Either reference_document or chapter need to be provided")
 
     if not _chapter:
-        _chapter = frappe.db.get_value(EVENT, _event, ["chapter"])
+        # Get Chapter ID
+        _chapter = frappe.db.get_value(document_type, _reference_document, ["chapter"])
 
     chapter_dict = frappe.db.get_value(
         CHAPTER,
@@ -110,8 +133,9 @@ def create_newsletter_campaign(data: dict, event: str = None, chapter: str = Non
     newsletter_doc = frappe.get_doc(
         {
             "doctype": "Newsletter",
-            "event": event,
-            "chapter": chapter,
+            "document_type": document_type,
+            "reference_document": reference_document,
+            "chapter": _chapter,
             "sender_name": chapter_dict.chapter_name,
             "sender_email": chapter_dict.email,
             "email_group": recipient_groups,
@@ -131,12 +155,15 @@ def create_newsletter_campaign(data: dict, event: str = None, chapter: str = Non
 
 
 @frappe.whitelist()
-def get_newsletter_campaigns(event: str = None, chapter: str = None):
+def get_newsletter_campaigns(
+    reference_document: str = None, document_type: str = EVENT, chapter: str = None
+):
     """
     Get all newsletter / email campaigns specific to an event or a chapter
 
     Args:
-        event: id of the event
+        reference_document: id of the document linked
+        document_type: doctype of reference_document. default: FOSS Chapter Event
         chapter: id of the chapter
 
     Returns:
@@ -145,7 +172,11 @@ def get_newsletter_campaigns(event: str = None, chapter: str = None):
 
     campaigns = frappe.db.get_all(
         doctype=CAMPAIGN,
-        filters={"event": event, "chapter": chapter},
+        filters={
+            "reference_document": reference_document,
+            "document_type": document_type,
+            "chapter": chapter,
+        },
         fields=[
             "total_recipients",
             "total_views",
@@ -240,12 +271,17 @@ def get_campaign_detail(id: str) -> dict:
 
 
 @frappe.whitelist()
-def get_email_groups(event: str = None, chapter: str = None) -> list:
+def get_email_groups(
+    reference_document: str = None,
+    document_type: str = EVENT,
+    chapter: str = None,
+) -> list:
     """
     Get email group for a specific event or chapter
 
     Args:
-        event: id of the event
+        reference_document: id of the document linked
+        document_type: doctype of reference_document. default: FOSS Chapter Event
         chapter: id of the chapter
 
     Returns:
@@ -254,7 +290,11 @@ def get_email_groups(event: str = None, chapter: str = None) -> list:
 
     email_groups = frappe.db.get_all(
         EMAIL_GROUP,
-        {"chapter": chapter, "event": event},
+        {
+            "chapter": chapter,
+            "reference_document": reference_document,
+            "document_type": document_type,
+        },
         ["total_subscribers", "group_type", "name"],
     )
 
@@ -394,7 +434,11 @@ def send_test_email(campaign_id: str, email: str):
     campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     if not campaign.chapter:
-        chapter = frappe.db.get_value(EVENT, campaign.event, ["chapter"])
+        chapter = frappe.db.get_value(
+            campaign.document_type,
+            campaign.reference_document,
+            ["chapter"],
+        )
     else:
         chapter = campaign.chapter
 
@@ -432,7 +476,11 @@ def get_sending_status(campaign_id: str) -> dict:
     campaign = frappe.get_doc(CAMPAIGN, campaign_id)
 
     if not campaign.chapter:
-        chapter = frappe.db.get_value(EVENT, campaign.event, ["chapter"])
+        chapter = frappe.db.get_value(
+            campaign.document_type,
+            campaign.reference_document,
+            ["chapter"],
+        )
     else:
         chapter = campaign.chapter
 

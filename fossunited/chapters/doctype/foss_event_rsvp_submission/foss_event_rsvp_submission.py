@@ -2,7 +2,7 @@ import frappe
 from frappe.model.document import Document
 
 from fossunited.api.emailing import add_to_email_group, create_email_group
-from fossunited.doctype_ids import EVENT_RSVP, RSVP_RESPONSE
+from fossunited.doctype_ids import EVENT, EVENT_RSVP, RSVP_RESPONSE
 
 
 class FOSSEventRSVPSubmission(Document):
@@ -89,11 +89,26 @@ class FOSSEventRSVPSubmission(Document):
 
     def handle_add_to_email_group(self):
         if not frappe.db.exists(
-            "Email Group", {"event": self.event, "group_type": "Event Participants"}
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
         ):
-            create_email_group(self.event, "Event Participants")
+            create_email_group(
+                type="Event Participants",
+                reference_document=self.event,
+                document_type=EVENT,
+            )
 
         email_group = frappe.db.get_value(
-            "Email Group", {"event": self.event, "group_type": "Event Participants"}, ["name"]
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
+            ["name"],
         )
         add_to_email_group(email_group, self.email)

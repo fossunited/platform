@@ -336,11 +336,12 @@ def insert_rsvp_submission(linked_rsvp: str, **kwargs):
         raise
 
 
-def insert_test_hackathon(**kwargs):
+def insert_test_hackathon(chapter: str, **kwargs):
     """
     Generate a test hackathon with flexible configuration options.
 
     Args:
+        chapter (str): id of the linked chapter
         permalink (str, optional): Permalink of the hackathon. Defaults to random slug.
         hackathon_name (str, optional): Name of the hackathon. Defaults to random text.
         hackathon_type (str, optional): Type of the hackathon. Defaults to "Hybrid".
@@ -357,6 +358,7 @@ def insert_test_hackathon(**kwargs):
     """
     hackathon_data = {
         "doctype": HACKATHON,
+        "chapter": chapter,
         "permalink": kwargs.get("permalink", fake.slug().replace("-", "_")),
         "hackathon_name": kwargs.get("hackathon_name", fake.text(max_nb_chars=20).strip()),
         "hackathon_type": kwargs.get("hackathon_type", "Hybrid"),

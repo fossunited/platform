@@ -8,12 +8,12 @@
     </div>
     <div class="header--title-cta-parent mt-6 p-0">
       <div>
-        {% if hackathon.organizing_chapter and not hackathon.hackathon_logo %}
+        {% if hackathon.chapter and not hackathon.hackathon_logo %}
           {%
             from
             'fossunited/templates/macros/chapter_branding_block.html' import chapter_branding_block
           %}
-          {{ chapter_branding_block(hackathon.organizing_chapter) }}
+          {{ chapter_branding_block(hackathon.chapter) }}
         {% endif %}
         <div class="hackathon-name--header align-items-end my-2">
           {% if hackathon.hackathon_logo %}

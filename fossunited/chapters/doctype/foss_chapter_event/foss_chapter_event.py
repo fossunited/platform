@@ -11,6 +11,7 @@ from fossunited.doctype_ids import (
     CAMPAIGN,
     CHAPTER,
     EMAIL_GROUP,
+    EVENT,
     EVENT_CFP,
     EVENT_RSVP,
     PROPOSAL,
@@ -118,10 +119,14 @@ class FOSSChapterEvent(WebsiteGenerator):
             "Accepted Proposers",
             "Rejected Proposers",
         ]:
-            create_email_group(event_id=self.name, type=group)
+            create_email_group(type=group, reference_document=self.name, document_type=EVENT)
 
     def delete_campaigns(self):
-        campaigns = frappe.db.get_all(CAMPAIGN, {"event": self.name}, pluck="name")
+        campaigns = frappe.db.get_all(
+            CAMPAIGN,
+            {"reference_document": self.name, "document_type": EVENT},
+            pluck="name",
+        )
         for campaign in campaigns:
             frappe.delete_doc(
                 CAMPAIGN,
@@ -129,7 +134,11 @@ class FOSSChapterEvent(WebsiteGenerator):
             )
 
     def delete_email_groups(self):
-        groups = frappe.db.get_all(EMAIL_GROUP, {"event": self.name}, pluck="name")
+        groups = frappe.db.get_all(
+            EMAIL_GROUP,
+            {"reference_document": self.name, "document_type": EVENT},
+            pluck="name",
+        )
         for group in groups:
             frappe.delete_doc(
                 EMAIL_GROUP,

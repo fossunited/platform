@@ -17,7 +17,7 @@
     "column_break_gttz",
     "external_website_url",
     "hackathon_basic_info_section",
-    "organizing_chapter",
+    "chapter",
     "hackathon_name",
     "hackathon_type",
     "start_date",
@@ -198,12 +198,6 @@
       "unique": 1
     },
     {
-      "fieldname": "organizing_chapter",
-      "fieldtype": "Link",
-      "label": "Organizing Chapter",
-      "options": "FOSS Chapter"
-    },
-    {
       "fieldname": "schedule_tab",
       "fieldtype": "Tab Break",
       "label": "Schedule"
@@ -320,6 +314,13 @@
       "fieldname": "show_schedule_tab",
       "fieldtype": "Check",
       "label": "Show Schedule Tab?"
+    },
+    {
+      "fieldname": "chapter",
+      "fieldtype": "Link",
+      "label": "Organizing Chapter",
+      "options": "FOSS Chapter",
+      "reqd": 1
     }
   ],
   "has_web_view": 1,
@@ -347,7 +348,7 @@
       "link_fieldname": "parent_hackathon"
     }
   ],
-  "modified": "2024-06-18 13:58:54.173769",
+  "modified": "2024-12-26 13:49:52.499217",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon",

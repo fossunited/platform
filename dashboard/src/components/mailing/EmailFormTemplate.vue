@@ -109,7 +109,7 @@ const emailGroups = createResource({
   url: 'fossunited.api.emailing.get_email_groups',
   makeParams() {
     return {
-      event: props.event,
+      reference_document: props.event,
       chapter: props.chapter,
     }
   },

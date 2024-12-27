@@ -31,6 +31,7 @@ class FOSSHackathon(WebsiteGenerator):
             FOSSEventSponsor,
         )
 
+        chapter: DF.Link
         community_partners: DF.Table[FOSSEventCommunityPartner]
         contribution_coming_soon_description: DF.SmallText | None
         contribution_project_guidelines: DF.MarkdownEditor | None
@@ -53,7 +54,6 @@ class FOSSHackathon(WebsiteGenerator):
         is_team_mandatory: DF.Check
         max_team_members: DF.Int
         only_show_logo: DF.Check
-        organizing_chapter: DF.Link | None
         partner_project_guidelines: DF.MarkdownEditor | None
         permalink: DF.Data | None
         registration_description: DF.TextEditor | None
@@ -62,8 +62,8 @@ class FOSSHackathon(WebsiteGenerator):
         show_schedule_tab: DF.Check
         sponsor_list: DF.Table[FOSSEventSponsor]
         start_date: DF.Datetime
-
     # end: auto-generated types
+
     def before_save(self):
         self.set_route()
 
@@ -74,8 +74,8 @@ class FOSSHackathon(WebsiteGenerator):
             self.route = f'hack/{self.hackathon_name.lower().replace(" ", "-")}'
 
     def get_context(self, context):
-        if self.organizing_chapter:
-            context.chapter = frappe.get_doc(CHAPTER, self.organizing_chapter)
+        if self.chapter:
+            context.chapter = frappe.get_doc(CHAPTER, self.chapter)
 
         context.nav_items = self.get_nav_items()
         context.sponsors_dict = self.get_sponsors()

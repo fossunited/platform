@@ -5,7 +5,11 @@ from frappe.tests import IntegrationTestCase
 from fossunited.doctype_ids import (
     USER_PROFILE,
 )
-from fossunited.tests.utils import insert_test_hackathon, insert_test_hackathon_localhost
+from fossunited.tests.utils import (
+    insert_test_chapter,
+    insert_test_hackathon,
+    insert_test_hackathon_localhost,
+)
 
 
 class TestFOSSHackathonLocalHost(IntegrationTestCase):
@@ -14,11 +18,13 @@ class TestFOSSHackathonLocalHost(IntegrationTestCase):
         self.organizer1_profile = frappe.get_doc(USER_PROFILE, {"user": self.ORGANIZER_1})
         self.ORGANIZER_2 = "test2@example.com"
         self.organizer2_profile = frappe.get_doc(USER_PROFILE, {"user": self.ORGANIZER_2})
-        self.hackathon = insert_test_hackathon()
+        self.chapter = insert_test_chapter()
+        self.hackathon = insert_test_hackathon(chapter=self.chapter.name)
         self.localhost = insert_test_hackathon_localhost(parent_hackathon=self.hackathon.name)
 
     def tearDown(self):
         frappe.set_user("Administrator")
+        self.chapter.delete(force=True)
         self.localhost.delete(force=True)
         self.hackathon.delete(force=True)
 

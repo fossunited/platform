@@ -63,7 +63,12 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
 
         # Then the email should be added to an email group linked to event for CFP Proposers
         email_group = frappe.db.get_value(
-            "Email Group", {"event": cfp.event, "group_type": "CFP Proposers"}
+            "Email Group",
+            {
+                "reference_document": cfp.event,
+                "document_type": EVENT,
+                "group_type": "CFP Proposers",
+            },
         )
 
         self.assertTrue(
@@ -83,7 +88,12 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         submission.save()
 
         email_group = frappe.db.get_value(
-            "Email Group", {"event": cfp.event, "group_type": "Accepted Proposers"}
+            "Email Group",
+            {
+                "reference_document": cfp.event,
+                "document_type": EVENT,
+                "group_type": "Accepted Proposers",
+            },
         )
         # Then it should be added to an email group for this event, where type==Accepted Proposers
         self.assertTrue(
@@ -103,7 +113,12 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         submission.save()
 
         email_group = frappe.db.get_value(
-            "Email Group", {"event": cfp.event, "group_type": "Rejected Proposers"}
+            "Email Group",
+            {
+                "reference_document": cfp.event,
+                "document_type": EVENT,
+                "group_type": "Rejected Proposers",
+            },
         )
         # Then it should be added to an email group for this event, where type==Accepted Proposers
         self.assertTrue(

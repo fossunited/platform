@@ -100,9 +100,10 @@ def create_newsletter_campaign(
     Create a newsletter document linked to the particular event / chapter
 
     Args:
-        data: data to be set in the doctype
-        event: event id
-        chapter: chapter id
+        data(dict): data to be set in the doctype
+        reference_document(str): if of the reference document of type `document_type`
+        document_type(str): type of reference document linked. default: 'FOSS Chapter Event'
+        chapter(str): id of chapter it is linked to
     """
     _reference_document = reference_document
     _chapter = chapter
@@ -161,7 +162,8 @@ def get_newsletter_campaigns(
     Get all newsletter / email campaigns specific to an event or a chapter
 
     Args:
-        event: id of the event
+        reference_document: id of the document linked
+        document_type: doctype of reference_document. default: FOSS Chapter Event
         chapter: id of the chapter
 
     Returns:
@@ -278,7 +280,8 @@ def get_email_groups(
     Get email group for a specific event or chapter
 
     Args:
-        event: id of the event
+        reference_document: id of the document linked
+        document_type: doctype of reference_document. default: FOSS Chapter Event
         chapter: id of the chapter
 
     Returns:

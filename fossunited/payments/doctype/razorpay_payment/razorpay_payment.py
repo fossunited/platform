@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 
+from fossunited.doctype_ids import EVENT
 from fossunited.utils.payments import (
     get_in_razorpay_money,
     get_razorpay_client,
@@ -83,3 +84,11 @@ class RazorpayPayment(Document):
     @property
     def is_paid(self):
         return self.status == "Captured"
+
+    def before_insert(self):
+        if self.document_type == EVENT:
+            is_ticket_live = frappe.db.get_value(
+                EVENT, {"name": self.document_name}, "tickets_status"
+            )
+            if not bool(is_ticket_live):
+                frappe.throw("Ticket sale are closed for this event!", frappe.PermissionError)

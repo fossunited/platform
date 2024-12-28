@@ -8,6 +8,7 @@ from fossunited.doctype_ids import (
     CITY_COMMUNITY,
     EVENT,
     EVENT_RSVP,
+    EVENT_TICKET,
     HACKATHON,
     HACKATHON_LOCALHOST,
     HACKATHON_PARTICIPANT,
@@ -213,6 +214,33 @@ def insert_test_event(chapter: dict, **kwargs):
     except Exception:
         # Re-raise the exception to maintain original error handling
         raise
+
+
+def insert_test_ticket(event: str, **kwargs):
+    """
+    Generate a test ticket linked to an event.
+
+    Args:
+        event: ID of linked event
+    """
+    ticket_data = {
+        "doctype": EVENT_TICKET,
+        "event": event,
+        "is_transfer_ticket": kwargs.get("is_transfer_ticket", 0),
+        "full_name": kwargs.get("full_name", fake.name()),
+        "email": kwargs.get("email", fake.email()),
+        "tier": kwargs.get("tier", "Test Tier"),
+        "razorpay_payment": kwargs.get("razorpay_payment", ""),
+        "wants_tshirt": kwargs.get("wants_tshirt", 0),
+        "tshirt_size": kwargs.get("tshirt_size", "M"),
+    }
+
+    ticket = frappe.get_doc(ticket_data)
+    ticket.flags.ignore_permissions = kwargs.get("ignore_permissions", False)
+    ticket.insert()
+    ticket.reload()
+
+    return ticket
 
 
 def insert_rsvp_form(event: str, **kwargs):

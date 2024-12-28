@@ -76,8 +76,20 @@ class FOSSEventTicket(Document):
                     )
             ticket_doc.save(ignore_permissions=True)
 
+    def before_insert(self):
+        if not self.is_ticket_live():
+            frappe.throw("Ticket sale are closed for this event!", frappe.PermissionError)
+
     def after_insert(self):
         self.check_max_tickets()
+
+    def is_ticket_live(self):
+        tickets_status = frappe.db.get_value(
+            EVENT,
+            {"name": self.event},
+            "tickets_status",
+        )
+        return bool(tickets_status == "Live")
 
     def check_max_tickets(self):
         event = frappe.get_doc(EVENT, self.event)

@@ -64,7 +64,8 @@
       "fieldname": "hackathon",
       "fieldtype": "Link",
       "label": "Hackathon",
-      "options": "FOSS Hackathon"
+      "options": "FOSS Hackathon",
+      "reqd": 1
     },
     {
       "fieldname": "meta_section",
@@ -128,7 +129,7 @@
     }
   ],
   "links": [],
-  "modified": "2024-07-18 10:44:30.991416",
+  "modified": "2024-12-29 17:10:32.240540",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon Participant",

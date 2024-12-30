@@ -213,6 +213,8 @@ class FOSSChapter(WebsiteGenerator):
                 "banner_image",
                 "must_attend",
                 "event_location",
+                "is_external_event",
+                "external_event_url",
             ],
             order_by="event_end_date desc",
             page_length=999,

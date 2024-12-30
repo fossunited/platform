@@ -77,6 +77,27 @@ class TestRazorpayPayment(IntegrationTestCase):
         # Then a ticket should be created
         self.assertIsNotNone(frappe.db.exists(EVENT_TICKET, {"razorpay_payment": payment.name}))
 
+    def test_multiple_ticket_creation_on_capture(self):
+        # Given a event ticket payment with multiple participants
+        number_of_attendees = 3
+        payment = insert_test_razorpay_payment(
+            event=self.event.name, num_seats=number_of_attendees
+        )
+        # The initial status should be `Pending`
+        self.assertEqual(payment.status, "Pending")
+        # And there should be no tickets linked to this payment
+        self.assertEqual(frappe.db.count(EVENT_TICKET, {"razorpay_payment": payment.name}), 0)
+
+        # When the status for the payment is changed to "Captured"
+        payment.status = "Captured"
+        payment.save()
+
+        # Then tickets equal to `number_of_attendees` count should be created
+        # which are linked to this payment
+        self.assertEqual(
+            frappe.db.count(EVENT_TICKET, {"razorpay_payment": payment.name}), number_of_attendees
+        )
+
     def test_payment_creation_on_closed_tickets(self):
         # Given an event with tickets closed
         self.event.tickets_status = "Closed"

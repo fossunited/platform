@@ -3,7 +3,7 @@ from faker import Faker
 from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import CHAPTER, EVENT, EVENT_TICKET, TICKET_TRANSFER
-from fossunited.tests.utils import insert_test_chapter, insert_test_event
+from fossunited.tests.utils import insert_test_chapter, insert_test_event, insert_test_ticket
 
 fake = Faker()
 
@@ -11,7 +11,19 @@ fake = Faker()
 class TestFOSSEventTicketTransfer(IntegrationTestCase):
     def setUp(self):
         self.chapter = insert_test_chapter()
-        self.event = insert_test_event(chapter=self.chapter)
+        self.event = insert_test_event(
+            chapter=self.chapter,
+            is_paid_event=True,
+            tickets_status="Live",
+            tiers=[
+                {
+                    "enabled": 1,
+                    "title": "Test",
+                    "price": 100,
+                    "maximum_tickets": 5,
+                }
+            ],
+        )
 
     def tearDown(self):
         frappe.set_user("Administrator")
@@ -30,15 +42,11 @@ class TestFOSSEventTicketTransfer(IntegrationTestCase):
         }
 
         # Given for an event, a ticket is created. For that ticket, a transfer is generated.
-        ticket = frappe.get_doc(
-            {
-                "doctype": EVENT_TICKET,
-                "event": self.event.name,
-                "full_name": sender["full_name"],
-                "email": sender["email"],
-            }
+        ticket = insert_test_ticket(
+            event=self.event.name,
+            full_name=sender["full_name"],
+            email=sender["email"],
         )
-        ticket.insert()
 
         transfer = frappe.get_doc(
             {
@@ -83,15 +91,7 @@ class TestFOSSEventTicketTransfer(IntegrationTestCase):
         # Given an event and a ticket linked to the event
         # With a ticket created for a user, try to transfer this ticket to another user while
         # passing "Completed" as the status
-        ticket = frappe.get_doc(
-            {
-                "doctype": EVENT_TICKET,
-                "event": self.event.name,
-                "full_name": fake.name(),
-                "email": fake.email(),
-            }
-        )
-        ticket.insert()
+        ticket = insert_test_ticket(event=self.event.name)
 
         # Then verify that this operation raises a ValidationError
         with self.assertRaises(frappe.exceptions.ValidationError):
@@ -121,15 +121,11 @@ class TestFOSSEventTicketTransfer(IntegrationTestCase):
             "email": fake.email(),
         }
 
-        ticket = frappe.get_doc(
-            {
-                "doctype": EVENT_TICKET,
-                "event": self.event.name,
-                "full_name": sender["full_name"],
-                "email": sender["email"],
-            }
+        ticket = insert_test_ticket(
+            event=self.event.name,
+            full_name=sender["full_name"],
+            email=sender["email"],
         )
-        ticket.insert(ignore_permissions=True)
 
         # Transfer ticket to recipient_1
         transfer_1 = frappe.get_doc(

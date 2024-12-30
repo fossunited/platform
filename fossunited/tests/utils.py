@@ -8,14 +8,18 @@ from fossunited.doctype_ids import (
     CITY_COMMUNITY,
     EVENT,
     EVENT_RSVP,
+    EVENT_TICKET,
     HACKATHON,
     HACKATHON_LOCALHOST,
     HACKATHON_PARTICIPANT,
     HACKATHON_TEAM,
     JOIN_TEAM_REQUEST,
+    RAZORPAY_PAYMENT,
     RSVP_RESPONSE,
+    TICKET_TIER,
     USER_PROFILE,
 )
+from fossunited.ticketing.doctype.foss_ticket_tier.foss_ticket_tier import FOSSTicketTier
 
 fake = Faker()
 
@@ -213,6 +217,105 @@ def insert_test_event(chapter: dict, **kwargs):
     except Exception:
         # Re-raise the exception to maintain original error handling
         raise
+
+
+def insert_test_razorpay_payment(
+    event: str, attendees: list = [], tier: FOSSTicketTier = None, **kwargs
+):
+    """
+    Generate a test razorpay payment linked to an Event.
+
+    args:
+        event (str, required): ID of event to which the payment is linked to.
+        attendees (list, optional): list of attendees, defaults to empty
+        tier: FOSSTicketTier object, defaults to None
+        num_seats (int, optional) : if the attendees list is empty, define this to create
+        `num_seats` number of fake attendees
+    """
+    num_seats = kwargs.get("num_seats", 1)
+    if len(attendees) == 0:
+        for _ in range(num_seats):
+            attendees.append(get_ticket_attendee())
+
+    if not tier:
+        tier = frappe.get_doc(EVENT, event).get("tiers")[0]
+
+    meta_data = {
+        "attendees": attendees,
+        "event": event,
+        "num_seats": len(attendees),
+        "tier": tier.as_dict(),
+    }
+
+    razorpay_data = {
+        "doctype": RAZORPAY_PAYMENT,
+        "document_type": EVENT,
+        "document_name": event,
+        "email": kwargs.get("email", attendees[0].get("email")),
+        "amount": get_payment_total(attendees, event, tier),
+        "currency": "INR",
+        "status": kwargs.get("status", "Pending"),
+        "meta_data": frappe.as_json(meta_data),
+    }
+
+    payment = frappe.get_doc(razorpay_data)
+    payment.insert()
+    payment.reload()
+
+    return payment
+
+
+def get_payment_total(attendees, event, tier):
+    ticket_amount = frappe.db.get_value(TICKET_TIER, {"name": tier.name}, "price")
+    tshirt_amount = frappe.db.get_value(EVENT, {"name": event}, "t_shirt_price")
+
+    total_amount = 0
+
+    for attendee in attendees:
+        total_amount += ticket_amount
+        if bool(attendee["wants_tshirt"]):
+            total_amount += tshirt_amount
+
+    return total_amount
+
+
+def get_ticket_attendee():
+    attendee = {
+        "designation": fake.job(),
+        "email": fake.email(),
+        "full_name": fake.name(),
+        "organization": fake.company(),
+        "placeholder": fake.name(),
+        "wants_tshirt": 0,
+    }
+    return attendee
+
+
+def insert_test_ticket(event: str, **kwargs):
+    """
+    Generate a test ticket linked to an event.
+
+    Args:
+        event: ID of linked event
+    """
+    ticket_data = {
+        "doctype": EVENT_TICKET,
+        "event": event,
+        "is_transfer_ticket": kwargs.get("is_transfer_ticket", 0),
+        "full_name": kwargs.get("full_name", fake.name()),
+        "email": kwargs.get("email", fake.email()),
+        "tier": kwargs.get("tier", "Test Tier"),
+        "razorpay_payment": kwargs.get("razorpay_payment", ""),
+        "wants_tshirt": kwargs.get("wants_tshirt", 0),
+        "tshirt_size": kwargs.get("tshirt_size", "M"),
+    }
+
+    ticket = frappe.get_doc(ticket_data)
+    ticket.flags.ignore_permissions = kwargs.get("ignore_permissions", False)
+    ticket.insert()
+    ticket.reload()
+
+    return ticket
 
 
 def insert_rsvp_form(event: str, **kwargs):

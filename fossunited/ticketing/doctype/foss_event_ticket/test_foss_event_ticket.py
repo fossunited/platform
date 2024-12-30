@@ -4,7 +4,7 @@ from frappe.tests import IntegrationTestCase
 
 from fossunited.api.checkins import checkin_attendee
 from fossunited.doctype_ids import CHAPTER, EVENT, EVENT_TICKET
-from fossunited.tests.utils import insert_test_chapter, insert_test_event
+from fossunited.tests.utils import insert_test_chapter, insert_test_event, insert_test_ticket
 
 
 class TestFOSSEventTicket(IntegrationTestCase):
@@ -12,7 +12,17 @@ class TestFOSSEventTicket(IntegrationTestCase):
         self.lead_email = "test1@example.com"
         self.chapter = insert_test_chapter(lead_email=self.lead_email)
         self.event = insert_test_event(
-            chapter=self.chapter, is_paid_event=True, tickets_status="Live"
+            chapter=self.chapter,
+            is_paid_event=True,
+            tickets_status="Live",
+            tiers=[
+                {
+                    "enabled": 1,
+                    "title": "Test",
+                    "price": 100,
+                    "maximum_tickets": 5,
+                }
+            ],
         )
 
     def tearDown(self):
@@ -78,3 +88,59 @@ class TestFOSSEventTicket(IntegrationTestCase):
         # Then the user should not have permission to check-in the attendee
         with self.assertRaises(frappe.PermissionError):
             checkin_attendee(self.event.name, ticket.as_dict(), "test2@example.com")
+
+    def test_create_when_tickets_closed(self):
+        # Given a paid event with ticket status as "Closed"
+        self.event.tickets_status = "Closed"
+        self.event.save()
+        # When a ticket is created for this event
+        # Then an error must be thrown
+        with self.assertRaises(frappe.PermissionError):
+            insert_test_ticket(event=self.event.name)
+
+    def test_ticket_creation(self):
+        # Given an event
+        # When the tickets_status is Live
+        self.event.tickets_status = "Live"
+        self.event.save()
+
+        # Then a ticket for this event should be created without any problem
+        ticket = insert_test_ticket(event=self.event.name)
+        ticket.delete(force=True)
+
+    def test_ticket_tier_closing(self):
+        # Given an event with a ticket tier
+        tier = self.event.get("tiers")[0]
+
+        # Make sure this tier is enabled
+        self.assertTrue(tier.enabled)
+
+        # make sure there are 0 tickets of this tier to start with
+        self.assertEqual(
+            frappe.db.count(
+                EVENT_TICKET,
+                {
+                    "event": self.event.name,
+                    "tier": tier.title,
+                },
+            ),
+            0,
+        )
+
+        # When maximum number of tickets are created of this tier type
+        tickets = []
+        for _ in range(tier.maximum_tickets):
+            _ticket = insert_test_ticket(
+                event=self.event.name,
+                tier=tier.title,
+            )
+            tickets.append(_ticket)
+
+        self.event.reload()
+
+        # Then the tier should be disabled
+        tier = self.event.get("tiers")[0]
+        self.assertEqual(tier.enabled, 0)
+
+        for ticket in tickets:
+            ticket.delete(force=1)

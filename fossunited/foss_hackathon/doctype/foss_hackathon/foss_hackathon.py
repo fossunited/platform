@@ -5,7 +5,8 @@ from datetime import datetime
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
 
-from fossunited.doctype_ids import CHAPTER, HACKATHON_PROJECT, PROPOSAL, USER_PROFILE
+from fossunited.api.emailing import create_email_group
+from fossunited.doctype_ids import CHAPTER, HACKATHON, HACKATHON_PROJECT, PROPOSAL, USER_PROFILE
 
 no_cache = 1
 
@@ -66,6 +67,13 @@ class FOSSHackathon(WebsiteGenerator):
 
     def before_save(self):
         self.set_route()
+
+    def after_insert(self):
+        create_email_group(
+            type="Event Participants",
+            reference_document=self.name,
+            document_type=HACKATHON,
+        )
 
     def set_route(self):
         if self.permalink:

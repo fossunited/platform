@@ -37,6 +37,7 @@ class TestFOSSHackathonParticipant(IntegrationTestCase):
     def tearDown(self):
         frappe.set_user("Administrator")
         self.participant_1.delete(force=True)
+        self.localhost.delete(force=True)
         self.hackathon.delete(force=True)
         self.chapter.delete(force=True)
 
@@ -107,6 +108,8 @@ class TestFOSSHackathonParticipant(IntegrationTestCase):
         frappe.set_user(self.PARTICIPANT_1)
         self.participant_1.wants_to_attend_locally = 1
         self.participant_1.localhost = self.localhost.name
+
+        self.assertEqual(self.participant_1.localhost_request_status, "Rejected")
         # Then a permission error should be thrown
         with self.assertRaises(frappe.PermissionError):
             self.participant_1.save()

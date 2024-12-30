@@ -13,7 +13,7 @@ from fossunited.tests.utils import (
 class TestFOSSHackathonParticipant(IntegrationTestCase):
     def setUp(self):
         self.LOCALHOST_ORGANIZER = "test3@example.com"
-        self.PARTICIPANT_1 = "test1@example.com"
+        self.PARTICIPANT_1 = "test4@example.com"
         self.PARTICIPANT_2 = "test2@example.com"
         self.chapter = insert_test_chapter()
         self.hackathon = insert_test_hackathon(chapter=self.chapter.name)

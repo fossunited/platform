@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import frappe
 from frappe.model.document import Document
 
+from fossunited.api.emailing import add_to_email_group, create_email_group
 from fossunited.doctype_ids import EVENT, EVENT_TICKET
 
 if TYPE_CHECKING:
@@ -81,7 +82,34 @@ class FOSSEventTicket(Document):
             frappe.throw("Ticket sale are closed for this event!", frappe.PermissionError)
 
     def after_insert(self):
+        self.handle_add_to_email_group()
         self.check_max_tickets()
+
+    def handle_add_to_email_group(self):
+        if not frappe.db.exists(
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
+        ):
+            create_email_group(
+                type="Event Participants",
+                reference_document=self.event,
+                document_type=EVENT,
+            )
+
+        email_group = frappe.db.get_value(
+            "Email Group",
+            {
+                "reference_document": self.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
+            ["name"],
+        )
+        add_to_email_group(email_group, self.email)
 
     def is_ticket_live(self):
         tickets_status = frappe.db.get_value(

@@ -144,3 +144,28 @@ class TestFOSSEventTicket(IntegrationTestCase):
 
         for ticket in tickets:
             ticket.delete(force=1)
+
+    def test_add_to_email_group(self):
+        # Given an Event with tickets "Live"
+        self.event.tickets_status = "Live"
+        self.event.save()
+
+        attendee_email = "test4@example.com"
+        # When a ticket is created with attendee's email
+        insert_test_ticket(event=self.event.name, email=attendee_email)
+
+        # Then the email should be added to an email group linked to event for participants
+        email_group = frappe.db.get_value(
+            "Email Group",
+            {
+                "reference_document": self.event.name,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
+        )
+
+        self.assertTrue(
+            frappe.db.exists(
+                "Email Group Member", {"email": attendee_email, "email_group": email_group}
+            )
+        )

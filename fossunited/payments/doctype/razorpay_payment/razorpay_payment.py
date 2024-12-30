@@ -87,8 +87,8 @@ class RazorpayPayment(Document):
 
     def before_insert(self):
         if self.document_type == EVENT:
-            is_ticket_live = frappe.db.get_value(
+            ticket_status = frappe.db.get_value(
                 EVENT, {"name": self.document_name}, "tickets_status"
             )
-            if not bool(is_ticket_live):
+            if ticket_status == "Closed":
                 frappe.throw("Ticket sale are closed for this event!", frappe.PermissionError)

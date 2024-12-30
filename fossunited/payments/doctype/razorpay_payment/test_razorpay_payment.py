@@ -84,11 +84,6 @@ class TestRazorpayPayment(IntegrationTestCase):
         self.event.reload()
 
         # When a payment linked to this event is created
-        payment = insert_test_razorpay_payment(event=self.event.name)
-
-        # Then it should throw an error on attempt to change its status to Captured
+        # Then it should throw an error before it is created
         with self.assertRaises(frappe.PermissionError):
-            payment.status = "Captured"
-            payment.save()
-
-        payment.delete(force=True)
+            insert_test_razorpay_payment(event=self.event.name)

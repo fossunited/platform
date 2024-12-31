@@ -99,7 +99,7 @@ override_doctype_class = {
 
 # Migration
 # ----------------
-after_migrate = "fossunited.migrate.after_migrate"
+before_migrate = "fossunited.migrate.before_migrate"
 
 # Scheduler Events
 # ----------------

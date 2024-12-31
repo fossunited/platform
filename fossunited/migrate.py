@@ -5,7 +5,7 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from fossunited.setup import get_custom_fields
 
 
-def after_migrate():
+def before_migrate():
     try:
         missing_custom_fields = has_custom_fields()
         if not missing_custom_fields:

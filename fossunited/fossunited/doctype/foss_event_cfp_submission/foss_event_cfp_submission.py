@@ -255,4 +255,8 @@ class FOSSEventCFPSubmission(WebsiteGenerator):
             },
             ["name"],
         )
-        add_to_email_group(email_group, self.email)
+
+        try:
+            add_to_email_group(email_group, self.email)
+        except frappe.DuplicateEntryError:
+            pass

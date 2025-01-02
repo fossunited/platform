@@ -3,12 +3,15 @@ from faker import Faker
 from frappe.tests import IntegrationTestCase
 
 from fossunited.doctype_ids import (
-    CHAPTER,
     EVENT,
-    EVENT_CFP,
     PROPOSAL,
 )
-from fossunited.tests.utils import insert_test_chapter, insert_test_event
+from fossunited.tests.utils import (
+    insert_cfp_form,
+    insert_cfp_submission,
+    insert_test_chapter,
+    insert_test_event,
+)
 
 fake = Faker()
 
@@ -20,39 +23,23 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         self.chapter = insert_test_chapter(lead_email=LEAD)
         self.event = insert_test_event(chapter=self.chapter)
 
-        cfp = frappe.get_doc(
-            {
-                "doctype": EVENT_CFP,
-                "event": self.event.name,
-            }
-        )
-        cfp.insert()
-        cfp.reload()
-        self.cfp = cfp
-
+        self.cfp = insert_cfp_form(event=self.event)
         self.submission_email = fake.email()
-        submission = frappe.get_doc(
-            {
-                "doctype": PROPOSAL,
-                "linked_cfp": cfp.name,
-                "full_name": fake.name(),
-                "email": self.submission_email,
-                "designation": "SDE",
-                "bio": fake.text(),
-                "talk_title": "Test Talk Title",
-                "talk_description": fake.sentence(),
-            }
-        ).insert()
-        submission.reload()
-
-        self.submission = submission
+        self.submission = insert_cfp_submission(
+            linked_cfp=self.cfp.name,
+            event=self.event.name,
+            email=self.submission_email,
+        )
 
     def tearDown(self):
         frappe.set_user("Administrator")
-        frappe.delete_doc(EVENT_CFP, self.cfp.name, force=True)
-        frappe.delete_doc(PROPOSAL, self.submission.name, force=True)
-        frappe.delete_doc(CHAPTER, self.chapter.name, force=True)
-        frappe.delete_doc(EVENT, self.event.name, force=True)
+
+        submissions = frappe.get_all(PROPOSAL, {"event": self.event.name}, pluck="name")
+        for submission in submissions:
+            frappe.delete_doc(PROPOSAL, submission, force=True)
+        self.cfp.delete(force=True)
+        self.event.delete(force=True)
+        self.chapter.delete(force=True)
 
     def test_add_to_email_group(self):
         # given a cfp form
@@ -62,20 +49,7 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         submission = self.submission
 
         # Then the email should be added to an email group linked to event for CFP Proposers
-        email_group = frappe.db.get_value(
-            "Email Group",
-            {
-                "reference_document": cfp.event,
-                "document_type": EVENT,
-                "group_type": "CFP Proposers",
-            },
-        )
-
-        self.assertTrue(
-            frappe.db.exists(
-                "Email Group Member", {"email": submission.email, "email_group": email_group}
-            )
-        )
+        self.assertTrue(self.is_added_to_email_group(cfp.event, submission.email, "CFP Proposers"))
 
     def test_add_to_group_on_accept(self):
         # given a cfp and its submission
@@ -87,19 +61,9 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         submission.status = "Approved"
         submission.save()
 
-        email_group = frappe.db.get_value(
-            "Email Group",
-            {
-                "reference_document": cfp.event,
-                "document_type": EVENT,
-                "group_type": "Accepted Proposers",
-            },
-        )
         # Then it should be added to an email group for this event, where type==Accepted Proposers
         self.assertTrue(
-            frappe.db.exists(
-                "Email Group Member", {"email": submission.email, "email_group": email_group}
-            )
+            self.is_added_to_email_group(cfp.event, submission.email, "Accepted Proposers")
         )
 
     def test_add_to_group_on_reject(self):
@@ -112,17 +76,41 @@ class TestFOSSEventCFPSubmission(IntegrationTestCase):
         submission.status = "Rejected"
         submission.save()
 
+        # Then it should be added to an email group for this event, where type==Accepted Proposers
+        self.assertTrue(
+            self.is_added_to_email_group(cfp.event, submission.email, "Rejected Proposers")
+        )
+
+    def test_multiple_submission_by_same_email(self):
+        # given a cfp
+        cfp = self.cfp
+
+        # When multiple submissions are done by the same email
+        # Then they should be submitted without any error.
+        submission_email = "test4@example.com"
+
+        # ToDo: test by setting user with above email
+
+        for _ in range(3):
+            submission = insert_cfp_submission(
+                linked_cfp=cfp.name, event=cfp.event, email=submission_email
+            )
+
+            self.assertTrue(submission)
+
+        # And the email should be added to an email group linked to event for CFP Proposers
+        self.assertTrue(self.is_added_to_email_group(cfp.event, submission_email, "CFP Proposers"))
+
+    def is_added_to_email_group(self, event_id, email, group_type):
         email_group = frappe.db.get_value(
             "Email Group",
             {
-                "reference_document": cfp.event,
+                "reference_document": event_id,
                 "document_type": EVENT,
-                "group_type": "Rejected Proposers",
+                "group_type": group_type,
             },
         )
-        # Then it should be added to an email group for this event, where type==Accepted Proposers
-        self.assertTrue(
-            frappe.db.exists(
-                "Email Group Member", {"email": submission.email, "email_group": email_group}
-            )
+
+        return bool(
+            frappe.db.exists("Email Group Member", {"email": email, "email_group": email_group})
         )

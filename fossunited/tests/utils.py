@@ -7,6 +7,7 @@ from fossunited.doctype_ids import (
     CHAPTER,
     CITY_COMMUNITY,
     EVENT,
+    EVENT_CFP,
     EVENT_RSVP,
     EVENT_TICKET,
     HACKATHON,
@@ -14,6 +15,7 @@ from fossunited.doctype_ids import (
     HACKATHON_PARTICIPANT,
     HACKATHON_TEAM,
     JOIN_TEAM_REQUEST,
+    PROPOSAL,
     RAZORPAY_PAYMENT,
     RSVP_RESPONSE,
     TICKET_TIER,
@@ -437,6 +439,77 @@ def insert_rsvp_submission(linked_rsvp: str, **kwargs):
 
     except Exception:
         raise
+
+
+def insert_cfp_form(event: str, **kwargs):
+    """
+    Generate a test CFP form with flexible configuration options.
+
+    Args:
+        event (str): ID of the event to associate the CFP form with.
+        allow_cfp_edit (bool, optional): Whether CFP form can be edited. Defaults to False.
+        cfp_form_description (str, optional): Description for the CFP form.
+        deadline (datetime, optional): Deadline for CFP submissions. Defaults to tomorrow.
+        cfp_custom_questions (list, optional): List of custom questions for the CFP form.
+        **kwargs: Additional arguments to be passed to the CFP form.
+
+    Returns:
+        cfp doc: Created CFP document
+    """
+    form_data = {
+        "doctype": EVENT_CFP,
+        "allow_cfp_edit": kwargs.get("allow_cfp_edit", False),
+        "event": event,
+        "chapter": frappe.db.get_value(EVENT, event, "chapter"),
+        "cfp_form_description": kwargs.get("cfp_form_description", "Test CFP Form"),
+        "deadline": kwargs.get("deadline", datetime.today() + timedelta(days=1)),
+        "cfp_custom_questions": kwargs.get("cfp_custom_questions", []),
+    }
+
+    for key, value in kwargs.items():
+        if key not in form_data and key not in ["event", "cfp_custom_questions"]:
+            form_data[key] = value
+
+    cfp = frappe.get_doc(form_data)
+    cfp.insert()
+    cfp.reload()
+
+    return cfp
+
+
+def insert_cfp_submission(linked_cfp: str, event: str, **kwargs):
+    """
+    Generate a test CFP submission with flexible configuration options.
+
+    Args:
+        linked_cfp (str): The id of the CFP form to link this submission to.
+        event (str): The id of the event linked to the submission.
+        **kwargs: Additional arguments to be passed to the submission document.
+    """
+    submission_data = {
+        "doctype": PROPOSAL,
+        "status": kwargs.get("status", "Review Pending"),
+        "linked_cfp": linked_cfp,
+        "event": event,
+        "submitted_by": kwargs.get("submitted_by", ""),
+        "full_name": kwargs.get("full_name", fake.name()),
+        "email": kwargs.get("email", fake.email()),
+        "designation": kwargs.get("designation", "SDE"),
+        "organization": kwargs.get("organization", fake.company()),
+        "bio": kwargs.get("bio", "Test Submission"),
+        "is_first_talk": kwargs.get("is_first_talk", "No"),
+        "session_type": kwargs.get("session_type", "Talk"),
+        "talk_title": kwargs.get("talk_title", fake.text(max_nb_chars=20).strip()),
+        "talk_reference": kwargs.get("talk_reference", ""),
+        "talk_description": kwargs.get("talk_description", fake.sentence()),
+        "custom_answers": kwargs.get("custom_answers", []),
+    }
+
+    submission = frappe.get_doc(submission_data)
+    submission.insert()
+    submission.reload()
+
+    return submission
 
 
 def insert_test_hackathon(chapter: str, **kwargs):

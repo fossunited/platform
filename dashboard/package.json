@@ -9,6 +9,7 @@
     "copy-html-entry": "cp ../fossunited/public/dashboard/index.html ../fossunited/www/dashboard.html"
   },
   "dependencies": {
+    "@tabler/icons-vue": "^3.26.0",
     "@tiptap/extension-underline": "^2.4.0",
     "dayjs": "^1.11.11",
     "feather-icons": "^4.28.0",

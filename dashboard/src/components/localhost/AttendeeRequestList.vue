@@ -12,23 +12,7 @@
   </div>
   <div class="flex gap-3 flex-wrap items-center">
     <div class="flex gap-1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.7"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="icon w-4 h-4 icon-tabler icons-tabler-outline icon-tabler-filter"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path
-          d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z"
-        />
-      </svg>
+      <IconFilter class="w-4 h-4" />
       <span class="text-sm font-medium">Filter:</span>
     </div>
     <select
@@ -115,7 +99,7 @@
               class="text-sm flex font-semibold hover:underline"
             >
               <span>Open</span>
-              <ArrowUpRight class="w-4 h-4" />
+              <IconArrowUpRight class="w-4 h-4" />
             </a>
             <div v-else class="text-sm">No Git Profile</div>
           </div>
@@ -140,7 +124,7 @@
               @click="redirectRoute(row.project_route)"
             >
               <span>{{ truncateStr(row.project_title, 20) }}</span>
-              <ArrowUpRight class="w-4 h-4" />
+              <IconArrowUpRight class="w-4 h-4" />
             </a>
             <div v-else class="text-sm">No Project Yet</div>
           </div>
@@ -163,7 +147,7 @@ import { LoadingIndicator, createResource, Badge, Button, ListView } from 'frapp
 import { truncateStr } from '@/helpers/utils'
 import { redirectRoute } from '@/helpers/utils'
 import RequestDetailDialog from '@/components/localhost/RequestDetailDialog.vue'
-import ArrowUpRight from '@/components/icons/ArrowUpRight.vue'
+import { IconArrowUpRight, IconFilter } from '@tabler/icons-vue'
 
 const showDialog = ref(false)
 const selectedRequest = ref({})

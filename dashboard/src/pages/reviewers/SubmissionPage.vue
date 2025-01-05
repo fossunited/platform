@@ -14,23 +14,7 @@
           >
             <Badge label="First Talk" variant="outline" size="lg" class="p-1">
               <template #prefix>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="icon icon-tabler h-4 w-4 icons-tabler-outline icon-tabler-sparkles"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path
-                    d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z"
-                  />
-                </svg>
+                <IconSparkles class="h-4 w-4" />
               </template>
             </Badge>
           </Tooltip>
@@ -43,23 +27,7 @@
           target="_blank"
         >
           <span>View Session Reference</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#000000"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-tabler stroke-green-700 h-4 w-4 icons-tabler-outline icon-tabler-external-link"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
-            <path d="M11 13l9 -9" />
-            <path d="M15 4h5v5" />
-          </svg>
+          <IconExternalLink class="h-4 w-4 stroke-green-700" />
         </a>
         <div v-else class="text-sm text-gray-500">
           <span>Session reference not provided.</span>
@@ -104,6 +72,7 @@ import { toast } from 'vue-sonner'
 import Header from '@/components/Header.vue'
 import Breadcrumb from '@/components/Breadcrumb.vue'
 import ReviewSection from '@/components/reviewers/ReviewSection.vue'
+import { IconExternalLink, IconSparkles } from '@tabler/icons-vue'
 
 const route = useRoute()
 

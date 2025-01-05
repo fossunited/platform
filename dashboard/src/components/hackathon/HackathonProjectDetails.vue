@@ -16,7 +16,7 @@
       :disabled="project.data.is_partner_project"
     >
       <template #prefix>
-        <GithubIcon class="w-4" />
+        <IconBrandGithub class="w-4" />
       </template>
     </FormControl>
     <FormControl v-model="project.data.demo_link" label="Demo Link" />
@@ -45,10 +45,10 @@
 <script setup>
 import CopyToClipboard from '@/components/CopyToClipboardComponent.vue'
 import TextEditor from '@/components/TextEditor.vue'
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import { defineProps, defineEmits, ref } from 'vue'
 import { FormControl, ErrorMessage, createResource } from 'frappe-ui'
 import { toast } from 'vue-sonner'
+import { IconBrandGithub } from '@tabler/icons-vue'
 
 const props = defineProps({
   project: {

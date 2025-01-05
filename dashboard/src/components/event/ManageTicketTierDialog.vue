@@ -41,22 +41,7 @@
         <Input v-model="modifyTier.title" label="Title" class="w-full" required />
         <Input v-model="modifyTier.price" label="Price" class="w-full" placeholder="0.00" required>
           <template #input-prefix>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#000000"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-tabler w-5 h-5 icons-tabler-outline icon-tabler-currency-rupee"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M18 5h-11h3a4 4 0 0 1 0 8h-3l6 6" />
-              <path d="M7 9l11 0" />
-            </svg>
+            <IconCurrencyRupee class="h-5 w-5" />
           </template>
         </Input>
         <div>
@@ -65,7 +50,6 @@
             v-model="modifyTier.valid_till"
             variant="subtle"
             input-class="bg-white border-none hover:bg-white px-0"
-            label="Open Till"
           />
         </div>
         <Input
@@ -107,6 +91,7 @@
 import { createResource, Dialog, DatePicker, ErrorMessage, FormControl } from 'frappe-ui'
 import { defineProps, defineModel, defineEmits, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { IconCurrencyRupee } from '@tabler/icons-vue'
 import Input from '@/components/Input.vue'
 import LivePing from '@/components/animation/LivePing.vue'
 

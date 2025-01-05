@@ -20,8 +20,7 @@
 <script setup>
 import { defineModel } from 'vue'
 import { TabGroup, TabList, Tab } from '@headlessui/vue'
-import RowIcon from '@/components/icons/RowIcon.vue'
-import ColumnIcon from '@/components/icons/ColumnIcon.vue'
+import { IconCarouselHorizontalFilled, IconCarouselVerticalFilled } from '@tabler/icons-vue'
 
 const model = defineModel({
   prop: 'selectedScheduleView',
@@ -36,12 +35,12 @@ const changeModelValue = (index) => {
 const tabItems = [
   {
     label: 'Vertical',
-    icon: RowIcon,
+    icon: IconCarouselVerticalFilled,
     value: 'vertical',
   },
   {
     label: 'Horizontal',
-    icon: ColumnIcon,
+    icon: IconCarouselHorizontalFilled,
     value: 'horizontal',
   },
 ]

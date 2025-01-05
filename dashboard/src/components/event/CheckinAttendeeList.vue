@@ -81,7 +81,7 @@
                   :theme="getRelativeTime(data.check_in_time) == 'Today' ? 'green' : 'gray'"
                   class="flex gap-1 items-center"
                 >
-                  <DoubleChecksIcon class="w-4 h-4" />
+                  <IconChecks class="w-4 h-4" />
                   <span>{{ getRelativeTime(data.check_in_time) }}</span>
                 </Badge>
               </Tooltip>
@@ -105,11 +105,11 @@ import { ref, defineProps, provide } from 'vue'
 import { LoadingText, ListView, Badge, Tooltip, Checkbox } from 'frappe-ui'
 import CheckinManageDialog from '@/components/event/CheckinManageDialog.vue'
 import CheckinConfirmationDialog from '@/components/event/CheckinConfirmationDialog.vue'
-import DoubleChecksIcon from '@/components/icons/DoubleChecks.vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import isToday from 'dayjs/plugin/isToday'
 import isYesterday from 'dayjs/plugin/isYesterday'
+import { IconChecks } from '@tabler/icons-vue'
 
 dayjs.extend(relativeTime)
 dayjs.extend(isToday)

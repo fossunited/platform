@@ -16,22 +16,7 @@
           :href="redirectToRoute(event.doc.route)"
         >
           <span> Go to Event Page </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-tabler w-4 h-4 icons-tabler-outline icon-tabler-arrow-up-right"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M17 7l-10 10" />
-            <path d="M8 7l9 0l0 9" />
-          </svg>
+          <IconArrowUpRight class="w-4 h-4" />
         </a>
       </div>
       <div class="my-2">
@@ -46,6 +31,7 @@ import { useRoute, useRouter } from 'vue-router'
 import EventHeader from '@/components/EventHeader.vue'
 import Header from '@/components/Header.vue'
 import ProposalList from '@/components/reviewers/ProposalsList.vue'
+import { IconArrowUpRight } from '@tabler/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

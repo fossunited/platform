@@ -123,7 +123,7 @@
           <span>
             {{ item }}
           </span>
-          <ArrowUpRight class="w-4 h-4" />
+          <IconArrowUpRight class="w-4 h-4" />
         </a>
       </div>
       <div v-else-if="column.key == 'actions'">
@@ -146,7 +146,7 @@ import {
   LoadingIndicator,
 } from 'frappe-ui'
 import { toast } from 'vue-sonner'
-import ArrowUpRight from '@/components/icons/ArrowUpRight.vue'
+import { IconArrowUpRight } from '@tabler/icons-vue'
 
 const props = defineProps({
   project: {

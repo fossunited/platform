@@ -14,16 +14,7 @@
         <a :href="redirectToHackathon" class="font-semibold text-base hover:underline">{{
           hackathon.data.hackathon_name
         }}</a>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-4 h-4"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
+        <IconChevronRight class="w-5" />
         <span class="text-base">Register</span>
       </div>
       <img
@@ -92,47 +83,8 @@
               >
                 <div class="flex w-full items-center justify-center">
                   <div class="flex flex-col gap-2 items-center">
-                    <svg
-                      v-if="option.title == 'Virtually'"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-tabler icons-tabler-outline icon-tabler-world stroke-gray-900"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                      <path d="M3.6 9h16.8" />
-                      <path d="M3.6 15h16.8" />
-                      <path d="M11.5 3a17 17 0 0 0 0 18" />
-                      <path d="M12.5 3a17 17 0 0 1 0 18" />
-                    </svg>
-                    <svg
-                      v-else
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin-code"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                      <path
-                        d="M11.85 21.48a1.992 1.992 0 0 1 -1.263 -.58l-4.244 -4.243a8 8 0 1 1 13.385 -3.585"
-                      />
-                      <path d="M20 21l2 -2l-2 -2" />
-                      <path d="M17 17l-2 2l2 2" />
-                    </svg>
+                    <IconWorld v-if="option.title == 'Virtually'" class="w-6 h-6" />
+                    <IconMapPinCode v-else class="w-6 h-6" />
                     <div class="text-sm">
                       <RadioGroupLabel as="p" class="font-medium">
                         {{ option.title }}
@@ -161,23 +113,7 @@
           <div
             class="flex flex-col items-center sm:flex-row gap-3 bg-yellow-50 w-full p-4 text-sm rounded-sm my-4 text-yellow-700 outline-2 outline-dashed"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#000000"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="w-7 shrink-0 stroke-yellow-700 icon icon-tabler icons-tabler-outline icon-tabler-alert-circle"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-              <path d="M12 8v4" />
-              <path d="M12 16h.01" />
-            </svg>
+            <IconAlertCircle class="w-6 h-6 shrink-0 stroke-yellow-700" />
             <p class="leading-normal text-center sm:text-left">
               Please note that attendance at offline venues is limited by seat availability. Our
               team will review your application to attend the hackathon.<br />
@@ -219,6 +155,7 @@ import { ref, onMounted, computed, reactive, watch, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import { IconAlertCircle, IconChevronRight, IconMapPinCode, IconWorld } from '@tabler/icons-vue'
 
 let session = inject('$session')
 

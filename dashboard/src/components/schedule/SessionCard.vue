@@ -18,7 +18,7 @@
         class="px-2 py-1 bg-gray-900 text-white text-xs font-medium rounded-[2px] flex items-center gap-2"
         @click="downloadSessionIcs()"
       >
-        <CalenderAddIcon class="h-4 w-4" />
+        <IconCalendarPlus class="w-4 h-4" />
         <span class="hidden md:block uppercase">Add to Calendar</span>
       </button>
     </div>
@@ -48,9 +48,9 @@
 import { createEvent } from 'ics'
 import { toast } from 'vue-sonner'
 import { defineProps, inject } from 'vue'
-import CalenderAddIcon from '@/components/icons/CalenderAddIcon.vue'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import { IconCalendarPlus } from '@tabler/icons-vue'
 
 dayjs.extend(duration)
 

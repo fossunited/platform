@@ -195,7 +195,7 @@
                         class="flex items-center gap-1 mt-3 text-xs text-gray-600 text-center hover:text-gray-800"
                         target="_blank"
                       >
-                        <GithubIcon class="w-4" />
+                        <IconBrandGithub class="w-4" />
                         <span> Repo Link </span>
                       </a>
                     </div>
@@ -260,12 +260,12 @@ import Header from '@/components/Header.vue'
 import HackathonHeader from '@/components/hackathon/HackathonParticipantHeader.vue'
 import TextEditor from '@/components/TextEditor.vue'
 import Markdownit from 'markdown-it'
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import { createResource, FormControl, ErrorMessage, createListResource, Badge } from 'frappe-ui'
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { useRoute, useRouter } from 'vue-router'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { IconBrandGithub } from '@tabler/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

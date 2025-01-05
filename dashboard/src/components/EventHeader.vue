@@ -26,19 +26,7 @@
       <div>
         {{ event.event_type }}
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="fill-gray-600 w-2 h-2 icon icon-tabler icons-tabler-filled icon-tabler-circle"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path
-          d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z"
-        />
-      </svg>
+      <IconCircleFilled class="w-3 h-3 fill-gray-600" />
       <div>
         <span>
           {{ getFormattedDate(event.event_start_date) }}
@@ -56,7 +44,7 @@ import { createDocumentResource, Badge } from 'frappe-ui'
 import LivePing from '@/components/animation/LivePing.vue'
 import CityCommunityBranding from '@/components/CityCommunityBranding.vue'
 import FossClubBranding from '@/components/FossClubBranding.vue'
-
+import { IconCircleFilled } from '@tabler/icons-vue'
 import { computed } from 'vue'
 
 const props = defineProps({

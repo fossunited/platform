@@ -108,23 +108,10 @@
                   "
                   class="flex"
                 >
-                  <span class="text-sm text-green-500 mr-2 font-semibold">
+                  <span class="text-sm text-green-500 mr-1 font-semibold">
                     Username is available
                   </span>
-                  <svg
-                    class="h-4 w-4 text-green-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
+                  <IconCheck class="h-4 w-4 text-green-500" />
                 </div>
               </div>
               <ErrorMessage :message="usernameValidateErrors" class="mt-2" />
@@ -179,6 +166,7 @@
 </template>
 <script setup>
 import TextEditor from '@/components/TextEditor.vue'
+import { IconCheck } from '@tabler/icons-vue'
 import { createResource, FileUploader, Switch, FormControl, ErrorMessage } from 'frappe-ui'
 
 import { reactive, ref, watch, computed } from 'vue'

@@ -45,6 +45,13 @@
       </button>
       <button
         class="p-1 rounded-sm"
+        :class="{ 'bg-gray-200': editor.isActive('link') }"
+        @click="handleToggleLink"
+      >
+        <IconLink class="w-5 h-5" />
+      </button>
+      <button
+        class="p-1 rounded-sm"
         :class="{
           'bg-gray-200': editor.isActive('heading', { level: 1 }),
         }"
@@ -137,7 +144,8 @@ import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
-import { defineProps, defineModel, defineEmits } from 'vue'
+import Link from '@tiptap/extension-link'
+import { defineProps, defineEmits } from 'vue'
 import {
   IconBold,
   IconItalic,
@@ -196,6 +204,19 @@ const editor = useEditor({
     Placeholder.configure({
       placeholder: props.placeholder,
     }),
+    Link.configure({
+      protocols: ['ftp', 'mailto'],
+      openOnClick: true,
+      defaultProtocol: 'https',
+      HTMLAttributes: {
+        rel: 'noopener noreferrer',
+        target: '_blank',
+      },
+    }),
   ],
 })
+
+const handleToggleLink = () => {
+  console.log(this.editor)
+}
 </script>

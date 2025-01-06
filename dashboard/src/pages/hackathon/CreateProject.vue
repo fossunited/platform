@@ -258,7 +258,7 @@
 <script setup>
 import Header from '@/components/Header.vue'
 import HackathonHeader from '@/components/hackathon/HackathonParticipantHeader.vue'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import Markdownit from 'markdown-it'
 import { createResource, FormControl, ErrorMessage, createListResource, Badge } from 'frappe-ui'
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'

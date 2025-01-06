@@ -129,7 +129,7 @@ import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import ChapterHeader from '@/components/ChapterHeader.vue'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import { createAbsoluteUrlFromRoute } from '@/helpers/utils.js'
 import dayjs from 'dayjs'
 

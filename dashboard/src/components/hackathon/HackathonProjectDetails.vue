@@ -44,7 +44,7 @@
 </template>
 <script setup>
 import CopyToClipboard from '@/components/CopyToClipboardComponent.vue'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import { defineProps, defineEmits, ref } from 'vue'
 import { FormControl, ErrorMessage, createResource } from 'frappe-ui'
 import { toast } from 'vue-sonner'

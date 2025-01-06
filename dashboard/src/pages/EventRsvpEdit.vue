@@ -196,7 +196,7 @@ import { reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
 import CopyToClipboardComponent from '../components/CopyToClipboardComponent.vue'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 
 const route = useRoute()
 

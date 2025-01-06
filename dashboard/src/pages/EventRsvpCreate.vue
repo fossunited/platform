@@ -150,7 +150,7 @@ import { createDocumentResource, FormControl, ListView, Dialog, createResource }
 import { reactive, ref, defineEmits } from 'vue'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 
 const route = useRoute()
 const emit = defineEmits(['rsvpCreated'])

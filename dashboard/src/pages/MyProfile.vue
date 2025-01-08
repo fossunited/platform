@@ -165,7 +165,7 @@
   </div>
 </template>
 <script setup>
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import { IconCheck } from '@tabler/icons-vue'
 import { createResource, FileUploader, Switch, FormControl, ErrorMessage } from 'frappe-ui'
 

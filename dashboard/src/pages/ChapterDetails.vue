@@ -166,7 +166,7 @@ import { createDocumentResource, FormControl, FileUploader } from 'frappe-ui'
 import ChapterHeader from '@/components/ChapterHeader.vue'
 import { redirectRoute } from '@/helpers/utils'
 import { toast } from 'vue-sonner'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import {
   IconAt,
   IconBrandFacebook,

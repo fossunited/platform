@@ -89,7 +89,7 @@
   </div>
 </template>
 <script setup>
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import { FormControl, FileUploader, FeatherIcon, createResource, Autocomplete } from 'frappe-ui'
 import { reactive, ref, watch } from 'vue'
 import { createAbsoluteUrlFromRoute } from '@/helpers/utils'

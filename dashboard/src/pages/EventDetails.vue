@@ -183,7 +183,7 @@
 </template>
 <script setup>
 import EventHeader from '@/components/EventHeader.vue'
-import TextEditor from '@/components/TextEditor.vue'
+import TextEditor from '@/components/ui/TextEditor.vue'
 import CopyToClipboardButton from '@/components/CopyToClipboardButton.vue'
 import { createDocumentResource, createListResource, FileUploader, FormControl } from 'frappe-ui'
 import { useRoute } from 'vue-router'

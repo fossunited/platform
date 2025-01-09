@@ -37,9 +37,9 @@ class FOSSEventRSVPSubmission(Document):
 
     def before_insert(self):
         self.validate_rsvp_is_published()
+        self.handle_submission_status()
 
     def after_insert(self):
-        self.handle_submission_status()
         self.close_rsvp_on_max_count()
         self.handle_add_to_email_group()
 

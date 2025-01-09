@@ -1,6 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
+from fossunited.api.chapter import check_if_chapter_member
 from fossunited.api.emailing import add_to_email_group, create_email_group
 from fossunited.doctype_ids import EVENT, EVENT_RSVP, RSVP_RESPONSE
 
@@ -31,15 +32,33 @@ class FOSSEventRSVPSubmission(Document):
         submitted_by: DF.Link | None
     # end: auto-generated types
 
-    pass
-
     def validate(self):
         self.validate_linked_rsvp_exists()
+
+    def before_insert(self):
+        self.validate_rsvp_is_published()
 
     def after_insert(self):
         self.handle_submission_status()
         self.close_rsvp_on_max_count()
         self.handle_add_to_email_group()
+
+    def validate_linked_rsvp_exists(self):
+        if not frappe.db.exists(EVENT_RSVP, self.linked_rsvp):
+            frappe.throw("Invalid RSVP", frappe.DoesNotExistError)
+
+    def validate_rsvp_is_published(self):
+        is_system_user = frappe.get_roles(frappe.session.user).count("System Manager")
+        is_chapter_member = check_if_chapter_member(chapter=self.chapter, user=frappe.session.user)
+
+        # If the user is system user or team member,
+        # don't check for validation before rsvp submission creation
+        if is_system_user or is_chapter_member:
+            return
+
+        rsvp_published = frappe.db.get_value(EVENT_RSVP, self.linked_rsvp, "is_published")
+        if not rsvp_published:
+            frappe.throw("RSVP is not published")
 
     def close_rsvp_on_max_count(self):
         max_count = self.get_max_count()
@@ -78,14 +97,6 @@ class FOSSEventRSVPSubmission(Document):
 
         # If the RSVP does not require host approval, set the status to Accepted
         self.status = "Accepted"
-
-    def validate_linked_rsvp_exists(self):
-        if not frappe.db.exists(EVENT_RSVP, self.linked_rsvp):
-            frappe.throw("Invalid RSVP", frappe.DoesNotExistError)
-
-        is_rsvp_published = frappe.db.get_value(EVENT_RSVP, self.linked_rsvp, "is_published")
-        if not is_rsvp_published:
-            frappe.throw("RSVP is not published", frappe.PermissionError)
 
     def handle_add_to_email_group(self):
         if not frappe.db.exists(

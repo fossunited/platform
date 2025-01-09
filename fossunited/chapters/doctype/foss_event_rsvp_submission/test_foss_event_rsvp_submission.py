@@ -13,6 +13,7 @@ from fossunited.tests.utils import (
 fake = Faker()
 
 WEBSITE_USER = "test2@example.com"
+LEAD_USER = "test1@example.com"
 
 
 class TestFOSSEventRSVPSubmission(IntegrationTestCase):
@@ -124,3 +125,26 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         # Then a frappe.PermissionError should be raised
         with self.assertRaises(frappe.PermissionError):
             insert_rsvp_submission(linked_rsvp=rsvp.name, status="Accepted")
+
+    def test_status_change_after_unpublish(self):
+        # Given an RSVP form which requires host approval
+        frappe.set_user(LEAD_USER)
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        # When a submission is done
+        frappe.set_user(WEBSITE_USER)
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # It should be saved with status as pending
+        self.assertEqual(submission.status, "Pending")
+
+        frappe.set_user(LEAD_USER)
+        # When the RSVP form is unpublished
+        rsvp.is_published = False
+        rsvp.save()
+        # and the lead user / system user try to make a change to status
+        # Then the status should change without errors
+        submission.status = "Rejected"
+        submission.save()

@@ -43,6 +43,10 @@ class FOSSEventRSVPSubmission(Document):
         self.close_rsvp_on_max_count()
         self.handle_add_to_email_group()
 
+    def before_save(self):
+        if self.has_value_changed("status") and not self.is_new():
+            self.handle_add_to_email_group()
+
     def validate_linked_rsvp_exists(self):
         if not frappe.db.exists(EVENT_RSVP, self.linked_rsvp):
             frappe.throw("Invalid RSVP", frappe.DoesNotExistError)
@@ -99,6 +103,9 @@ class FOSSEventRSVPSubmission(Document):
         self.status = "Accepted"
 
     def handle_add_to_email_group(self):
+        if self.status != "Accepted":
+            return
+
         if not frappe.db.exists(
             "Email Group",
             {

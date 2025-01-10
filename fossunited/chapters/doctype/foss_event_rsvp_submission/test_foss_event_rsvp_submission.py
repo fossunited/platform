@@ -229,3 +229,16 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
                 },
             )
         )
+
+    def test_submission_to_unpublished_form(self):
+        # Given an rsvp form which is unpublished
+        rsvp = self.rsvp
+        rsvp.is_published = False
+        rsvp.save()
+
+        # When a user tries to create a submission
+        # Then a validation error must be thrown
+
+        frappe.set_user("Guest")
+        with self.assertRaises(frappe.ValidationError):
+            insert_rsvp_submission(linked_rsvp=rsvp.name)

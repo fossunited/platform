@@ -13,6 +13,7 @@ from fossunited.tests.utils import (
 fake = Faker()
 
 WEBSITE_USER = "test2@example.com"
+LEAD_USER = "test1@example.com"
 
 
 class TestFOSSEventRSVPSubmission(IntegrationTestCase):
@@ -20,6 +21,14 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         self.chapter = insert_test_chapter()
         self.event = insert_test_event(chapter=self.chapter)
         self.rsvp = insert_rsvp_form(event=self.event.name)
+        self.email_group = frappe.db.get_value(
+            "Email Group",
+            {
+                "reference_document": self.rsvp.event,
+                "document_type": EVENT,
+                "group_type": "Event Participants",
+            },
+        )
 
     def tearDown(self):
         frappe.set_user("Administrator")
@@ -48,22 +57,13 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
     def test_add_to_email_group(self):
         # Given an RSVP form for an event
         # When an RSVP response is done by a user
-        frappe.set_user(WEBSITE_USER)
+        frappe.set_user("Guest")
         insert_rsvp_submission(linked_rsvp=self.rsvp.name, email=WEBSITE_USER)
 
         # Then the email should be added to an email group linked to event for participants
-        email_group = frappe.db.get_value(
-            "Email Group",
-            {
-                "reference_document": self.rsvp.event,
-                "document_type": EVENT,
-                "group_type": "Event Participants",
-            },
-        )
-
         self.assertTrue(
             frappe.db.exists(
-                "Email Group Member", {"email": WEBSITE_USER, "email_group": email_group}
+                "Email Group Member", {"email": WEBSITE_USER, "email_group": self.email_group}
             )
         )
 
@@ -71,7 +71,7 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         # Given an RSVP form with accept all incoming responses
         rsvp = self.rsvp
 
-        frappe.set_user(WEBSITE_USER)
+        frappe.set_user("Guest")
         # When a submission is done
         submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
 
@@ -84,7 +84,7 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         rsvp.requires_host_approval = True
         rsvp.save()
 
-        frappe.set_user(WEBSITE_USER)
+        frappe.set_user("Guest")
         # When a submission is created
         submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
 
@@ -97,7 +97,7 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         rsvp.requires_host_approval = True
         rsvp.save()
 
-        frappe.set_user(WEBSITE_USER)
+        frappe.set_user("Guest")
         # When a submission is created
         submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
         # The status should be pending
@@ -119,8 +119,126 @@ class TestFOSSEventRSVPSubmission(IntegrationTestCase):
         rsvp.requires_host_approval = True
         rsvp.save()
 
-        frappe.set_user(WEBSITE_USER)
+        frappe.set_user("Guest")
         # When a submission is done with status accepted
         # Then a frappe.PermissionError should be raised
         with self.assertRaises(frappe.PermissionError):
             insert_rsvp_submission(linked_rsvp=rsvp.name, status="Accepted")
+
+    def test_status_change_after_unpublish(self):
+        # Given an RSVP form which requires host approval
+        frappe.set_user(LEAD_USER)
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        # When a submission is done
+        frappe.set_user("Guest")
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+
+        # It should be saved with status as pending
+        self.assertEqual(submission.status, "Pending")
+
+        frappe.set_user(LEAD_USER)
+        # When the RSVP form is unpublished
+        rsvp.is_published = False
+        rsvp.save()
+        # and the lead user / system user try to make a change to status
+        # Then the status should change without errors
+        submission.status = "Rejected"
+        submission.save()
+
+    def test_add_to_email_on_acceptance(self):
+        # Given an RSVP form which requires host approval
+        frappe.set_user(LEAD_USER)
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        # When a submission is made
+        frappe.set_user("Guest")
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+        self.assertEqual(submission.status, "Pending")
+
+        # Then the email should not be added to email group
+        # When status is pending
+
+        self.assertFalse(
+            frappe.db.exists(
+                "Email Group Member",
+                {
+                    "email": submission.email,
+                    "email_group": self.email_group,
+                },
+            )
+        )
+
+        # When status is changed to "Accepted"
+        frappe.set_user(LEAD_USER)
+        submission.status = "Accepted"
+        submission.save()
+
+        # Then the email should be added to email group
+        self.assertTrue(
+            frappe.db.exists(
+                "Email Group Member",
+                {
+                    "email": submission.email,
+                    "email_group": self.email_group,
+                },
+            )
+        )
+
+    def test_no_add_to_email_on_rejection(self):
+        # Given an RSVP form which requires host approval
+        frappe.set_user(LEAD_USER)
+        rsvp = self.rsvp
+        rsvp.requires_host_approval = True
+        rsvp.save()
+
+        # When a submission is made
+        frappe.set_user("Guest")
+        submission = insert_rsvp_submission(linked_rsvp=rsvp.name)
+        self.assertEqual(submission.status, "Pending")
+
+        # Then the email should not be added to email group
+        # When status is pending
+
+        self.assertFalse(
+            frappe.db.exists(
+                "Email Group Member",
+                {
+                    "email": submission.email,
+                    "email_group": self.email_group,
+                },
+            )
+        )
+
+        # When status is changed to "Accepted"
+        frappe.set_user(LEAD_USER)
+        submission.status = "Rejected"
+        submission.save()
+
+        # Then the email should be added to email group
+        self.assertFalse(
+            frappe.db.exists(
+                "Email Group Member",
+                {
+                    "email": submission.email,
+                    "email_group": self.email_group,
+                },
+            )
+        )
+
+    def test_submission_to_unpublished_form(self):
+        # Given an rsvp form which is unpublished
+        rsvp = self.rsvp
+        rsvp.is_published = False
+        rsvp.save()
+
+        # When a user tries to create a submission
+        # Then a validation error must be thrown
+
+        frappe.set_user("Guest")
+        with self.assertRaises(frappe.ValidationError):
+            insert_rsvp_submission(linked_rsvp=rsvp.name)

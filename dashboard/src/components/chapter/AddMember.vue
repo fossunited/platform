@@ -36,11 +36,11 @@ import { ref, defineProps, defineEmits, computed } from 'vue'
 const props = defineProps({
   chapter: {
     type: Object,
-    default: () => ({}),
+    default: () => null,
   },
   event: {
     type: Object,
-    default: () => ({}),
+    default: () => null,
   },
 })
 

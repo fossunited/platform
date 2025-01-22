@@ -24,7 +24,6 @@
         />
       </div>
     </div>
-    <div class="community-partners"></div>
   </div>
 </template>
 <script setup>

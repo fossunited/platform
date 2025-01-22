@@ -87,6 +87,7 @@ website_redirects = [
 
 # Installation
 # ----------------
+before_install = "fossunited.install.before_install"
 after_install = "fossunited.install.after_install"
 
 # Uninstallation

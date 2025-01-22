@@ -1,8 +1,24 @@
+import click
 import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
+from fossunited.id.roles import (
+    CHAPTER_LEAD,
+    CHAPTER_MEMBER,
+    HACKATHON_ORGANIZER,
+    LOCALHOST_ORGANIZER,
+    REVIEWER,
+    WEBSITE_USER,
+)
+
+
+def before_install():
+    click.secho("Creating app roles...", fg="cyan")
+    create_custom_roles(get_custom_roles())
+
 
 def after_install():
+    click.secho("Creating custom fields...", fg="cyan")
     create_custom_fields(get_custom_fields(), ignore_validate=True)
 
 
@@ -24,6 +40,36 @@ def delete_custom_fields(custom_fields: dict):
         )
 
         frappe.clear_cache(doctype=doctype)
+
+
+def create_custom_roles(roles):
+    for role in roles:
+        if frappe.db.exists("Role", {"role_name": role}):
+            continue
+
+        role = frappe.get_doc(
+            {
+                "doctype": "Role",
+                "role_name": role,
+                "desk_access": False,
+            }
+        )
+        role.insert()
+
+
+def get_custom_roles():
+    """
+    FOSSUnited app specific custom roles
+    """
+
+    return [
+        WEBSITE_USER,
+        CHAPTER_MEMBER,
+        CHAPTER_LEAD,
+        REVIEWER,
+        HACKATHON_ORGANIZER,
+        LOCALHOST_ORGANIZER,
+    ]
 
 
 def get_custom_fields():

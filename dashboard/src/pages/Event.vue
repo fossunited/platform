@@ -9,7 +9,7 @@
 
 <script setup>
 import { ref, provide } from 'vue'
-import { createResource, usePageMeta } from 'frappe-ui'
+import { createResource, usePageMeta, createDocumentResource } from 'frappe-ui'
 import { RouterView, useRoute } from 'vue-router'
 import SideNavbar from '@/components/NewAppSidebar.vue'
 
@@ -27,15 +27,15 @@ const sidebarMenuItems = ref([
   },
 ])
 
-const event = createResource({
-  url: 'frappe.client.get_value',
-  params: {
-    doctype: 'FOSS Chapter Event',
-    fieldname: ['name', 'event_name', 'is_paid_event', 'chapter'],
-    filters: { name: route.params.id },
-  },
+const event = createDocumentResource({
+  doctype: 'FOSS Chapter Event',
+  name: route.params.id,
   auto: true,
-  onSuccess(data) {
+  onSuccess(doc) {
+    // If sidebar items already set, don't append items again
+    if (sidebarMenuItems.value.length > 1) {
+      return
+    }
     chapter.fetch()
     let sidebar_items = {
       items: [
@@ -52,6 +52,10 @@ const event = createResource({
           route: `/event/${route.params.id}/cfp`,
         },
         {
+          label: 'Partners',
+          route: `/event/${route.params.id}/partner`,
+        },
+        {
           label: 'Volunteers',
           route: `/event/${route.params.id}/volunteers`,
         },
@@ -62,7 +66,7 @@ const event = createResource({
       ],
     }
 
-    if (data.is_paid_event) {
+    if (doc.is_paid_event) {
       sidebar_items.items.splice(1, 1, {
         label: 'Tickets',
         route: `/event/${route.params.id}/tickets`,
@@ -76,14 +80,15 @@ const event = createResource({
     sidebarMenuItems.value.push(sidebar_items)
   },
 })
+provide('event', event)
 
 const chapter = createResource({
   url: 'frappe.client.get_value',
   makeParams() {
     return {
       doctype: 'FOSS Chapter',
-      fieldname: ['name', 'chapter_name', 'route'],
-      filters: { name: event.data.chapter },
+      fieldname: ['*'],
+      filters: { name: event.doc.chapter },
     }
   },
 })

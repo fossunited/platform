@@ -137,12 +137,13 @@
               <div class="sponsor--tier-heading">{{ k }}</div>
               <div class="sponsor--flex">
                 {% for sponsor in v %}
-                  <a href="{{ sponsor.sponsor_link }}" class="sponsor--block">
+                  <a href="{{ sponsor.link }}" class="sponsor--block">
                     <img
-                      src="{{ sponsor.sponsor_image }}"
+                      src="{{ sponsor.image }}"
                       alt="{{ sponsor.sponsor_name }}"
                       class="sponsor--image"
                     />
+                    <p>{{ sponsor.sponsor_name }}</p>
                   </a>
                 {% endfor %}
               </div>
@@ -159,12 +160,13 @@
           <h5>Community Partners</h5>
           <div class="sponsor--flex">
             {% for partner in doc.community_partners %}
-              <a href="{{ partner.organization_website }}" class="sponsor--block">
+              <a href="{{ partner.link }}" class="sponsor--block">
                 <img
-                  src="{{ partner.company_logo }}"
-                  alt="{{ partner.organization_name }}"
+                  src="{{ partner.logo }}"
+                  alt="{{ partner.org_name }}"
                   class="sponsor--image"
                 />
+                <p>{{ partner.org_name }}</p>
               </a>
             {% endfor %}
           </div>

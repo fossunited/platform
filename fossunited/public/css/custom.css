@@ -1659,6 +1659,10 @@ h6 {
 }
 
 .sponsor--block {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  align-items: center;
   margin: 0 1rem;
 }
 

@@ -236,10 +236,25 @@ class FOSSChapterEvent(WebsiteGenerator):
     def get_sponsors(self):
         sponsors_dict = {}
         for sponsor in self.sponsor_list:
-            if sponsor.sponsorship_tier not in sponsors_dict:
-                sponsors_dict[sponsor.sponsorship_tier] = []
-            sponsors_dict[sponsor.sponsorship_tier].append(sponsor)
+            tier = self.get_tier(sponsor)
+            if tier not in sponsors_dict:
+                sponsors_dict[tier] = []
+            sponsors_dict[tier].append(sponsor)
+
+        sort_order = ["Platinum", "Gold", "Silver", "Bronze", "Custom"]
+        # Sort tiers based on their position in sort_order; unknown tiers go last
+        sponsors_dict = dict(
+            sorted(
+                sponsors_dict.items(),
+                key=lambda x: sort_order.index(x[0]) if x[0] in sort_order else len(sort_order),
+            )
+        )
         return sponsors_dict
+
+    def get_tier(self, sponsor):
+        if sponsor.tier == "Custom":
+            return sponsor.custom_tier
+        return sponsor.tier
 
     def get_volunteers(self):
         members = []

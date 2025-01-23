@@ -5,48 +5,49 @@
   "doctype": "DocType",
   "editable_grid": 1,
   "engine": "InnoDB",
-  "field_order": [
-    "sponsorship_tier",
-    "sponsor_name",
-    "sponsor_link",
-    "sponsor_image"
-  ],
+  "field_order": ["tier", "custom_tier", "sponsor_name", "link", "image"],
   "fields": [
-    {
-      "fieldname": "sponsorship_tier",
-      "fieldtype": "Select",
-      "in_list_view": 1,
-      "label": "Sponsorship Tier",
-      "options": "\nPlatinum\nGold\nSilver\nBronze",
-      "reqd": 1
-    },
     {
       "fieldname": "sponsor_name",
       "fieldtype": "Data",
       "in_list_view": 1,
       "label": "Sponsor Name",
-      "options": "Organization",
+      "reqd": 1
+    },
+    {
+      "depends_on": "eval:doc.tier=='Custom'",
+      "fieldname": "custom_tier",
+      "fieldtype": "Data",
+      "label": "Custom Tier",
+      "mandatory_depends_on": "eval:doc.tier=='Custom'"
+    },
+    {
+      "fieldname": "tier",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Tier",
+      "options": "Platinum\nGold\nSilver\nBronze\nVenue Partner\nCustom",
       "reqd": 1
     },
     {
       "description": "Company Website Link",
-      "fieldname": "sponsor_link",
+      "fieldname": "link",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Sponsor Link",
+      "label": "Link",
       "reqd": 1
     },
     {
-      "fieldname": "sponsor_image",
+      "fieldname": "image",
       "fieldtype": "Attach Image",
-      "label": "Sponsor Image",
+      "label": "Image",
       "reqd": 1
     }
   ],
   "index_web_pages_for_search": 1,
   "istable": 1,
   "links": [],
-  "modified": "2024-02-06 23:14:54.615822",
+  "modified": "2025-01-15 13:57:54.152664",
   "modified_by": "Administrator",
   "module": "FOSSUnited",
   "name": "FOSS Event Sponsor",

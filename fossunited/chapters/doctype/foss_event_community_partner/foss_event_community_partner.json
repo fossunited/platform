@@ -5,33 +5,33 @@
   "doctype": "DocType",
   "editable_grid": 1,
   "engine": "InnoDB",
-  "field_order": ["organization_name", "organization_website", "company_logo"],
+  "field_order": ["org_name", "link", "logo"],
   "fields": [
     {
-      "fieldname": "organization_name",
+      "fieldname": "org_name",
       "fieldtype": "Data",
       "in_list_view": 1,
       "label": "Organization Name",
       "reqd": 1
     },
     {
-      "fieldname": "organization_website",
+      "fieldname": "link",
       "fieldtype": "Data",
       "in_list_view": 1,
-      "label": "Organization Website",
+      "label": "Link",
       "reqd": 1
     },
     {
-      "fieldname": "company_logo",
+      "fieldname": "logo",
       "fieldtype": "Attach Image",
-      "label": "Company Logo",
+      "label": "Logo",
       "reqd": 1
     }
   ],
   "index_web_pages_for_search": 1,
   "istable": 1,
   "links": [],
-  "modified": "2024-02-06 20:17:06.559041",
+  "modified": "2025-01-22 12:02:28.375273",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Event Community Partner",

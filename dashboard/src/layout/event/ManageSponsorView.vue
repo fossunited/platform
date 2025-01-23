@@ -27,25 +27,25 @@
   </div>
 </template>
 <script setup>
-import { inject, reactive, ref } from 'vue'
+import { inject, ref } from 'vue'
 
 import SponsorCard from '@/components/event/SponsorCard.vue'
 import ManageSponsorDialog from '@/components/event/ManageSponsorDialog.vue'
 
 const inAddNew = ref(false)
-let selectedSponsor = reactive({})
+let selectedSponsor = ref({})
 const showSponsorDialog = ref(false)
 const event = inject('event')
 
 const handleAddNew = () => {
   inAddNew.value = true
-  selectedSponsor = {}
+  selectedSponsor.value = {}
   showSponsorDialog.value = true
 }
 
 const handleEditSponsor = (sponsor) => {
   inAddNew.value = false
-  selectedSponsor = sponsor
+  selectedSponsor.value = sponsor
   showSponsorDialog.value = true
 }
 </script>

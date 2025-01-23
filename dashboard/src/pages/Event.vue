@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, provide, watch } from 'vue'
 import { createResource, usePageMeta, createDocumentResource } from 'frappe-ui'
 import { RouterView, useRoute } from 'vue-router'
 import SideNavbar from '@/components/NewAppSidebar.vue'
@@ -31,55 +31,62 @@ const event = createDocumentResource({
   doctype: 'FOSS Chapter Event',
   name: route.params.id,
   auto: true,
-  onSuccess(doc) {
-    // If sidebar items already set, don't append items again
-    if (sidebarMenuItems.value.length > 1) {
-      return
-    }
-    chapter.fetch()
-    let sidebar_items = {
-      items: [
-        {
-          label: 'Details',
-          route: `/event/${route.params.id}`,
-        },
-        {
-          label: 'RSVP',
-          route: `/event/${route.params.id}/rsvp`,
-        },
-        {
-          label: 'CFP',
-          route: `/event/${route.params.id}/cfp`,
-        },
-        {
-          label: 'Partners',
-          route: `/event/${route.params.id}/partner`,
-        },
-        {
-          label: 'Volunteers',
-          route: `/event/${route.params.id}/volunteers`,
-        },
-        {
-          label: 'Mailing',
-          route: `/event/${route.params.id}/mailing`,
-        },
-      ],
-    }
-
-    if (doc.is_paid_event) {
-      sidebar_items.items.splice(1, 1, {
-        label: 'Tickets',
-        route: `/event/${route.params.id}/tickets`,
-      })
-      sidebar_items.items.push({
-        label: 'Check-Ins',
-        route: `/event/${route.params.id}/checkins`,
-      })
-    }
-
-    sidebarMenuItems.value.push(sidebar_items)
-  },
 })
+
+watch(
+  () => event.doc,
+  (doc) => {
+    if (doc) {
+      // If sidebar items already set, don't append items again
+      if (sidebarMenuItems.value.length > 1) {
+        return
+      }
+      chapter.fetch()
+      let sidebar_items = {
+        items: [
+          {
+            label: 'Details',
+            route: `/event/${route.params.id}`,
+          },
+          {
+            label: 'RSVP',
+            route: `/event/${route.params.id}/rsvp`,
+          },
+          {
+            label: 'CFP',
+            route: `/event/${route.params.id}/cfp`,
+          },
+          {
+            label: 'Partners',
+            route: `/event/${route.params.id}/partner`,
+          },
+          {
+            label: 'Volunteers',
+            route: `/event/${route.params.id}/volunteers`,
+          },
+          {
+            label: 'Mailing',
+            route: `/event/${route.params.id}/mailing`,
+          },
+        ],
+      }
+
+      if (doc.is_paid_event) {
+        sidebar_items.items.splice(1, 1, {
+          label: 'Tickets',
+          route: `/event/${route.params.id}/tickets`,
+        })
+        sidebar_items.items.push({
+          label: 'Check-Ins',
+          route: `/event/${route.params.id}/checkins`,
+        })
+      }
+
+      sidebarMenuItems.value = [...sidebarMenuItems.value, sidebar_items]
+    }
+  },
+)
+
 provide('event', event)
 
 const chapter = createResource({

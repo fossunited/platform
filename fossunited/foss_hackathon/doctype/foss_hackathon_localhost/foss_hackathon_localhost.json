@@ -1,18 +1,27 @@
 {
   "actions": [],
+  "allow_guest_to_view": 1,
   "allow_rename": 1,
   "autoname": "hash",
   "creation": "2024-05-14 01:30:41.753208",
   "doctype": "DocType",
   "engine": "InnoDB",
   "field_order": [
+    "meta_section",
+    "is_published",
+    "slug",
+    "column_break_uqnr",
+    "route",
+    "section_break_pueb",
     "is_accepting_attendees",
     "section_break_pnbh",
+    "image",
     "parent_hackathon",
     "localhost_name",
     "column_break_bvzk",
     "city",
     "state",
+    "email",
     "venue_details_section",
     "location",
     "column_break_sikv",
@@ -27,7 +36,8 @@
       "in_list_view": 1,
       "label": "Parent Hackathon",
       "options": "FOSS Hackathon",
-      "reqd": 1
+      "reqd": 1,
+      "search_index": 1
     },
     {
       "fieldname": "localhost_name",
@@ -91,10 +101,53 @@
       "fieldname": "is_accepting_attendees",
       "fieldtype": "Check",
       "label": "Is Accepting Attendees?"
+    },
+    {
+      "fieldname": "meta_section",
+      "fieldtype": "Section Break",
+      "label": "Meta"
+    },
+    {
+      "default": "0",
+      "fieldname": "is_published",
+      "fieldtype": "Check",
+      "label": "Is Published"
+    },
+    {
+      "fieldname": "route",
+      "fieldtype": "Data",
+      "label": "Route",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_pueb",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "slug",
+      "fieldtype": "Data",
+      "label": "Slug"
+    },
+    {
+      "fieldname": "column_break_uqnr",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "image",
+      "fieldtype": "Attach Image",
+      "label": "Image"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email",
+      "options": "Email"
     }
   ],
+  "has_web_view": 1,
+  "is_published_field": "is_published",
   "links": [],
-  "modified": "2024-07-16 16:32:35.592358",
+  "modified": "2025-01-26 01:08:28.198522",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon LocalHost",

@@ -124,9 +124,11 @@
       "fieldtype": "Section Break"
     },
     {
+      "description": "Route will be of format:\n<br>\n/hack/<i>hackathon_slug</i>/host/<code>slug</code>\n",
       "fieldname": "slug",
       "fieldtype": "Data",
-      "label": "Slug"
+      "label": "Slug",
+      "mandatory_depends_on": "eval:doc.is_published==1"
     },
     {
       "fieldname": "column_break_uqnr",
@@ -147,7 +149,7 @@
   "has_web_view": 1,
   "is_published_field": "is_published",
   "links": [],
-  "modified": "2025-01-26 01:08:28.198522",
+  "modified": "2025-01-28 10:43:38.977099",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon LocalHost",

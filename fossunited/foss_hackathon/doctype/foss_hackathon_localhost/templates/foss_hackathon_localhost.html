@@ -1,0 +1,182 @@
+{% extends "templates/foss_base.html" %}
+{% block head_include %}
+  {{ super() }}
+  <link rel="stylesheet" href="/assets/fossunited/css/styles.css" />
+{% endblock %}
+
+{% block page_content %}
+  <div class="container">
+    {{ breadcrumb(breadcrumbs) }}
+    {{ hero_section() }}
+    <div class="flex flex-col md:flex-row gap-6 md:gap-4 my-4">
+      {{ organizers_section() }}
+      <div>
+        {{ about_section() }}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% macro breadcrumb(path) %}
+  <nav aria-label="Breadcrumb" class="breadcrumb my-2">
+    <ol class="flex flex-wrap">
+      {% for item in path %}
+        <li class="breadcrumb-item text-sm">
+          {% if item.route %}
+            <a href="{{ item.route }}" class="hover:cursor-pointer">{{ item.label }}</a>
+          {% else %}
+            {{ item.label }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </nav>
+{% endmacro %}
+
+{% macro hero_image() %}
+<div class="relative">
+  <span class="z-10 absolute top-3 left-3 p-2 font-mono text-base font-semibold lowercase text-white bg-gray-900">localhost:{{ doc.city }}</span>
+  {% set src = doc.image or "/assets/fossunited/images/localhost_placeholder.svg" %}
+  <img
+    class="!border-gray-800 border w-96 h-auto aspect-square"
+    src="{{ src }}"
+    alt="Localhost Image"
+  />
+</div>
+{% endmacro %}
+
+{% macro hero_section() %}
+  <div class="flex flex-col md:flex-row gap-6">
+    {{ hero_image() }}
+    <div class="flex flex-col justify-between gap-2">
+      <div class="flex flex-col gap-2 w-full items-start">
+        {% if hackathon.hackathon_logo %}
+          <img
+            class="h-8"
+            src="{{ hackathon.hackathon_logo }}"
+            alt="{{ hackathon.hackathon_name }}"
+          />
+        {% else %}
+          <h4 class="text-sm font-medium">{{ hackathon.hackathon_name }}</h4>
+        {% endif %}
+        <div class="flex w-full justify-between gap-2 md:gap-4">
+          <div class="flex flex-col">
+            <h2 class="text-xl md:text-3xl font-semibold mb-1">{{ doc.localhost_name }}</h2>
+            <p class="text-gray-500 text-sm">{{ doc.location }}</p>
+          </div>
+          <div id="stats" class="flex flex-col items-end shrink-0">
+            {% if attending %}
+              <p class="font-medium">
+                <span class="!text-green-600 font-semibold">{{ attending }}</span> attending
+              </p>
+            {% endif %}
+            {% if interested %}
+              <p class="text-sm text-gray-500">{{ interested }} people are interested</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 !text-gray-700">
+          <div class="flex gap-1 items-center">
+            <i class="ti ti-map-pin text-lg"></i>
+            <a class="text-sm hover:cursor-pointer hover:underline" href="{{ doc.map_link }}" target="_blank" rel="noopener noreferrer">
+              {{ doc.location }}
+            </a>
+            </a>
+          </div>
+          <div class="flex gap-1 items-center">
+            <i class="ti ti-calendar text-lg"></i>
+            <p class="text-sm">{{ hackathon_format_date }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        {{ primary_button("Register", registration_link) }}
+        {% if frappe.session.user != 'Guest' %}
+        {{ like_button() }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro primary_button(label, link) %}
+<a class="text-sm text-center basis-2/3 uppercase font-semibold bg-gray-900 hover:bg-gray-800 text-white py-3 px-4 hover:no-underline" href="{{ link }}" target="_blank">
+  {{ label }}
+</a>
+{% endmacro %}
+
+{% macro like_button() %}
+  <button data-liked="{{ has_liked }}" id="like-button" onclick="toggle_like()" class="rounded-none py-0 px-3 bg-gray-50 border-gray-700 text-gray-700 hover:!bg-green-50">
+    {% if has_liked %}
+    <i class="ti ti-heart-filled text-green-600 text-xl"></i>
+    {% else %}
+    <i class="ti ti-heart text-xl"></i>
+    {% endif %}
+  </button>
+{% endmacro %}
+
+{% macro organizers_section() %}
+<div class="flex flex-col gap-2 max-w-96 w-full shrink">
+  <h4 class="text-base font-semibold">Organizers</h4>
+  <div class="grid grid-cols-2 gap-4 w-full">
+    {% for organizer in organizers %}
+      {{ organizer_card(organizer.profile_photo, organizer.full_name, organizer.route) }}
+    {% endfor %}
+  </div>
+  <div class="flex flex-col gap-1 mt-2">
+    <h5 class="text-sm font-medium text-gray-500">Contact Localhost</h5>
+    <div class="flex gap-1 items-center">
+      <i class="ti ti-mail"></i>
+      <a class="text-sm text-gray-800" href="mailto:{{ doc.email }}">{{ doc.email }}</a>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro organizer_card(image, name, route) %}
+  <a href="/{{ route }}" target="_blank" class="flex gap-2 items-center">
+    {% set organizer_image = image or '/assets/fossunited/images/defaults/user_profile_image.png' %}
+    <img class="w-10 h-10 aspect-square border border-gray-700" src="{{organizer_image}}" alt="{{name}}"/>
+    <span class="text-sm text-gray-800">{{ name }}</span>
+  </a>
+{% endmacro %}
+
+{% macro about_section() %}
+<div class="flex flex-col gap-4">
+  <div>
+    <h4 class="text-base font-semibold">About the Event</h4>
+    <p>
+      {{ hackathon.hackathon_description }}
+    </p>
+  </div>
+  <div>
+    <h4 class="text-base font-semibold">Rules</h4>
+    <p>
+      {{ hackathon.hackathon_rules }}
+    </p>
+  </div>
+</div>
+{% endmacro %}
+
+{% block page_script %}
+<script>
+  function toggle_like() {
+    let is_liked = $('#like-button').data('liked')
+    let to_add = is_liked === 'True' ? 'No' : 'Yes'
+    frappe.call({
+      method: 'frappe.desk.like.toggle_like',
+      args: {
+        doctype: 'FOSS Hackathon LocalHost',
+        name: '{{ doc.name }}',
+        add: to_add,
+      },
+      callback: (r) => {
+        location.reload()
+      },
+      error: (r) => {
+        console.log('ERROR' + r)
+      },
+    })
+  }
+</script>
+{% endblock %}

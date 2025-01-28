@@ -4,6 +4,7 @@ module.exports = {
     './fossunited/www/**/*.html',
     './fossunited/templates/**/*.html',
     './fossunited/stack/web_template/**/*.html',
+    './fossunited/foss_hackathon/doctype/foss_hackathon_localhost/**/*.html',
   ],
   theme: {
     extend: {
@@ -26,7 +27,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
-        mono: ['"Fira Code"', 'monospace'],
+        mono: ['"Space Mono"', 'monospace'],
         code: ['"Fira Code"', 'monospace'],
         fff: ['"FFF Forward"', 'sans-serif'],
       },

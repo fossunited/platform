@@ -143,7 +143,7 @@ class FOSSHackathonLocalHost(WebsiteGenerator):
     def get_breadcrumb(self):
         crumbs = [
             {
-                "route": frappe.db.get_value(HACKATHON, self.parent_hackathon, "route"),
+                "route": f'/{frappe.db.get_value(HACKATHON, self.parent_hackathon, "route")}',
                 "label": frappe.db.get_value(HACKATHON, self.parent_hackathon, "hackathon_name"),
             },
             {

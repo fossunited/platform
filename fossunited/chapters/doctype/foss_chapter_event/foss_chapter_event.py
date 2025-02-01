@@ -83,6 +83,8 @@ class FOSSChapterEvent(WebsiteGenerator):
         show_cfp: DF.Check
         show_photos: DF.Check
         show_rsvp: DF.Check
+        # This attribute is unused at the moment - it was previously used to determine whether
+        # or not to display the schedule tab on events
         show_schedule: DF.Check
         show_speakers: DF.Check
         sponsor_list: DF.Table[FOSSEventSponsor]
@@ -216,7 +218,6 @@ class FOSSChapterEvent(WebsiteGenerator):
             "speakers",
             "rsvp",
             "talk_proposal",
-            "schedule",
         ]
 
         if is_user_team_member(self.chapter, frappe.session.user):
@@ -228,8 +229,6 @@ class FOSSChapterEvent(WebsiteGenerator):
             navbar_items.remove("rsvp")
         if not self.show_cfp:
             navbar_items.remove("talk_proposal")
-        if not self.show_schedule:
-            navbar_items.remove("schedule")
 
         return navbar_items
 

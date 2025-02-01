@@ -48,7 +48,7 @@
 {% macro hero_section() %}
   <div class="flex flex-col md:flex-row gap-6">
     {{ hero_image() }}
-    <div class="flex flex-col justify-between gap-2">
+    <div class="flex flex-col justify-between gap-2 w-full">
       <div class="flex flex-col gap-2 w-full items-start">
         {% if hackathon.hackathon_logo %}
           <img
@@ -62,7 +62,6 @@
         <div class="flex w-full justify-between gap-2 md:gap-4">
           <div class="flex flex-col">
             <h2 class="text-xl md:text-3xl font-semibold mb-1">{{ doc.localhost_name }}</h2>
-            <p class="text-gray-500 text-sm">{{ doc.location }}</p>
           </div>
           <div id="stats" class="flex flex-col items-end shrink-0">
             {% if attending %}

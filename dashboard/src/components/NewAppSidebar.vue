@@ -59,7 +59,19 @@
         <slot name="post-nav-items"></slot>
       </div>
       <div>
-        <slot name="pre-user-actions"></slot>
+        <slot name="pre-user-actions">
+          <p class="text-sm leading-normal tracking-tight font-medium text-gray-600">
+            Need Help? Check out our
+            <a
+              class="underline flex gap-1 items-center"
+              href="https://docs.fossunited.org/"
+              target="_blank"
+            >
+              documentation
+              <IconExternalLink class="w-4 h-4" />
+            </a>
+          </p>
+        </slot>
         <slot name="user-actions">
           <div class="hidden md:flex items-center justify-between text-gray-800 py-2 my-1">
             <div class="flex items-center gap-2">
@@ -169,6 +181,7 @@ import { createResource, FeatherIcon, Popover } from 'frappe-ui'
 import { useRoute } from 'vue-router'
 import { ref, defineProps, inject } from 'vue'
 import { createAbsoluteUrlFromRoute } from '@/helpers/utils'
+import { IconExternalLink } from '@tabler/icons-vue'
 
 const route = useRoute()
 const session = inject('$session')

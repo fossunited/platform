@@ -56,6 +56,7 @@ class FOSSHackathonLocalHost(WebsiteGenerator):
         self.handle_roles()
 
     def get_context(self, context):
+        context.no_cache = 1
         context.breadcrumbs = self.get_breadcrumb()
         context.hackathon = frappe.db.get_value(
             HACKATHON,
@@ -143,7 +144,7 @@ class FOSSHackathonLocalHost(WebsiteGenerator):
     def get_breadcrumb(self):
         crumbs = [
             {
-                "route": frappe.db.get_value(HACKATHON, self.parent_hackathon, "route"),
+                "route": f'/{frappe.db.get_value(HACKATHON, self.parent_hackathon, "route")}',
                 "label": frappe.db.get_value(HACKATHON, self.parent_hackathon, "hackathon_name"),
             },
             {

@@ -81,7 +81,7 @@ def update_profile(fields_dict):
         for field, value in updated_fields.items():
             if hasattr(profile, field):
                 setattr(profile, field, value)
-        profile.save(ignore_permissions=True)
+        profile.save()
 
         user_updates = {}
         if fields_dict.get("full_name") != user_doc.full_name:
@@ -101,7 +101,7 @@ def update_profile(fields_dict):
             for field, value in user_updates.items():
                 setattr(user, field, value)
 
-            user.save(ignore_permissions=True)
+            user.save()
 
         return True
 

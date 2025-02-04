@@ -22,8 +22,7 @@ class TestFOSSChapter(IntegrationTestCase):
         # When the chapter was created, a lead was assigned to it.
         # Then the lead should have the role of 'Chapter Lead' and 'Chapter Team Member'
         user = frappe.db.get_value(USER_PROFILE, chapter.chapter_members[0].chapter_member, "user")
-        has_role = frappe.db.exists("Has Role", {"role": "Chapter Team Member", "parent": user})
-        self.assertTrue(has_role)
+        self.assertTrue(self.has_team_member_role(user))
 
     def test_role_assignment_on_member_addition(self):
         # Given a chapter: self.chapter
@@ -39,8 +38,7 @@ class TestFOSSChapter(IntegrationTestCase):
 
         # Then the new member should have the role of 'Chapter Team Member'
         user = frappe.db.get_value(USER_PROFILE, new_member.name, "user")
-        has_role = frappe.db.exists("Has Role", {"role": "Chapter Team Member", "parent": user})
-        self.assertTrue(has_role)
+        self.assertTrue(self.has_team_member_role(user))
 
     def test_role_deassignment_on_member_removal(self):
         # Given a chapter: self.chapter
@@ -59,26 +57,32 @@ class TestFOSSChapter(IntegrationTestCase):
             )
         chapter.save()
 
+        removed_member = chapter.chapter_members[len(new_members)]
+        removed_user = frappe.db.get_value(USER_PROFILE, removed_member.chapter_member, "user")
+
+        # Make sure the member to be removed has the role "Chapter Team Member" before removal
+        self.assertTrue(self.has_team_member_role(removed_user))
+
         # When a member is removed from the chapter
-        removed_member = chapter.chapter_members[0]
         chapter.chapter_members = [
             m for m in chapter.chapter_members if m.chapter_member != removed_member.chapter_member
         ]
         chapter.save()
 
         # Then the removed member should not have the role of 'Chapter Team Member'
-        user = frappe.db.get_value(USER_PROFILE, removed_member.chapter_member, "user")
-        has_role = frappe.db.exists("Has Role", {"role": "Chapter Team Member", "parent": user})
+        self.assertFalse(self.has_team_member_role(removed_user))
 
         # check other members retain the role
         for member in chapter.chapter_members:
             user = frappe.db.get_value(USER_PROFILE, member.chapter_member, "user")
-            if not bool(
-                frappe.db.exists("Has Role", {"role": "Chapter Team Member", "parent": user})
-            ):
+            if not self.has_team_member_role(user):
                 self.fail(f"Role not retained for {member}")
 
-        self.assertFalse(has_role)
+    def has_team_member_role(self, user: str):
+        """
+        user id of format `test@example.com`
+        """
+        return bool(frappe.db.exists("Has Role", {"role": "Chapter Team Member", "parent": user}))
 
     def test_unique_chapter_slug(self):
         # Given a chapter: self.chapter

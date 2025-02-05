@@ -40,14 +40,13 @@
     {
       "fieldname": "image",
       "fieldtype": "Attach Image",
-      "label": "Image",
-      "reqd": 1
+      "label": "Image"
     }
   ],
   "index_web_pages_for_search": 1,
   "istable": 1,
   "links": [],
-  "modified": "2025-01-15 13:57:54.152664",
+  "modified": "2025-02-05 16:19:01.239189",
   "modified_by": "Administrator",
   "module": "FOSSUnited",
   "name": "FOSS Event Sponsor",

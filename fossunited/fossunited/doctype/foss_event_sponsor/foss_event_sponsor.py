@@ -14,7 +14,7 @@ class FOSSEventSponsor(Document):
         from frappe.types import DF
 
         custom_tier: DF.Data | None
-        image: DF.AttachImage
+        image: DF.AttachImage | None
         link: DF.Data
         parent: DF.Data
         parentfield: DF.Data

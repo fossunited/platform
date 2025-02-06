@@ -25,9 +25,9 @@
     </select>
   </div>
   <div class="w-full place-items-center">
-    <div v-if="requestByGroup.data" class="my-2">
+    <div v-if="requestByGroup.data" class="my-2 w-full">
       <ListView
-        class="min-h-[440px]"
+        class="h-[440px]"
         :columns="[
           {
             label: 'Name',

@@ -10,7 +10,7 @@ Repo for the website and open-source platform of FOSS United. The whole platform
 
 - This project works the best on the latest Frappe Version v15. And is suggested to be installed on the same.
 - Checkout Frappe Framework [Installation Docs](https://frappeframework.com/docs/) for setting up frappe on your [bench](https://frappeframework.com/docs/user/en/tutorial/install-and-setup-bench).
-
+- If you encounter a password-related error after installing MariaDB while following the Frappe installation guide—despite not setting a password—follow [this DigitalOcean guide](https://www.digitalocean.com/community/tutorials/how-to-reset-your-mysql-or-mariadb-root-password) to reset the root password. If the `kill` command near the end of the article fails, find the MySQL processes using `ps aux | grep mysqld`, identify the `mysqld` and `mysql_safe` processes, and terminate them with `sudo kill -9 <pid>`. Verify that the processes are no longer running before proceeding.
 - Create a new bench with
   `bench init fossu-bench`
 - Clone the FOSS United Platform App.

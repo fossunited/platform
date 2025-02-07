@@ -3,7 +3,7 @@ import io
 from PIL import Image
 
 from fossunited.api.dashboard import get_session_user_profile
-from fossunited.doctype_ids import USER_PROFILE
+from fossunited.doctype_ids import CHAPTER, RESTRICTED_USERNAME, USER_PROFILE
 from frappe.utils.file_manager import save_file
 
 

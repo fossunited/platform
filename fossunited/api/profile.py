@@ -1,10 +1,11 @@
-import frappe
 import io
+
+import frappe
+from frappe.utils.file_manager import save_file
 from PIL import Image
 
 from fossunited.api.dashboard import get_session_user_profile
 from fossunited.doctype_ids import CHAPTER, RESTRICTED_USERNAME, USER_PROFILE
-from frappe.utils.file_manager import save_file
 
 
 def convert_image_to_webp(image_content: bytes) -> bytes:
@@ -38,11 +39,7 @@ def set_profile_image(file_url: str) -> bool:
         filename = f"profile_{user_doc.name}.webp"
 
         saved_file = save_file(
-            fname=filename,
-            content=webp_image,
-            dt=USER_PROFILE,
-            dn=user_doc.name,
-            is_private=False
+            fname=filename, content=webp_image, dt=USER_PROFILE, dn=user_doc.name, is_private=False
         )
 
         frappe.db.set_value(USER_PROFILE, user_doc.name, "profile_photo", saved_file.file_url)
@@ -69,26 +66,12 @@ def set_cover_image(file_url: str) -> bool:
         filename = f"cover_{user_doc.name}.webp"
 
         saved_file = save_file(
-            fname=filename,
-            content=webp_image,
-            dt=USER_PROFILE,
-            dn=user_doc.name,
-            is_private=False
+            fname=filename, content=webp_image, dt=USER_PROFILE, dn=user_doc.name, is_private=False
         )
 
         frappe.db.set_value(USER_PROFILE, user_doc.name, "cover_image", saved_file.file_url)
         return True
 
-    except Exception as e:
-        frappe.throw(str(e))
-
-
-@frappe.whitelist()
-def toggle_profile_privacy(value):
-    user_doc = get_session_user_profile()
-    try:
-        frappe.db.set_value(USER_PROFILE, user_doc.name, "is_private", value)
-        return True
     except Exception as e:
         frappe.throw(str(e))
 

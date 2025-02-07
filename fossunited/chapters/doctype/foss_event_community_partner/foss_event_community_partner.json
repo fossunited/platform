@@ -24,14 +24,13 @@
     {
       "fieldname": "logo",
       "fieldtype": "Attach Image",
-      "label": "Logo",
-      "reqd": 1
+      "label": "Logo"
     }
   ],
   "index_web_pages_for_search": 1,
   "istable": 1,
   "links": [],
-  "modified": "2025-01-22 12:02:28.375273",
+  "modified": "2025-02-05 16:34:19.930395",
   "modified_by": "Administrator",
   "module": "Chapters",
   "name": "FOSS Event Community Partner",

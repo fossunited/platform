@@ -13,7 +13,7 @@ class FOSSEventCommunityPartner(Document):
         from frappe.types import DF
 
         link: DF.Data
-        logo: DF.AttachImage
+        logo: DF.AttachImage | None
         org_name: DF.Data
         parent: DF.Data
         parentfield: DF.Data

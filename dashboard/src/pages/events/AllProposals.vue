@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header priority="high" />
   <div
     v-if="event.loading"
     class="max-w-screen-lg mx-auto mt-8 flex items-center justify-center min-h-[320px]"
@@ -8,9 +8,17 @@
   </div>
   <div v-else class="container mx-auto px-4">
     <Breadcrumb class="mt-2" :items="breadcrumb_items" />
-    <EventHeader :event="event.data" class="my-4 border-b border-gray-900 pb-4" />
+    <EventHeader 
+      :event="event.data" 
+      class="my-4 border-b border-gray-900 pb-4"
+      :image-priority="true"
+    />
 
-    <AllProposalsBanner :event="event.data" class="py-2" />
+    <AllProposalsBanner 
+      :event="event.data" 
+      class="py-2"
+      :image-priority="true" 
+    />
     <!-- Search and filters -->
     <div class="flex flex-col gap-y-3 justify-between my-7 md:flex-row md:items-center">
       <div class="w-full md:w-1/2">
@@ -40,7 +48,10 @@
       <div class="mb-12">
         <div v-if="filteredProposals.length != 0">
           <div v-for="(proposal, index) in filteredProposals" :key="index" class="border-b-2 py-4">
-            <ProposalBlock :proposal="proposal" />
+            <ProposalBlock 
+              :proposal="proposal" 
+              :image-priority="index < 3"  // Prioritize first 3 proposals' images
+            />
           </div>
         </div>
         <div v-else>

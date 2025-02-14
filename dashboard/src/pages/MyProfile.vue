@@ -169,8 +169,10 @@ import TextEditor from '@/components/ui/TextEditor.vue'
 import { IconCheck } from '@tabler/icons-vue'
 import { createResource, FileUploader, Switch, FormControl, ErrorMessage } from 'frappe-ui'
 
-import { reactive, ref, watch, computed } from 'vue'
+import { reactive, ref, watch, computed, inject, onMounted } from 'vue'
 import { toast } from 'vue-sonner'
+
+const profile = inject('userProfile')
 
 const profile_dict = reactive({
   full_name: '',
@@ -191,15 +193,21 @@ const profile_dict = reactive({
   mastodon: '',
 })
 
-const profile = createResource({
-  url: 'fossunited.api.dashboard.get_session_user_profile',
-  auto: true,
-  onSuccess(data) {
+onMounted(() => {
+  if (profile.data) {
     Object.keys(profile_dict).forEach((key) => {
-      profile_dict[key] = data[key]
+      profile_dict[key] = profile.data[key]
     })
-  },
+  }
 })
+
+watch(() => profile.data, (newData) => {
+  if (newData) {
+    Object.keys(profile_dict).forEach((key) => {
+      profile_dict[key] = newData[key];
+    });
+  }
+}, { deep: true });
 
 const validateFile = (file) => {
   let extn = file.name.split('.').pop().toLowerCase()

@@ -199,13 +199,7 @@ const props = defineProps({
   },
 })
 
-const user_profile = createResource({
-  url: 'fossunited.api.dashboard.get_session_user_profile',
-})
-
-if (session.isLoggedIn && session.user != 'Guest' && session.user != 'Administrator') {
-  user_profile.fetch()
-}
+const user_profile = inject('userProfile')
 
 const isMenuItemActive = (menuRoute, index) => {
   if (index == 0 && menuRoute != route.path) {

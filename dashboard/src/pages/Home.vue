@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue'
+import { inject, provide, ref } from 'vue'
 import { usePageMeta, createResource } from 'frappe-ui'
 import SideNavbar from '@/components/NewAppSidebar.vue'
 
@@ -23,6 +23,13 @@ const navItems = createResource({
   },
   auto: true,
 })
+
+const userProfile = createResource({
+  url: 'fossunited.api.dashboard.get_session_user_profile',
+  auto: true,
+});
+
+provide('userProfile', userProfile);
 
 usePageMeta(() => {
   return {

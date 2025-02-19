@@ -135,6 +135,17 @@
         </div>
       </div>
     {% endif %}
+    {% if doc.volunteers %}
+      <div class="event-members-section my-3">
+        <h5>Event Members</h5>
+        <div class="event--members-block">
+          {% from 'fossunited/templates/macros/member_card.html' import member_card %}
+          <div class="members-grid-6">
+            {% for volunteer in volunteers %}{{ member_card(volunteer) }}{% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
   </div>
 {% endmacro %}
 {% macro render_schedule() %}

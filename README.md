@@ -31,6 +31,7 @@ The FOSS United Dashboard is a centralised admin UI for all the users signed up 
 - The code for dashboard is located under `fossunited/dashboard`.
 - Install and Build the dashboard with `yarn install`.
 - Run the dashboard in the root directory of the project with `yarn dev`.
+- Add "ignore_csrf": 1 to your `common_site_config.json.`
 - Dashboard will now be accessible on `<sitename>:8080`.
 
 ## Pre-commit

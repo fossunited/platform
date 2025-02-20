@@ -34,6 +34,8 @@
     "hackathon_sponsors_section",
     "sponsor_list",
     "community_partners",
+    "volunteers_tab",
+    "volunteers",
     "team_set_up_tab",
     "is_registration_live",
     "registration_page_setup_section",
@@ -321,6 +323,17 @@
       "label": "Organizing Chapter",
       "options": "FOSS Chapter",
       "reqd": 1
+    },
+    {
+      "fieldname": "volunteers_tab",
+      "fieldtype": "Tab Break",
+      "label": "Volunteers"
+    },
+    {
+      "fieldname": "volunteers",
+      "fieldtype": "Table",
+      "label": "Volunteers",
+      "options": "FOSS Chapter Event Member"
     }
   ],
   "has_web_view": 1,
@@ -348,7 +361,7 @@
       "link_fieldname": "parent_hackathon"
     }
   ],
-  "modified": "2024-12-26 13:49:52.499217",
+  "modified": "2025-02-19 12:55:26.241990",
   "modified_by": "Administrator",
   "module": "FOSS Hackathon",
   "name": "FOSS Hackathon",

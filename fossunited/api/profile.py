@@ -58,6 +58,9 @@ def set_cover_image(file_url: str) -> bool:
     """
     user_doc = get_session_user_profile()
     try:
+        if len(file_url) == 0:
+            frappe.db.set_value(USER_PROFILE, user_doc.name, "cover_image", "")
+            return True
         file_path = frappe.get_site_path("public", file_url.lstrip("/"))
         with open(file_path, "rb") as f:
             original_image = f.read()

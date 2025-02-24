@@ -98,3 +98,36 @@ class TestFOSSUserProfile(IntegrationTestCase):
 
         profile.delete(force=True)
         test_user.delete(force=True)
+
+    def test_share_user_with_self(self):
+        frappe.set_user("Guest")
+
+        test_email = fake.email()
+
+        test_user = frappe.get_doc(
+            {
+                "doctype": "User",
+                "email": test_email,
+                "first_name": fake.name().split()[0],
+            },
+        ).insert(ignore_permissions=True)
+        test_user.reload()
+
+        profile_id = frappe.db.get_value(
+            USER_PROFILE,
+            {"user": test_user.name},
+            "name",
+        )
+
+        self.assertTrue(
+            frappe.db.exists(
+                "DocShare",
+                {
+                    "user": test_user.name,
+                    "share_doctype": USER_PROFILE,
+                    "share_name": profile_id,
+                },
+            )
+        )
+
+        test_user.delete(force=True)

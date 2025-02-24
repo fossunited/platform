@@ -153,4 +153,5 @@ class FOSSUserProfile(WebsiteGenerator):
                 "share": 1,
             }
         )
+        share_doc.flags.ignore_share_permission = 1
         share_doc.insert(ignore_permissions=True)

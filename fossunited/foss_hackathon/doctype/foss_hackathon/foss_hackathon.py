@@ -116,9 +116,9 @@ class FOSSHackathon(WebsiteGenerator):
     def get_sponsors(self):
         sponsors_dict = {}
         for sponsor in self.sponsor_list:
-            if sponsor.sponsorship_tier not in sponsors_dict:
-                sponsors_dict[sponsor.sponsorship_tier] = []
-            sponsors_dict[sponsor.sponsorship_tier].append(sponsor)
+            if sponsor.tier not in sponsors_dict:
+                sponsors_dict[sponsor.tier] = []
+            sponsors_dict[sponsor.tier].append(sponsor)
         return sponsors_dict
 
     def get_schedule_dict(self):

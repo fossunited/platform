@@ -71,6 +71,9 @@ class FOSSUserProfile(WebsiteGenerator):
         self.validate_username()
         self.set_route()
 
+    def after_insert(self):
+        self.share_user_with_self()
+
     def on_update(self):
         prev_user_doc = self.get_doc_before_save()
         if prev_user_doc is None:
@@ -133,3 +136,22 @@ class FOSSUserProfile(WebsiteGenerator):
 
     def on_trash(self):
         frappe.delete_doc("User", self.user, force=True)
+
+    def share_user_with_self(self):
+        """
+        Share the profile document with it's user.
+        Give user Read and Write permissions.
+        """
+        share_doc = frappe.get_doc(
+            {
+                "doctype": "DocShare",
+                "user": self.user,
+                "share_doctype": self.doctype,
+                "share_name": self.name,
+                "read": 1,
+                "write": 1,
+                "share": 1,
+            }
+        )
+        share_doc.flags.ignore_share_permission = 1
+        share_doc.insert(ignore_permissions=True)

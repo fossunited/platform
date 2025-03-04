@@ -104,9 +104,9 @@
             <div class="sponsor--tier-heading">{{ k }}</div>
             <div class="sponsor--flex">
               {% for sponsor in v %}
-                <a href="{{ sponsor.sponsor_link }}" class="sponsor--block">
+                <a href="{{ sponsor.link }}" target="_blank" class="sponsor--block">
                   <img
-                    src="{{ sponsor.sponsor_image }}"
+                    src="{{ sponsor.image }}"
                     alt="{{ sponsor.sponsor_name }}"
                     class="sponsor--image"
                   />
@@ -123,14 +123,25 @@
           <h5>Community Partners</h5>
           <div class="sponsor--flex">
             {% for partner in doc.community_partners %}
-              <a href="{{ partner.organization_website }}" class="sponsor--block">
+              <a href="{{ partner.link }}" target="_blank" class="sponsor--block">
                 <img
-                  src="{{ partner.company_logo }}"
-                  alt="{{ partner.organization_name }}"
+                  src="{{ partner.logo }}"
+                  alt="{{ partner.org_name }}"
                   class="sponsor--image"
                 />
               </a>
             {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% if doc.volunteers %}
+      <div class="event-members-section my-3">
+        <h5>Event Members</h5>
+        <div class="event--members-block">
+          {% from 'fossunited/templates/macros/member_card.html' import member_card %}
+          <div class="members-grid-6">
+            {% for volunteer in volunteers %}{{ member_card(volunteer) }}{% endfor %}
           </div>
         </div>
       </div>

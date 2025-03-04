@@ -22,6 +22,9 @@ class FOSSHackathon(WebsiteGenerator):
     if TYPE_CHECKING:
         from frappe.types import DF
 
+        from fossunited.chapters.doctype.foss_chapter_event_member.foss_chapter_event_member import (  # noqa: E501
+            FOSSChapterEventMember,
+        )
         from fossunited.chapters.doctype.foss_event_community_partner.foss_event_community_partner import (  # noqa: E501
             FOSSEventCommunityPartner,
         )
@@ -63,6 +66,7 @@ class FOSSHackathon(WebsiteGenerator):
         show_schedule_tab: DF.Check
         sponsor_list: DF.Table[FOSSEventSponsor]
         start_date: DF.Datetime
+        volunteers: DF.Table[FOSSChapterEventMember]
     # end: auto-generated types
 
     def before_save(self):
@@ -100,6 +104,8 @@ class FOSSHackathon(WebsiteGenerator):
             fields=["*"],
         )
 
+        context.volunteers = self.get_volunteers()
+
     def get_nav_items(self):
         nav_items = ["information", "submissions"]
         if self.show_schedule_tab:
@@ -110,9 +116,9 @@ class FOSSHackathon(WebsiteGenerator):
     def get_sponsors(self):
         sponsors_dict = {}
         for sponsor in self.sponsor_list:
-            if sponsor.sponsorship_tier not in sponsors_dict:
-                sponsors_dict[sponsor.sponsorship_tier] = []
-            sponsors_dict[sponsor.sponsorship_tier].append(sponsor)
+            if sponsor.tier not in sponsors_dict:
+                sponsors_dict[sponsor.tier] = []
+            sponsors_dict[sponsor.tier].append(sponsor)
         return sponsors_dict
 
     def get_schedule_dict(self):
@@ -130,6 +136,31 @@ class FOSSHackathon(WebsiteGenerator):
 
         schedule_dict["days"] = list(schedule_dict.keys())
         return schedule_dict
+
+    def get_volunteers(self):
+        members = []
+        for member in self.volunteers:
+            profile = frappe.db.get_value(
+                USER_PROFILE,
+                member.member,
+                [
+                    "profile_photo",
+                    "route",
+                ],
+                as_dict=1,
+            )
+            members.append(
+                {
+                    "full_name": member.full_name,
+                    "role": member.role or "Volunteer",
+                    "profile_picture": (
+                        profile.profile_photo
+                        or "/assets/fossunited/images/defaults/user_profile_image.png"
+                    ),
+                    "route": profile.route,
+                }
+            )
+        return members
 
 
 def get_speakers(schedule):

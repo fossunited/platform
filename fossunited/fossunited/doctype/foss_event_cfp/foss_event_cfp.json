@@ -11,6 +11,7 @@
   "field_order": [
     "is_published",
     "route",
+    "status",
     "column_break_puww",
     "allow_cfp_edit",
     "anonymise_proposals",
@@ -137,13 +138,20 @@
       "fieldname": "deadline",
       "fieldtype": "Datetime",
       "label": "Deadline"
+    },
+    {
+      "default": "Closed",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Closed\nLive"
     }
   ],
   "has_web_view": 1,
   "index_web_pages_for_search": 1,
   "is_published_field": "is_published",
   "links": [],
-  "modified": "2024-09-05 16:06:06.848900",
+  "modified": "2025-03-04 16:31:27.633950",
   "modified_by": "Administrator",
   "module": "FOSSUnited",
   "name": "FOSS Event CFP",
@@ -177,6 +185,7 @@
     }
   ],
   "route": "cfp/new",
+  "row_format": "Dynamic",
   "sort_field": "modified",
   "sort_order": "DESC",
   "states": [],

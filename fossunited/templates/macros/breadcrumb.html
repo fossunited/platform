@@ -1,21 +1,15 @@
-{% macro breadcrumb(route) %}
-  {% set route = route.split('/') %}
-  {%
-    set event =
-    frappe.db.get_value("FOSS Chapter Event", route[1], "event_name")
-  %}
-  <div class="breadcrumb mt-3">
-    {% for crumb in route %}{% if crumb == 'events' %}
-      <a class="dark-links" href="/events/{{ route[1] }}">{{ event }}</a>
-      <img class="ml-1 mr-1" src="/assets/fossunited/icons/chevron-right.svg" />
-    {% elif crumb == 'cfp' or crumb == 'rsvp' %}
-      <a class="dark-links" href="/events/{{ route[1] }}/{{ route[2] }}">{{ crumb | upper }}</a>
-      <img class="ml-1 mr-1" src="/assets/fossunited/icons/chevron-right.svg" />
-    {% elif crumb in ['edit', 'submission'] %}
-      <span class="breadcrumb-destination">{{ crumb | capitalize }}</span>
-    {% else %}
-      <span class="breadcrumb-destination">{{ crumb }}</span>
-      <img class="ml-1 mr-1" src="/assets/fossunited/icons/chevron-right.svg" />
-    {% endif %}{% endfor %}
-  </div>
+{% macro breadcrumb(path) %}
+<nav aria-label="Breadcrumb" class="breadcrumb my-2">
+  <ol class="flex flex-wrap">
+    {% for item in path %}
+      <li class="breadcrumb-item text-sm text-gray-500 last:text-gray-800">
+        {% if item.route %}
+          <a href="{{ item.route }}" class="hover:cursor-pointer">{{ item.label }}</a>
+        {% else %}
+          {{ item.label }}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+</nav>
 {% endmacro %}

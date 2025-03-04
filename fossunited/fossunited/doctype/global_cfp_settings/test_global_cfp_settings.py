@@ -3,16 +3,16 @@
 import frappe
 from frappe.tests import IntegrationTestCase
 
-from fossunited.doctype_ids import GLOBAL_REVIEW_SETTINGS, USER_PROFILE
+from fossunited.doctype_ids import GLOBAL_CFP_SETTINGS, USER_PROFILE
 
 
-class TestFOSSGlobalCFPReviewSettings(IntegrationTestCase):
+class TestGlobalCFPSettings(IntegrationTestCase):
     def test_global_setting_creation(self):
         # Given a new FOSS Global CFP Review Settings document
         # When the document is inserted without any members
         settings = frappe.get_doc(
             {
-                "doctype": GLOBAL_REVIEW_SETTINGS,
+                "doctype": GLOBAL_CFP_SETTINGS,
                 "members": [],
             }
         )
@@ -24,7 +24,7 @@ class TestFOSSGlobalCFPReviewSettings(IntegrationTestCase):
         # Given a new FOSS Global CFP Review Settings document
         settings = frappe.get_doc(
             {
-                "doctype": GLOBAL_REVIEW_SETTINGS,
+                "doctype": GLOBAL_CFP_SETTINGS,
                 "members": [],
             }
         )
@@ -49,7 +49,7 @@ class TestFOSSGlobalCFPReviewSettings(IntegrationTestCase):
         # Given a new FOSS Global CFP Review Settings document
         settings = frappe.get_doc(
             {
-                "doctype": GLOBAL_REVIEW_SETTINGS,
+                "doctype": GLOBAL_CFP_SETTINGS,
                 "members": [],
             }
         )

@@ -7,7 +7,7 @@ from frappe.model.document import Document
 from fossunited.doctype_ids import USER_PROFILE
 
 
-class FOSSGlobalCFPReviewSettings(Document):
+class GlobalCFPSettings(Document):
     def before_save(self):
         # unassign 'CFP Reviewer role to all the members removed
         self.unassign_reviewer_role()

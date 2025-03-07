@@ -8,6 +8,22 @@ from fossunited.doctype_ids import USER_PROFILE
 
 
 class GlobalCFPSettings(Document):
+    # begin: auto-generated types
+    # This code is auto-generated. Do not modify anything in this block.
+
+    from typing import TYPE_CHECKING
+
+    if TYPE_CHECKING:
+        from frappe.types import DF
+
+        from fossunited.fossunited.doctype.foss_global_cfp_review_member.foss_global_cfp_review_member import (  # noqa: E501
+            FOSSGlobalCFPReviewMember,
+        )
+
+        guidelines: DF.TextEditor | None
+        members: DF.Table[FOSSGlobalCFPReviewMember]
+    # end: auto-generated types
+
     def before_save(self):
         # unassign 'CFP Reviewer role to all the members removed
         self.unassign_reviewer_role()

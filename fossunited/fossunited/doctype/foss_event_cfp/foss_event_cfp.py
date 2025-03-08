@@ -36,6 +36,7 @@ class FOSSEventCFP(WebsiteGenerator):
         only_talk_proposals: DF.Check
         only_workshops: DF.Check
         route: DF.Data | None
+        status: DF.Literal["Closed", "Live"]  # noqa: F821
     # end: auto-generated types
 
     def before_insert(self):

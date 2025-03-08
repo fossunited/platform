@@ -1,0 +1,87 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "creation": "2025-03-08 23:28:24.754064",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "photo",
+    "full_name",
+    "email",
+    "designation",
+    "organization",
+    "social_link",
+    "column_break_nvuo",
+    "bio",
+    "linked_user"
+  ],
+  "fields": [
+    {
+      "fieldname": "photo",
+      "fieldtype": "Attach Image",
+      "label": "Photo"
+    },
+    {
+      "fieldname": "full_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Full Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Email",
+      "reqd": 1
+    },
+    {
+      "fieldname": "designation",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Designation",
+      "reqd": 1
+    },
+    {
+      "fieldname": "organization",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Organization"
+    },
+    {
+      "fieldname": "linked_user",
+      "fieldtype": "Link",
+      "label": "Linked User",
+      "options": "FOSS User Profile"
+    },
+    {
+      "fieldname": "column_break_nvuo",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "bio",
+      "fieldtype": "Text Editor",
+      "label": "Bio"
+    },
+    {
+      "fieldname": "social_link",
+      "fieldtype": "Data",
+      "label": "Social Link"
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "istable": 1,
+  "links": [],
+  "modified": "2025-03-09 01:26:33.831694",
+  "modified_by": "Administrator",
+  "module": "FOSSUnited",
+  "name": "CFP Submission Speaker",
+  "owner": "Administrator",
+  "permissions": [],
+  "row_format": "Dynamic",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": []
+}

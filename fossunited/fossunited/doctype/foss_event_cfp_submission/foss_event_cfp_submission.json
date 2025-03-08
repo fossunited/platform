@@ -22,6 +22,17 @@
     "event",
     "event_name",
     "submitted_by",
+    "about_talk_section",
+    "talk_title",
+    "session_type",
+    "is_first_talk",
+    "talk_reference",
+    "references",
+    "column_break_mhza",
+    "intended_audience",
+    "talk_description",
+    "speaker_information_section",
+    "speakers",
     "personal_information_section",
     "full_name",
     "email",
@@ -30,13 +41,6 @@
     "organization",
     "column_break_dcfl",
     "bio",
-    "about_talk_section",
-    "is_first_talk",
-    "session_type",
-    "talk_title",
-    "talk_reference",
-    "column_break_mhza",
-    "talk_description",
     "section_break_ilij",
     "custom_answers",
     "reviews_tab",
@@ -115,7 +119,7 @@
     {
       "fieldname": "about_talk_section",
       "fieldtype": "Section Break",
-      "label": "About Talk"
+      "label": "Session Details"
     },
     {
       "columns": 3,
@@ -265,7 +269,7 @@
       "fieldname": "session_type",
       "fieldtype": "Select",
       "label": "Session Type",
-      "options": "Talk\nLightning Talk\nWorkshop",
+      "options": "Talk\nLightning Talk\nPanel Discussion\nBirds of Feather(BoF)\nWorkshop",
       "reqd": 1
     },
     {
@@ -285,12 +289,36 @@
       "fieldname": "last_name",
       "fieldtype": "Data",
       "label": "Last Name"
+    },
+    {
+      "fieldname": "speaker_information_section",
+      "fieldtype": "Section Break",
+      "label": "Speaker Information"
+    },
+    {
+      "fieldname": "speakers",
+      "fieldtype": "Table",
+      "label": "Speakers",
+      "options": "CFP Submission Speaker"
+    },
+    {
+      "fieldname": "references",
+      "fieldtype": "Table",
+      "label": "References",
+      "options": "CFP Submission Reference"
+    },
+    {
+      "default": "Intermediate",
+      "fieldname": "intended_audience",
+      "fieldtype": "Select",
+      "label": "Intended Audience",
+      "options": "Beginner\nIntermediate\nAdvanced"
     }
   ],
   "has_web_view": 1,
   "is_published_field": "is_published",
   "links": [],
-  "modified": "2024-08-07 11:58:39.087697",
+  "modified": "2025-03-09 01:39:24.585791",
   "modified_by": "Administrator",
   "module": "FOSSUnited",
   "name": "FOSS Event CFP Submission",
@@ -337,6 +365,7 @@
       "write": 1
     }
   ],
+  "row_format": "Dynamic",
   "search_fields": "submitted_by, event, event_name, chapter",
   "show_title_field_in_link": 1,
   "sort_field": "modified",

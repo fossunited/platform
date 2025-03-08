@@ -109,7 +109,10 @@ class FOSSEventTicket(Document):
             },
             ["name"],
         )
-        add_to_email_group(email_group, self.email)
+        try:
+            add_to_email_group(email_group, self.email)
+        except frappe.DuplicateEntryError:
+            pass
 
     def is_ticket_live(self):
         tickets_status = frappe.db.get_value(

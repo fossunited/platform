@@ -4,22 +4,43 @@
   "creation": "2024-04-02 13:32:25.754360",
   "doctype": "DocType",
   "engine": "InnoDB",
-  "field_order": ["members"],
+  "field_order": [
+    "guidelines_section",
+    "guidelines",
+    "reviewers_section",
+    "members"
+  ],
   "fields": [
     {
       "fieldname": "members",
       "fieldtype": "Table",
       "label": "Members",
       "options": "FOSS Global CFP Review Member"
+    },
+    {
+      "fieldname": "reviewers_section",
+      "fieldtype": "Section Break",
+      "label": "Reviewers"
+    },
+    {
+      "fieldname": "guidelines_section",
+      "fieldtype": "Section Break",
+      "label": "Guidelines"
+    },
+    {
+      "description": "This will show up on all the CFP Forms",
+      "fieldname": "guidelines",
+      "fieldtype": "Text Editor",
+      "label": "Guidelines"
     }
   ],
   "index_web_pages_for_search": 1,
   "issingle": 1,
   "links": [],
-  "modified": "2024-04-02 13:38:06.747094",
+  "modified": "2025-03-05 01:53:54.280370",
   "modified_by": "Administrator",
   "module": "FOSSUnited",
-  "name": "FOSS Global CFP Review Settings",
+  "name": "Global CFP Settings",
   "owner": "Administrator",
   "permissions": [
     {
@@ -33,6 +54,7 @@
       "write": 1
     }
   ],
+  "row_format": "Dynamic",
   "sort_field": "modified",
   "sort_order": "DESC",
   "states": []

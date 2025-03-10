@@ -4,7 +4,7 @@
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
 
-from fossunited.doctype_ids import EVENT, EVENT_CFP, GLOBAL_REVIEW_SETTINGS, PROPOSAL
+from fossunited.doctype_ids import EVENT, EVENT_CFP, GLOBAL_CFP_SETTINGS, PROPOSAL
 
 
 class FOSSEventCFP(WebsiteGenerator):
@@ -36,13 +36,14 @@ class FOSSEventCFP(WebsiteGenerator):
         only_talk_proposals: DF.Check
         only_workshops: DF.Check
         route: DF.Data | None
+        status: DF.Literal["Closed", "Live"]  # noqa: F821
     # end: auto-generated types
 
     def before_insert(self):
         self.assign_reviewers()
 
     def assign_reviewers(self):
-        reviewers = frappe.get_single(GLOBAL_REVIEW_SETTINGS).members
+        reviewers = frappe.get_single(GLOBAL_CFP_SETTINGS).members
         for reviewer in reviewers:
             self.append(
                 "cfp_reviewers",
